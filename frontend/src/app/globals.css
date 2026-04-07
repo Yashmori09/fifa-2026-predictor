@@ -1,0 +1,52 @@
+@import "tailwindcss";
+@import "flag-icons/css/flag-icons.min.css";
+
+:root {
+  --background: #0A0A0A;
+  --foreground: #FFFFFF;
+  --secondary: #A1A1AA;
+  --purple: #A855F7;
+  --pink: #EC4899;
+  --cyan: #06B6D4;
+  --surface: #111111;
+  --border: #1A1A1A;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
+  --color-purple: var(--purple);
+  --color-pink: var(--pink);
+  --color-cyan: var(--cyan);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-anton);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+/* Flag icon sizing */
+.fi {
+  width: 1.5em;
+  line-height: 1em;
+  border-radius: 2px;
+}

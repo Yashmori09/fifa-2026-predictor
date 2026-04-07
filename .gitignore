@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data — raw source files (too large for git)
+data/D1/
+data/D2/
+data/D3/
+data/processed/
+
+# Large model files
+models/*.pkl
+models/*.zip
+
+# Keep model metadata
+!models/*.json
+
+# Design files
+design/
+
+# Frontend
+frontend/.next/
+frontend/node_modules/
+
+# Research
+research/
+
+# OS
+.DS_Store
+Thumbs.db
