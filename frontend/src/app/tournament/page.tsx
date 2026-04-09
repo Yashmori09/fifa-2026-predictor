@@ -50,12 +50,12 @@ type Speed = "slow" | "fast" | "instant";
 /* ──────────────────── static cards ──────────────────── */
 
 const ROUND_CARDS = [
-  { label: "GROUP STAGE", pct: "20.3%", team: "France", code: "fr", color: "text-purple" },
-  { label: "ROUND OF 32", pct: "19.1%", team: "Spain", code: "es", color: "text-purple" },
-  { label: "ROUND OF 16", pct: "11.9%", team: "Brazil", code: "br", color: "text-cyan" },
-  { label: "QUARTER FINAL", pct: "8.9%", team: "Argentina", code: "ar", color: "text-cyan" },
-  { label: "SEMI FINAL", pct: "8.8%", team: "England", code: "gb-eng", color: "text-pink" },
-  { label: "CHAMPION", pct: "20.3%", team: "France", code: "fr", color: "text-purple", highlight: true },
+  { label: "GROUP STAGE", pct: "26.6%", team: "Spain", code: "es", color: "text-purple" },
+  { label: "ROUND OF 32", pct: "18.1%", team: "France", code: "fr", color: "text-purple" },
+  { label: "ROUND OF 16", pct: "11.1%", team: "Argentina", code: "ar", color: "text-cyan" },
+  { label: "QUARTER FINAL", pct: "9.9%", team: "England", code: "gb-eng", color: "text-cyan" },
+  { label: "SEMI FINAL", pct: "7.4%", team: "Brazil", code: "br", color: "text-pink" },
+  { label: "CHAMPION", pct: "26.6%", team: "Spain", code: "es", color: "text-purple", highlight: true },
 ];
 
 const GROUP_ELOS: Record<string, number> = {

@@ -35,7 +35,7 @@ This showed up in our simulation: Mexico at 7.74% win probability (4th!), Norway
 
 **Why ELO still works for us:** XGBoost doesn't care that the formula is imperfect — it just sees a number that correlates with outcomes. The model learns non-linear patterns on top of ELO (that's what `elo_diff_sq` captures). We use ELO as a *useful input signal*, not as the ground truth of team strength. But it needs a counterweight — an independent measure of squad talent that doesn't come from match results.
 
-**The real insight:** Dixon-Coles is conceptually what "better than ELO" looks like — it gives two parameters per team (attack + defense) fitted on actual goal distributions. That's why DC features were our biggest single improvement.
+**The real insight:** ELO needs an independent counterweight — a signal not derived from match results. EA FC squad ratings (assessed by scouts per player) break the echo chamber because they measure "how good IS this team" rather than "how did this team DO recently."
 
 ---
 
@@ -189,5 +189,62 @@ DC learns team strength from goals scored/conceded. AFC qualifiers produce high-
 
 ---
 
-*Last updated: 2026-04-08*
+## 11. Outcome-First Simulation: Why Sampling Order Matters
+
+**The problem with score-first (Phase 1):** Generate Poisson scoreline → derive outcome. When the model says Spain has 65% win probability, raw Poisson sampling doesn't necessarily produce 65% wins. The Poisson lambda pair that "best matches" the probabilities is an approximation — there's always a gap between the grid-fitted lambdas and the model's actual probabilities.
+
+**The fix — outcome-first (Phase 2):**
+1. `np.random.choice(['home', 'draw', 'away'], p=[ph, pd, pa])` — outcome decided *directly* by model probabilities
+2. Then rejection-sample a Poisson scoreline that matches the chosen outcome
+
+**Why this matters for simulation:**
+- Score-first: strong teams sometimes lose because Poisson randomness overrides model confidence. A team with 70% win probability might only win ~62% of Poisson-sampled matches due to approximation error.
+- Outcome-first: the 70% team wins exactly ~70% of the time. Scorelines are still varied and realistic (drawn from Poisson), but they're *conditioned* on the correct outcome.
+
+**Impact on results:**
+- Top 6 teams now hold 78.6% of win probability (was ~63% with score-first)
+- Only 27 teams won the 2022 backtest at least once (was 29) — less chaos, more realistic
+- Argentina's 2022 backtest win%: 24.5% (was 23.8%) — marginally up, more consistent
+
+**The key insight:** For Monte Carlo simulation, you want the *dice to be fair* (calibrated). Outcome-first ensures the dice ARE the model's probabilities. Score-first puts an intermediary (Poisson grid approximation) between the model and the dice — adding unnecessary noise.
+
+---
+
+## 12. FIFA-Style R32 Bracket: Why Third-Place Seeding Matters
+
+**The old bracket (Phase 1):** 8 best third-place teams played *each other* — 4 matches of thirds vs thirds. This created an easy path to the semifinals for any team that finished 3rd.
+
+**The problem:** In Phase 1 simulations, France won the tournament while finishing 3rd in their group. Third-place teams faced other thirds in R32, then potentially faced runners-up — never meeting a group winner until the QF or later. A mediocre team could cruise through weak opposition.
+
+**The fix — FIFA-style seeding:**
+- 8 matches: group winners vs third-place teams (cross-group, rotated by 4 to avoid same-group collisions)
+- 4 matches: remaining group winners vs cross-group runners-up
+- 4 matches: runners-up vs runners-up
+
+**Impact:** Third-place teams now face group winners in R32 — the hardest possible opponent. This makes the third-place path genuinely difficult, matching real FIFA tournament design philosophy where finishing lower in your group = harder knockout draw.
+
+---
+
+## 13. EA Squad Ratings: The Independent Signal That Broke the Echo Chamber
+
+**Phase 1's fundamental problem:** Both ELO and Dixon-Coles come from match results. Teams in weak confederations get inflated by both — it's not independent confirmation, it's correlated noise from the same source.
+
+**What EA ratings provide:**
+- Scout-assessed player attributes (pace, shooting, passing, defending, physicality) on a 1-99 scale
+- Completely independent of match results — a Mexican player rated 78 is 78 whether Mexico beat Honduras 5-0 or not
+- 22 squad-level features (avg overall, positional averages, depth, star power, balance) plus 23 engineered difference features = 45 new features
+
+**The 83/17 split:** ELO and EA ratings agree 83% of the time (France > Norway, Brazil > Bolivia). The value is the 17% where they disagree — teams like Mexico and Japan whose ELO is inflated by weak-region wins, but whose player ratings reveal they lack individual quality to compete with Europe and South America's best.
+
+**Phase 2 results (EA + ELO, no DC):**
+- Log loss: 0.826 (vs 0.799 with DC) — slightly worse on paper, but simulation rankings are far more realistic
+- ECE: 0.018 (vs 0.027) — *better* calibration
+- Mexico: 7.74% → 0.60%, Japan: 2.84% → 0.65%, Australia: 1.08% → 0.04%
+- France: 11.7% → 18.1%, Brazil: 6.7% → 7.4%, Argentina: 7.5% → 11.1%
+
+**Why we shipped Phase 2 despite higher log loss:** The purpose of this model is tournament simulation, not match-by-match prediction. A model with 0.826 log loss but realistic rankings is more useful than 0.799 with Mexico at 7.74%. The ECE improvement (0.018 < 0.027) confirms Phase 2 is actually *better calibrated* — it just doesn't have DC's Poisson distribution pulling down log loss.
+
+---
+
+*Last updated: 2026-04-10*
 *Add new learnings as we discover them. Focus on "why" — experiment results go in EXPERIMENT_LOG.md.*

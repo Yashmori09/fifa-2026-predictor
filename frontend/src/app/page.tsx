@@ -1,15 +1,15 @@
 import Link from "next/link";
 
 const CHART_DATA = [
-  { rank: "01", team: "France", code: "fr", pct: 20.30, top: true },
-  { rank: "02", team: "Spain", code: "es", pct: 19.10, top: true },
-  { rank: "03", team: "Brazil", code: "br", pct: 11.94, top: true },
-  { rank: "04", team: "Argentina", code: "ar", pct: 8.90, top: true },
-  { rank: "05", team: "England", code: "gb-eng", pct: 8.82, top: true },
-  { rank: "06", team: "Germany", code: "de", pct: 7.16, top: false },
-  { rank: "07", team: "Portugal", code: "pt", pct: 4.46, top: false },
-  { rank: "08", team: "Netherlands", code: "nl", pct: 3.98, top: false },
-  { rank: "09", team: "Belgium", code: "be", pct: 2.10, top: false },
+  { rank: "01", team: "Spain", code: "es", pct: 26.61, top: true },
+  { rank: "02", team: "France", code: "fr", pct: 18.14, top: true },
+  { rank: "03", team: "Argentina", code: "ar", pct: 11.06, top: true },
+  { rank: "04", team: "England", code: "gb-eng", pct: 9.86, top: true },
+  { rank: "05", team: "Brazil", code: "br", pct: 7.38, top: true },
+  { rank: "06", team: "Germany", code: "de", pct: 5.60, top: false },
+  { rank: "07", team: "Netherlands", code: "nl", pct: 4.99, top: false },
+  { rank: "08", team: "Portugal", code: "pt", pct: 2.11, top: false },
+  { rank: "09", team: "Switzerland", code: "ch", pct: 2.04, top: false },
 ];
 
 export default function HomePage() {

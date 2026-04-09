@@ -118,10 +118,10 @@ const DISCOVERIES = [
 ];
 
 const BIAS_ROWS = [
-  { team: "Mexico", before: "6.28%", after: "0.29%", delta: "\u22125.99" },
-  { team: "Senegal", before: "6.76%", after: "1.61%", delta: "\u22125.15" },
-  { team: "Japan", before: "6.27%", after: "0.14%", delta: "\u22126.13" },
-  { team: "Australia", before: "5.19%", after: "0.08%", delta: "\u22125.11" },
+  { team: "Mexico", before: "6.28%", after: "0.31%", delta: "\u22125.97" },
+  { team: "Senegal", before: "6.76%", after: "1.55%", delta: "\u22125.21" },
+  { team: "Japan", before: "6.27%", after: "0.18%", delta: "\u22126.09" },
+  { team: "Australia", before: "5.19%", after: "0.06%", delta: "\u22125.13" },
 ];
 
 export default function MethodologyPage() {
@@ -363,7 +363,7 @@ export default function MethodologyPage() {
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[650px] mb-6 md:mb-7">
           We ran 10,000 simulations of the 2022 Qatar World Cup to see how the
           model would have performed. It correctly identified Argentina as a top
-          contender with 23.8% championship probability.
+          contender with 24.5% championship probability.
         </p>
 
         <div className="flex flex-col md:flex-row gap-4">
@@ -374,10 +374,10 @@ export default function MethodologyPage() {
                 CHAMPION &mdash; ARGENTINA
               </span>
               <span className="text-base font-bold">
-                Ranked #2 &mdash; 23.79% win probability
+                Ranked #2 &mdash; 24.51% win probability
               </span>
               <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
-                Behind only Brazil (28.9%) &mdash; correctly identified as a
+                Behind only Spain (25.6%) &mdash; correctly identified as a
                 top-2 contender
               </p>
             </div>
@@ -386,7 +386,7 @@ export default function MethodologyPage() {
                 RUNNER-UP &mdash; FRANCE
               </span>
               <span className="text-base font-bold">
-                Ranked #4 &mdash; 11.76% win probability
+                Ranked #4 &mdash; 11.89% win probability
               </span>
               <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
                 In the top tier &mdash; correctly flagged as a serious contender
