@@ -11,7 +11,7 @@ env/
 *.ipynb_checkpoints
 
 # Data — raw source files (too large for git)
-data/
+/data/
 
 # Large model files
 models/*.pkl
