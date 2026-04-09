@@ -1,22 +1,23 @@
 # FIFA 2026 World Cup Predictor
 
-A machine learning system that predicts FIFA 2026 World Cup match outcomes and simulates the full tournament bracket using Monte Carlo methods.
+A machine learning system that predicts FIFA 2026 World Cup match outcomes and simulates the full 104-match tournament using Monte Carlo methods.
 
-**Best log loss: 0.7988** | **ECE: 0.027** (well-calibrated)
+**Live:** [fifa-2026-predictor.vercel.app](https://fifa-2026-predictor.vercel.app)
+
+**Log Loss: 0.826** | **ECE: 0.018** (near-perfect calibration) | **97 input features** | **35,304 training matches (1884–2024)**
 
 ## How It Works
 
-Three models vote on every match prediction:
+An ensemble of 4 models votes on every match:
 
-| Model | Weight | What it captures |
+| Model | Copies | What it captures |
 |---|---|---|
-| **XGBoost** | 4 | Non-linear patterns from 59 features (ELO, form, Dixon-Coles ratings) |
-| **Random Forest** | 1 | Ensemble diversity, different decision boundaries |
-| **Dixon-Coles** | 5 (eval) / 1 (sim) | Goal distributions via bivariate Poisson — attack/defense per team |
+| **XGBoost** | 3 | Non-linear patterns — ELO gaps matter more in knockouts than group stages |
+| **Random Forest** | 1 | 500 independent trees that reduce overfitting and stabilize predictions |
 
-All tree models wrapped with **isotonic calibration** to prevent overconfident probabilities (critical for log loss).
+Each match prediction outputs three probabilities (home win, draw, away win). For tournament simulation, we use **outcome-first sampling** — the model's probabilities directly decide the winner, then a Poisson rejection sampler generates a matching scoreline. This ensures simulation results faithfully follow model predictions while producing realistic, varied scores.
 
-Tournament simulation runs 10,000 Monte Carlo iterations through all 104 matches (12 groups + knockout rounds), producing win probabilities for each team.
+Tournament simulation runs **10,000 Monte Carlo iterations** through all 104 matches (12 groups of 4 → Round of 32 → knockout rounds).
 
 ### Top Predictions
 
@@ -30,59 +31,46 @@ Tournament simulation runs 10,000 Monte Carlo iterations through all 104 matches
 | 6 | Brazil | 6.8% |
 
 ### 2022 World Cup Backtest
-- Predicted champion (Argentina) ranked #2
-- 87.5% group stage accuracy
+- Predicted champion (Argentina) ranked #2 with 23.8% probability
+- Correctly identified all top-4 contenders
+
+### The Three Signals
+
+| Signal | Model Importance | What it captures |
+|---|---|---|
+| **Form, History & Context** | 38.6% | Recent win rate, goals, head-to-head, tournament importance, momentum |
+| **EA FC Squad Ratings** | 31.2% | Scout-assessed player attributes (pace, shooting, passing, defending) |
+| **ELO Ratings** | 30.2% | Chess-inspired team ratings updated after every international result |
+
+Adding EA squad ratings was critical — it corrects the **confederation bias** where teams like Mexico and Japan get inflated ELO ratings by beating weaker regional opponents. Scout-assessed player ratings break this echo chamber.
 
 ## Project Structure
 
 ```
-├── notebooks/           # 10 Jupyter notebooks (exploration → simulation)
-│   ├── 01-04            # Data exploration, cleaning, feature engineering, training
-│   ├── 06               # Dixon-Coles feature integration
-│   ├── 07               # Tournament simulation (Monte Carlo)
-│   ├── 08               # 2022 WC backtest
-│   ├── 09               # Calibration curve analysis
-│   └── 10               # Opponent-adjusted features (experiment)
-├── src/
-│   └── train.py         # Production training pipeline
+├── notebooks/           # Jupyter notebooks (exploration → simulation)
 ├── backend/             # FastAPI — /predict and /simulate/full endpoints
-├── frontend/            # Next.js — interactive tournament bracket + H2H predictor
-├── data/                # Raw match data (D1 + D2 + D3 datasets, gitignored)
-├── models/              # Trained .pkl files (gitignored) + metadata .json
-├── scripts/             # Experiment helper scripts
-├── docs/
-│   └── APPROACH.md      # Detailed design decisions
-├── EXPERIMENT_LOG.md    # All 30 experiments with results and deltas
-└── LEARNINGS.md         # Deep insights (ELO limitations, calibration, DC tradeoffs)
+├── frontend/            # Next.js, TypeScript, Tailwind CSS
+├── data/                # Raw match data (4 datasets, gitignored)
+├── models/              # Trained .pkl ensemble + metadata .json
+└── research/            # Experiment scripts and analysis
 ```
 
-## Features (59 total)
+## Features (97 total)
 
-- **ELO-based** (6): elo_diff, elo_diff_sq, avg_elo, elo_form_5/10, elo_volatility
-- **Form** (20): win/draw/loss rates, goals scored/conceded, streaks (5 and 10 match windows, both teams)
-- **Historical** (6): h2h win rates, h2h goals, h2h match count
-- **Dixon-Coles** (7): attack/defense ratings, DC win/draw/loss probs, expected goals
-- **Context** (4): neutral flag, tournament tier, confederation matchup features
-
-## Key Experiment Results
-
-| Experiment | Change | Log Loss | Delta |
-|---|---|---|---|
-| Baseline | Initial ensemble | 0.8333 | — |
-| Calibration + features | AutoResearch pipeline | 0.8263 | -0.0070 |
-| Dixon-Coles features | 7 DC features added | 0.8131 | -0.0132 |
-| Hyperparameter tuning | XGB grid search | 0.8123 | -0.0008 |
-| **DC as direct voter** | **DC×5 in blend** | **0.7988** | **-0.0135** |
-
-Full experiment log with 30 experiments in [EXPERIMENT_LOG.md](EXPERIMENT_LOG.md).
+- **ELO-based:** ELO difference, squared difference, average, form windows, volatility
+- **EA FC Squad Ratings:** Overall, attack, midfield, defense, positional depth, top-player quality
+- **Form:** Win/draw/loss rates, goals scored/conceded, streaks (5 and 10 match windows)
+- **Historical:** Head-to-head win rates, goals, match count
+- **Context:** Neutral flag, tournament tier, confederation matchup features
 
 ## Tech Stack
 
-**ML Pipeline:** Python, scikit-learn (1.2.1), XGBoost, NumPy, Pandas, Jupyter
-
-**Backend:** FastAPI, Uvicorn — loads trained .pkl models, serves predictions
-
-**Frontend:** Next.js 14, TypeScript, Tailwind CSS — interactive bracket visualization with animation controls
+| Layer | Stack |
+|---|---|
+| **ML & Data** | Python, XGBoost, scikit-learn, NumPy, Pandas, Jupyter |
+| **Backend** | FastAPI, Uvicorn, Poisson simulation engine |
+| **Frontend** | Next.js, TypeScript, Tailwind CSS |
+| **Deployment** | Vercel (frontend), HuggingFace Spaces (backend API) |
 
 ## Running Locally
 
@@ -100,19 +88,8 @@ npm install
 npm run dev    # http://localhost:3000
 ```
 
-### Training (reproduce from scratch)
-```bash
-# Requires data/ directory with D1, D2, D3 datasets
-# Notebooks 01-04 build features → src/train.py trains final model
-python src/train.py
-```
-
-## Documentation
-
-- [APPROACH.md](docs/APPROACH.md) — Design decisions: why three datasets, ELO vs FIFA rankings, Dixon-Coles integration, calibration strategy
-- [EXPERIMENT_LOG.md](EXPERIMENT_LOG.md) — All experiments with hypotheses, results, and decisions
-- [LEARNINGS.md](LEARNINGS.md) — Deep technical insights discovered during development
-
 ## Author
 
-**Yash Mori** — [GitHub](https://github.com/Yashmori09) | [LinkedIn](https://linkedin.com/in/YashMori)
+**Yash Mori** — AI Engineer
+
+[GitHub](https://github.com/Yashmori09) · [LinkedIn](https://linkedin.com/in/YashMori)
