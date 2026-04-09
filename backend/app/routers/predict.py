@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas import PredictRequest, PredictResponse
-from app.core.predictor import predict_match, ALL_WC_TEAMS
+from app.core.predictor import predict_match, fit_poisson_lambdas, most_likely_scoreline, ALL_WC_TEAMS
 
 router = APIRouter(prefix="/predict", tags=["predict"])
 
@@ -12,6 +12,8 @@ def predict(req: PredictRequest):
 
     try:
         ph, pd, pa = predict_match(req.home_team, req.away_team, neutral=True)
+        lam_h, lam_a = fit_poisson_lambdas(ph, pd, pa)
+        home_goals, away_goals = most_likely_scoreline(lam_h, lam_a)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -29,4 +31,6 @@ def predict(req: PredictRequest):
         draw=round(pd, 4),
         away_win=round(pa, 4),
         predicted_outcome=outcome,
+        home_goals=home_goals,
+        away_goals=away_goals,
     )

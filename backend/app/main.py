@@ -4,7 +4,7 @@ from app.routers import predict, simulate
 
 app = FastAPI(
     title="FIFA 2026 Predictor API",
-    description="XGB×4 + RF×1 + DC×1 ensemble match prediction and tournament simulation",
+    description="XGB×3 + RF×1 ensemble match prediction and tournament simulation (EA + ELO, no DC)",
     version="1.0.0",
 )
 
@@ -21,7 +21,7 @@ app.include_router(simulate.router)
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "model": "XGB*4 + RF*1 + DC*1"}
+    return {"status": "ok", "model": "XGB*3 + RF*1"}
 
 
 @app.on_event("startup")

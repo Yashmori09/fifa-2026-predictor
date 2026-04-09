@@ -1,16 +1,15 @@
 """
-Tournament simulator — replicates notebook 07 exactly.
-Single simulation returning full bracket data for the frontend.
+Tournament simulator — Phase 2.
+Outcome decided by model probabilities first, then scoreline sampled to match.
+This ensures match results follow model predictions faithfully while still
+producing realistic, varied scorelines.
 """
 import numpy as np
 import pandas as pd
 from pathlib import Path
 from app.core.predictor import (
     predict_match_cached,
-    dc_match_probs,
-    attack_params,
-    defense_params,
-    team_idx_dc,
+    get_lambdas_cached,
     teams_2026,
 )
 
@@ -18,36 +17,47 @@ DATA_DIR = Path(__file__).resolve().parent.parent.parent.parent / "data" / "proc
 
 schedule = pd.read_csv(DATA_DIR / "schedule_2026.csv")
 
+
+# ── Scoreline sampling ──────────────────────────────────────
+
+def _sample_scoreline(lam_h: float, lam_a: float, outcome: str) -> tuple[int, int]:
+    """Sample a Poisson scoreline consistent with the chosen outcome."""
+    for _ in range(100):
+        hg = int(np.random.poisson(lam_h))
+        ag = int(np.random.poisson(lam_a))
+        if outcome == "home" and hg > ag:
+            return hg, ag
+        if outcome == "away" and ag > hg:
+            return hg, ag
+        if outcome == "draw" and hg == ag:
+            return hg, ag
+    # Fallback if rejection sampling exhausts
+    if outcome == "home":
+        return max(1, int(np.random.poisson(lam_h))), 0
+    elif outcome == "away":
+        return 0, max(1, int(np.random.poisson(lam_a)))
+    else:
+        g = int(np.random.poisson(min(lam_h, lam_a)))
+        return g, g
+
+
 # ── Group stage ──────────────────────────────────────────────
 
 def simulate_match_group(home: str, away: str) -> dict:
     """
     Simulate a group stage match.
-    Returns dict with all match data for the frontend.
+    Outcome picked from model probabilities, then scoreline sampled to match.
     """
     ph, pd_, pa = predict_match_cached(home, away, neutral=True)
-    result = np.random.choice(["home", "draw", "away"], p=[ph, pd_, pa])
+    lam_h, lam_a = get_lambdas_cached(home, away)
 
-    # Sample scoreline from DC lambdas (neutral)
-    hi = team_idx_dc.get(home, 0)
-    ai = team_idx_dc.get(away, 0)
-    dc_lam = np.exp(attack_params[hi] + defense_params[ai])  # neutral: no home_adv
-    dc_mu = np.exp(attack_params[ai] + defense_params[hi])
+    # Pick outcome using model probabilities directly
+    outcome = np.random.choice(["home", "draw", "away"], p=[ph, pd_, pa])
+    home_goals, away_goals = _sample_scoreline(lam_h, lam_a, outcome)
 
-    home_goals = int(np.random.poisson(dc_lam))
-    away_goals = int(np.random.poisson(dc_mu))
-
-    # Adjust scoreline to match the sampled result
-    if result == "home" and home_goals <= away_goals:
-        home_goals = away_goals + 1
-    elif result == "away" and away_goals <= home_goals:
-        away_goals = home_goals + 1
-    elif result == "draw":
-        away_goals = home_goals
-
-    if result == "home":
+    if outcome == "home":
         home_pts, away_pts = 3, 0
-    elif result == "away":
+    elif outcome == "away":
         home_pts, away_pts = 0, 3
     else:
         home_pts, away_pts = 1, 1
@@ -148,69 +158,74 @@ def simulate_all_groups() -> dict:
 # ── Knockout ─────────────────────────────────────────────────
 
 def build_r32_bracket(winners: dict, runners_up: dict, best_thirds: dict) -> list[tuple[str, str]]:
-    """Build Round of 32 bracket — 16 matchups."""
-    W = winners
-    R = runners_up
-    thirds = list(best_thirds.values())
+    """
+    Build Round of 32 bracket — 16 matchups, FIFA-style seeding:
+      8 matches: group winners vs third-place qualifiers (cross-group)
+      4 matches: remaining group winners vs cross-group runners-up
+      4 matches: remaining runners-up vs runners-up
+    Third-place teams face group winners (harder path), not each other.
+    """
+    all_groups = list("ABCDEFGHIJKL")
+    third_groups = sorted(best_thirds.keys())
+    non_third_groups = sorted(set(all_groups) - set(third_groups))
 
-    return [
-        # 12 winner vs runner-up (cross groups)
-        (W["A"], R["B"]),
-        (W["C"], R["D"]),
-        (W["B"], R["A"]),
-        (W["D"], R["C"]),
-        (W["E"], R["F"]),
-        (W["G"], R["H"]),
-        (W["F"], R["E"]),
-        (W["H"], R["G"]),
-        (W["I"], R["J"]),
-        (W["K"], R["L"]),
-        (W["J"], R["I"]),
-        (W["L"], R["K"]),
-        # 4 best-thirds matchups
-        (thirds[0], thirds[1]),
-        (thirds[2], thirds[3]),
-        (thirds[4], thirds[5]),
-        (thirds[6], thirds[7]),
-    ]
+    # ── 8 matches: group winners vs thirds (cross-group) ──
+    # Rotate third_groups by 4 to assign each third to a winner
+    # from a different group (guaranteed no same-group collision)
+    rotated_winner_groups = third_groups[4:] + third_groups[:4]
+    wt_matches = []
+    for i, tg in enumerate(third_groups):
+        wg = rotated_winner_groups[i]
+        wt_matches.append((winners[wg], best_thirds[tg]))
+
+    # ── 4 matches: remaining winners vs cross-group runners-up ──
+    # The 4 groups whose thirds didn't qualify — their winners face
+    # runners-up from the other non-qualifying group (cross-paired)
+    wr_matches = []
+    for i in range(0, len(non_third_groups), 2):
+        g1, g2 = non_third_groups[i], non_third_groups[i + 1]
+        wr_matches.append((winners[g1], runners_up[g2]))
+        wr_matches.append((winners[g2], runners_up[g1]))
+
+    # ── 4 matches: remaining runners-up vs runners-up ──
+    # Runners-up from the 8 third-qualifying groups, cross-paired
+    rr_matches = []
+    for i in range(0, len(third_groups), 2):
+        g1, g2 = third_groups[i], third_groups[i + 1]
+        rr_matches.append((runners_up[g1], runners_up[g2]))
+
+    # Interleave for balanced bracket halves:
+    # Left side (matches 0-7): first 4 winner-vs-third + 2 winner-vs-runner + 2 runner-vs-runner
+    # Right side (matches 8-15): last 4 winner-vs-third + 2 winner-vs-runner + 2 runner-vs-runner
+    left = wt_matches[:4] + wr_matches[:2] + rr_matches[:2]
+    right = wt_matches[4:] + wr_matches[2:] + rr_matches[2:]
+
+    return left + right
 
 
 def simulate_ko_match(t1: str, t2: str) -> dict:
     """
-    Simulate a knockout match. No draws — penalties if drawn.
-    Returns match data for the frontend.
+    Simulate a knockout match.
+    Outcome picked from model probabilities. Draw → penalties decided by
+    normalized home/away probs.
     """
     ph, pd_, pa = predict_match_cached(t1, t2, neutral=True)
-    result = np.random.choice(["home", "draw", "away"], p=[ph, pd_, pa])
+    lam_h, lam_a = get_lambdas_cached(t1, t2)
+
+    # Pick outcome using model probabilities directly
+    outcome = np.random.choice(["home", "draw", "away"], p=[ph, pd_, pa])
+    t1_goals, t2_goals = _sample_scoreline(lam_h, lam_a, outcome)
 
     penalties = False
-    if result == "home":
+    if outcome == "home":
         winner = t1
-    elif result == "away":
+    elif outcome == "away":
         winner = t2
     else:
-        # Penalties: renormalize home vs away
-        p_home_et = ph / (ph + pa)
-        winner = t1 if np.random.random() < p_home_et else t2
+        # Draw → penalties: use model probabilities to decide
+        p_t1_pen = ph / (ph + pa)
+        winner = t1 if np.random.random() < p_t1_pen else t2
         penalties = True
-
-    # Sample scoreline from DC
-    hi = team_idx_dc.get(t1, 0)
-    ai = team_idx_dc.get(t2, 0)
-    dc_lam = np.exp(attack_params[hi] + defense_params[ai])
-    dc_mu = np.exp(attack_params[ai] + defense_params[hi])
-
-    t1_goals = int(np.random.poisson(dc_lam))
-    t2_goals = int(np.random.poisson(dc_mu))
-
-    if not penalties:
-        if winner == t1 and t1_goals <= t2_goals:
-            t1_goals = t2_goals + 1
-        elif winner == t2 and t2_goals <= t1_goals:
-            t2_goals = t1_goals + 1
-    else:
-        # Draw in regular time
-        t2_goals = t1_goals
 
     return {
         "team1": t1,

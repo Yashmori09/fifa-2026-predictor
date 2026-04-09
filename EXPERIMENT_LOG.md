@@ -503,3 +503,50 @@ Results are cumulative — each builds on the previous best.
 | DC inflates AFC/CONCACAF teams due to qualifier volume | EXP-29 confirmed: Mexico #5, Japan #6, Australia #7 in 2022 backtest |
 | Opponent-adjusted form features are mostly redundant with ELO | EXP-10: 0/14 features in top 25, Δ only -0.002 |
 | Always reproduce baseline exactly before testing new features | EXP-10: 4 bugs caused 0.04 gap (0.7988 vs 0.8381) |
+
+---
+
+## Phase 2 — Squad Quality Features
+
+### Problem Statement
+
+Phase 1 simulation produces unrealistic win probabilities: Mexico 7.74% (4th), Norway 4.60% (8th), while Portugal 1.21% and Brazil 6.67% (7th). Root cause: both ELO and Dixon-Coles are derived from match results, creating a **confederation echo chamber** — teams in weak confederations get inflated signals from both models simultaneously.
+
+- **ELO bias:** Mexico beats weak CONCACAF teams → ELO 1987 (looks close to Brazil's 2085)
+- **DC bias:** Mexico scores 2.5 goals/match vs weak teams → high DC attack rating (looks elite)
+- **No counterweight:** The model has zero features independent of match results
+
+### Hypothesis
+
+Adding squad quality data (EA FC player ratings) will correct confederation-inflated predictions because:
+1. Ratings are assessed by scouts per player — independent of match results
+2. They capture "how good is this team RIGHT NOW" vs ELO's "how did this team perform recently"
+3. When ELO/DC disagree with squad ratings, XGBoost can learn which to trust
+
+### Plan
+
+**Data:**
+- EA FC ratings: FIFA 15 → FC 26 (2014-2026, ~19K players/year, Kaggle datasets)
+- WC squad lists: 2014, 2018, 2022 from Wikipedia (already have 2026)
+- For non-WC matches: approximate squad as top 26 players by nationality from EA database
+
+**Features to add (per team, per match):**
+- `squad_avg_rating` — average overall rating of best 11
+- `attack_rating` — average of top FW/MF ratings
+- `defense_rating` — average of top DF/GK ratings
+- `squad_depth` — gap between starting XI avg and bench avg
+- `star_power` — rating of best player
+- `rating_diff` — home squad rating minus away squad rating
+
+**Approach:** Add features to existing XGB/RF ensemble. Do NOT modify ELO or DC. Let the model learn when to trust squad ratings over ELO/DC.
+
+**If squad features don't fix simulation rankings:** Then revisit ELO/DC directly — confederation-adjusted ELO, opponent-weighted DC goals.
+
+### EXP-11 | Squad Quality Features (PLANNED)
+**Status:** Data collection in progress
+- [x] Scraped 2026 WC squads from Wikipedia (48 teams, 1282 players)
+- [ ] Download EA FC ratings from Kaggle (FIFA 15 → FC 26)
+- [ ] Scrape past WC squads (2014, 2018, 2022)
+- [ ] Match players to EA ratings, handle coverage gaps
+- [ ] Compute team-level features per match
+- [ ] Train, evaluate log loss, compare simulation rankings

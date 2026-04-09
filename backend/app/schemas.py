@@ -15,6 +15,8 @@ class PredictResponse(BaseModel):
     draw: float
     away_win: float
     predicted_outcome: str
+    home_goals: int
+    away_goals: int
 
 
 # ── Simulate endpoint ────────────────────────────────────────

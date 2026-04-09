@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { TEAMS, GROUPS, getTeamsByGroup } from "@/lib/teams";
 
 /* ──────────────────────── types ──────────────────────── */
@@ -50,18 +50,84 @@ type Speed = "slow" | "fast" | "instant";
 /* ──────────────────── static cards ──────────────────── */
 
 const ROUND_CARDS = [
-  { label: "GROUP STAGE", pct: "19.4%", team: "Spain", color: "text-purple" },
-  { label: "ROUND OF 32", pct: "11.2%", team: "France", color: "text-purple" },
-  { label: "ROUND OF 16", pct: "8.6%", team: "Argentina", color: "text-cyan" },
-  { label: "QUARTER FINAL", pct: "8.1%", team: "England", color: "text-cyan" },
-  { label: "SEMI FINAL", pct: "7.6%", team: "Mexico", color: "text-pink" },
-  { label: "CHAMPION", pct: "19.4%", team: "Spain", color: "text-purple", highlight: true },
+  { label: "GROUP STAGE", pct: "20.3%", team: "France", code: "fr", color: "text-purple" },
+  { label: "ROUND OF 32", pct: "19.1%", team: "Spain", code: "es", color: "text-purple" },
+  { label: "ROUND OF 16", pct: "11.9%", team: "Brazil", code: "br", color: "text-cyan" },
+  { label: "QUARTER FINAL", pct: "8.9%", team: "Argentina", code: "ar", color: "text-cyan" },
+  { label: "SEMI FINAL", pct: "8.8%", team: "England", code: "gb-eng", color: "text-pink" },
+  { label: "CHAMPION", pct: "20.3%", team: "France", code: "fr", color: "text-purple", highlight: true },
 ];
 
 const GROUP_ELOS: Record<string, number> = {
   A: 1832, B: 1796, C: 1819, D: 1834, E: 1793, F: 1838,
   G: 1744, H: 1873, I: 1851, J: 1820, K: 1788, L: 1830,
 };
+
+/* ──────────── squad quality (EA FC ratings) ──────────── */
+
+const SQUAD_QUALITY: Record<string, number> = {
+  France: 83.2, Spain: 82.1, England: 80.8, Germany: 80.7, Netherlands: 80.5,
+  Portugal: 79.9, Argentina: 79.2, Brazil: 79.0, Belgium: 77.7, Turkey: 76.4,
+  Croatia: 76.1, Switzerland: 75.8, "Ivory Coast": 74.9, Norway: 74.8,
+  Uruguay: 74.6, Austria: 74.5, Senegal: 74.4, Colombia: 74.3,
+  "Czech Republic": 74.3, "United States": 73.8, Sweden: 73.8, Morocco: 73.9,
+  Scotland: 73.0, Japan: 72.2, Algeria: 71.8, Mexico: 71.7, Ghana: 71.3,
+  "DR Congo": 71.2, Ecuador: 70.1, "Bosnia and Herzegovina": 70.0,
+  Paraguay: 70.0, "South Korea": 69.4, Canada: 68.7, Uzbekistan: 68.7,
+  Egypt: 68.0, "Cape Verde": 67.0, Australia: 66.4, Qatar: 66.4,
+  "New Zealand": 65.6, Tunisia: 65.6, Haiti: 65.1, Iran: 64.0,
+  Panama: 63.4, Jordan: 62.9, "Saudi Arabia": 62.3, Iraq: 62.0,
+  "South Africa": 57.9, "Curaçao": 55.0,
+};
+
+interface FeaturedGroup {
+  group: string;
+  tag: string;
+  tagColor: string;
+  borderColor: string;
+  avg: number;
+  teams: { name: string; code: string; rating: number }[];
+}
+
+const FEATURED_GROUPS: FeaturedGroup[] = [
+  {
+    group: "L", tag: "#1 GROUP OF DEATH", tagColor: "text-red-500", borderColor: "border-red-500",
+    avg: 72.9,
+    teams: [
+      { name: "England", code: "gb-eng", rating: 80.8 },
+      { name: "Croatia", code: "hr", rating: 76.1 },
+      { name: "Ghana", code: "gh", rating: 71.3 },
+      { name: "Panama", code: "pa", rating: 63.4 },
+    ],
+  },
+  {
+    group: "K", tag: "#2 MOST COMPETITIVE", tagColor: "text-amber-500", borderColor: "border-amber-500",
+    avg: 73.5,
+    teams: [
+      { name: "Portugal", code: "pt", rating: 79.9 },
+      { name: "Colombia", code: "co", rating: 74.3 },
+      { name: "DR Congo", code: "cd", rating: 71.2 },
+      { name: "Uzbekistan", code: "uz", rating: 68.7 },
+    ],
+  },
+  {
+    group: "I", tag: "#3 STRONGEST FAVORITE", tagColor: "text-purple", borderColor: "border-purple",
+    avg: 73.6,
+    teams: [
+      { name: "France", code: "fr", rating: 83.2 },
+      { name: "Norway", code: "no", rating: 74.8 },
+      { name: "Senegal", code: "sn", rating: 74.4 },
+      { name: "Iraq", code: "iq", rating: 62.0 },
+    ],
+  },
+];
+
+const ALL_GROUPS_RANKED = [
+  { group: "E", avg: 75.2 }, { group: "I", avg: 73.6 }, { group: "K", avg: 73.5 },
+  { group: "F", avg: 73.0 }, { group: "L", avg: 72.9 }, { group: "C", avg: 72.8 },
+  { group: "J", avg: 72.1 }, { group: "D", avg: 71.6 }, { group: "H", avg: 71.5 },
+  { group: "B", avg: 70.2 }, { group: "G", avg: 68.8 }, { group: "A", avg: 68.3 },
+];
 
 /* ──────────── helpers ──────────── */
 
@@ -146,9 +212,28 @@ export default function TournamentPage() {
   });
   const [champion, setChampion] = useState<string | null>(null);
 
+  const [hoveredGroup, setHoveredGroup] = useState<string | null>(null);
   const runningRef = useRef(false);
   const speedRef = useRef<Speed>(speed);
   speedRef.current = speed;
+
+  // Auto-scroll refs
+  const groupStageRef = useRef<HTMLElement>(null);
+  const knockoutMatchRef = useRef<HTMLElement>(null);
+  const bracketRef = useRef<HTMLElement>(null);
+  const championRef = useRef<HTMLElement>(null);
+
+  // Auto-scroll when phase changes
+  useEffect(() => {
+    const scrollTo = (ref: React.RefObject<HTMLElement | null>) => {
+      setTimeout(() => {
+        ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    };
+    if (phase === "group") scrollTo(groupStageRef);
+    else if (phase === "r32" || phase === "r16" || phase === "qf" || phase === "sf" || phase === "final") scrollTo(knockoutMatchRef);
+    else if (phase === "done") scrollTo(championRef);
+  }, [phase]);
 
   const getDelay = useCallback(() => {
     const s = speedRef.current;
@@ -285,6 +370,7 @@ export default function TournamentPage() {
     });
 
     // Fetch from backend
+    setHoveredGroup(null);
     setPhase("loading");
     let data: ApiSimulateResponse;
     try {
@@ -331,28 +417,40 @@ export default function TournamentPage() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="flex flex-col justify-center h-[160px] px-20 gap-2.5">
+      <section className="flex flex-col justify-center px-4 md:px-12 lg:px-20 py-8 md:py-10 gap-2.5">
         <p className="text-cyan text-[11px] font-semibold tracking-[3px]">
           2026 FIFA WORLD CUP — USA · CANADA · MEXICO
         </p>
-        <h1 className="font-[family-name:var(--font-anton)] text-[48px] leading-tight">
+        <h1 className="font-[family-name:var(--font-anton)] text-[32px] md:text-[48px] leading-tight">
           FULL TOURNAMENT BREAKDOWN
         </h1>
         <p className="text-secondary text-sm">
           48 teams · 12 groups · Round-by-round survival probabilities from
           10,000 simulations
         </p>
+        <div className="text-secondary text-[11px] bg-[#1A1A1A] border border-border rounded-lg px-4 py-3 max-w-[720px] mt-1 leading-relaxed space-y-1.5">
+          <p>
+            <span className="text-foreground font-semibold">How does the simulation work?</span>{" "}
+            Our ML model analyzes each matchup using ELO ratings, squad strength (EA FC), recent form, and head-to-head history to predict win probabilities.
+          </p>
+          <p>
+            For example, if Argentina vs Mexico gives: <span className="text-purple font-mono">Argentina 60%</span>, <span className="text-secondary font-mono">Draw 20%</span>, <span className="text-pink font-mono">Mexico 20%</span> — imagine a bag with 60 Argentina balls, 20 draw balls, and 20 Mexico balls. We randomly pick one ball to decide the result.
+          </p>
+          <p>
+            Argentina wins most of the time, but sometimes Mexico pulls off an upset — just like in real football. This happens for every match in the tournament, so each simulation run can produce a different champion. The stronger team is always more likely to win, but never guaranteed.
+          </p>
+        </div>
       </section>
 
       {/* Round-by-Round Survival */}
-      <section className="px-20 py-10">
+      <section className="px-4 md:px-12 lg:px-20 py-8 md:py-10">
         <h2 className="font-[family-name:var(--font-anton)] text-2xl tracking-wide mb-1">
           ROUND-BY-ROUND SURVIVAL
         </h2>
         <p className="text-secondary text-xs mb-5">
           Highest survival probability at each stage from 10,000 Monte Carlo simulations
         </p>
-        <div className="grid grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
           {ROUND_CARDS.map((card) => (
             <div
               key={card.label}
@@ -366,14 +464,123 @@ export default function TournamentPage() {
               <span className={`font-[family-name:var(--font-anton)] text-[28px] ${card.color}`}>
                 {card.pct}
               </span>
-              <span className="text-xs">{card.team}</span>
+              <div className="flex items-center gap-1.5">
+                <span className={`fi fi-${card.code} text-base`} />
+                <span className="text-xs">{card.team}</span>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
+      {/* Group of Death */}
+      <section className="px-4 md:px-12 lg:px-20 py-8 md:py-12 bg-[#0D0D0D] border-t border-border">
+        <h2 className="font-[family-name:var(--font-anton)] text-[28px] tracking-wide mb-2">
+          GROUP OF DEATH
+        </h2>
+        <p className="text-secondary text-sm leading-relaxed max-w-[700px] mb-7">
+          Groups ranked by average squad quality (EA FC ratings). The tightest
+          groups — where strong teams risk elimination — are the real danger
+          zones.
+        </p>
+
+        {/* Featured groups */}
+        <div className="flex flex-col md:flex-row gap-3 mb-8">
+          {FEATURED_GROUPS.map((fg) => (
+            <div
+              key={fg.group}
+              className={`flex-1 flex flex-col gap-3.5 bg-[#111111] border ${fg.borderColor} rounded-xl p-6`}
+            >
+              <span
+                className={`font-mono text-[11px] font-semibold tracking-[2px] ${fg.tagColor}`}
+              >
+                {fg.tag}
+              </span>
+              <span className="font-[family-name:var(--font-anton)] text-2xl">
+                Group {fg.group}
+              </span>
+              <span className="font-mono text-xs text-[#A1A1AA]">
+                Avg Squad: {fg.avg}
+              </span>
+              <div className="flex flex-col gap-1.5">
+                {fg.teams.map((t, i) => (
+                  <div key={t.name} className="flex items-center gap-2">
+                    <span className={`fi fi-${t.code} text-sm`} />
+                    <span className="text-[13px] w-[100px]">{t.name}</span>
+                    <div className="flex-1 h-2 bg-[#1A1A1A] rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${
+                          i === 0
+                            ? "bg-purple"
+                            : i === 1
+                            ? "bg-cyan"
+                            : "bg-[#2A2A2A]"
+                        }`}
+                        style={{
+                          width: `${((t.rating - 50) / 40) * 100}%`,
+                        }}
+                      />
+                    </div>
+                    <span
+                      className={`font-mono text-xs w-10 text-right ${
+                        i === 0
+                          ? "text-purple font-semibold"
+                          : i === 1
+                          ? "text-cyan"
+                          : "text-secondary"
+                      }`}
+                    >
+                      {t.rating}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* All groups bar chart */}
+        <p className="font-mono text-[11px] font-semibold tracking-[2px] text-secondary mb-4">
+          ALL GROUPS BY SQUAD QUALITY
+        </p>
+        <div className="flex gap-2 items-end h-[120px]">
+          {ALL_GROUPS_RANKED.map((g, i) => {
+            const h = ((g.avg - 65) / 12) * 100;
+            const isTop = i < 5;
+            const isDeath = g.group === "L";
+            return (
+              <div
+                key={g.group}
+                className="flex-1 flex flex-col items-center gap-1 justify-end h-full"
+              >
+                <span
+                  className={`font-[family-name:var(--font-anton)] text-base ${
+                    isDeath ? "text-red-500" : "text-foreground"
+                  }`}
+                >
+                  {g.group}
+                </span>
+                <div
+                  className={`w-full rounded-t ${
+                    isDeath
+                      ? "bg-red-500"
+                      : isTop
+                      ? "bg-purple"
+                      : "bg-[#2A2A2A]"
+                  }`}
+                  style={{ height: `${h}%` }}
+                />
+                <span className="font-mono text-[10px] text-[#A1A1AA]">
+                  {g.avg}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
       {/* All 12 Groups */}
-      <section className="px-20 py-10">
+      <section className="px-4 md:px-12 lg:px-20 py-8 md:py-10">
         <h2 className="font-[family-name:var(--font-anton)] text-2xl tracking-wide mb-6">
           ALL 12 GROUPS
         </h2>
@@ -381,20 +588,26 @@ export default function TournamentPage() {
           {GROUPS.map((group) => {
             const groupTeams = standings[group] || [];
             const avgElo = GROUP_ELOS[group] || 0;
+            const isHovered = hoveredGroup === group;
+            const groupSquadAvg = ALL_GROUPS_RANKED.find((g) => g.group === group)?.avg || 0;
             return (
               <div
                 key={group}
-                className="bg-surface border border-border rounded-lg overflow-hidden"
+                className={`bg-surface border rounded-lg overflow-hidden transition-colors ${
+                  isHovered ? "border-purple" : "border-border"
+                }`}
+                onMouseEnter={() => { if (phase === "idle") setHoveredGroup(group); }}
+                onMouseLeave={() => setHoveredGroup(null)}
               >
                 <div className="flex items-center justify-between px-3.5 h-9 bg-[#1A1A1A]">
                   <span className="font-[family-name:var(--font-anton)] text-[13px] tracking-wide">
                     GROUP {group}
                   </span>
                   <span className="font-mono text-[10px] text-secondary">
-                    avg {avgElo}
+                    {isHovered ? `squad avg ${groupSquadAvg}` : `elo avg ${avgElo}`}
                   </span>
                 </div>
-                {phase !== "idle" && phase !== "loading" && (
+                {phase !== "idle" && phase !== "loading" && !isHovered && (
                   <div className="flex items-center justify-between px-3.5 h-7 border-b border-border text-[10px] text-secondary font-mono">
                     <span className="w-32">Team</span>
                     <span className="w-6 text-center">MP</span>
@@ -405,35 +618,64 @@ export default function TournamentPage() {
                     <span className="w-8 text-center">PTS</span>
                   </div>
                 )}
-                {groupTeams.map((team, i) => (
-                  <div
-                    key={team.name}
-                    className={`flex items-center justify-between px-3.5 h-9 ${
-                      i < groupTeams.length - 1 ? "border-b border-border" : ""
-                    } ${phase !== "idle" && phase !== "loading" && i < 2 ? "bg-[#141414]" : ""}`}
-                  >
-                    <div className="flex items-center gap-2 w-32">
-                      <span className={`fi fi-${team.code}`} />
-                      <span className="text-xs">{team.name}</span>
-                    </div>
-                    {phase !== "idle" && phase !== "loading" ? (
-                      <>
-                        <span className="font-mono text-[11px] text-secondary w-6 text-center">{team.mp}</span>
-                        <span className="font-mono text-[11px] text-secondary w-6 text-center">{team.w}</span>
-                        <span className="font-mono text-[11px] text-secondary w-6 text-center">{team.d}</span>
-                        <span className="font-mono text-[11px] text-secondary w-6 text-center">{team.l}</span>
-                        <span className={`font-mono text-[11px] w-8 text-center ${team.gd > 0 ? "text-cyan" : team.gd < 0 ? "text-pink" : "text-secondary"}`}>
-                          {team.gd > 0 ? `+${team.gd}` : team.gd}
-                        </span>
-                        <span className={`font-mono text-[11px] font-semibold w-8 text-center ${i < 2 ? "text-purple" : "text-secondary"}`}>
-                          {team.pts}
-                        </span>
-                      </>
-                    ) : (
-                      <span className={`font-mono text-[11px] ${i === 0 ? "text-purple" : "text-secondary"}`} />
-                    )}
+                {isHovered && (
+                  <div className="flex items-center justify-between px-3.5 h-7 border-b border-border text-[10px] text-secondary font-mono">
+                    <span className="w-28">Team</span>
+                    <span className="flex-1 text-center">Squad Rating</span>
+                    <span className="w-10 text-right">EA FC</span>
                   </div>
-                ))}
+                )}
+                {groupTeams.map((team, i) => {
+                  const sq = SQUAD_QUALITY[team.name] || 0;
+                  const barW = sq > 0 ? ((sq - 50) / 40) * 100 : 0;
+                  return (
+                    <div
+                      key={team.name}
+                      className={`flex items-center justify-between px-3.5 h-9 ${
+                        i < groupTeams.length - 1 ? "border-b border-border" : ""
+                      } ${!isHovered && phase !== "idle" && phase !== "loading" && i < 2 ? "bg-[#141414]" : ""}`}
+                    >
+                      <div className="flex items-center gap-2 w-28">
+                        <span className={`fi fi-${team.code}`} />
+                        <span className="text-xs">{team.name}</span>
+                      </div>
+                      {isHovered ? (
+                        <>
+                          <div className="flex-1 h-2 bg-[#1A1A1A] rounded-full overflow-hidden mx-2">
+                            <div
+                              className={`h-full rounded-full ${
+                                i === 0 ? "bg-purple" : i === 1 ? "bg-cyan" : i === 2 ? "bg-pink" : "bg-amber-500"
+                              }`}
+                              style={{ width: `${barW}%` }}
+                            />
+                          </div>
+                          <span
+                            className={`font-mono text-[11px] w-10 text-right ${
+                              i === 0 ? "text-purple font-semibold" : i === 1 ? "text-cyan" : i === 2 ? "text-pink" : "text-amber-500"
+                            }`}
+                          >
+                            {sq > 0 ? sq.toFixed(1) : "—"}
+                          </span>
+                        </>
+                      ) : phase !== "idle" && phase !== "loading" ? (
+                        <>
+                          <span className="font-mono text-[11px] text-secondary w-6 text-center">{team.mp}</span>
+                          <span className="font-mono text-[11px] text-secondary w-6 text-center">{team.w}</span>
+                          <span className="font-mono text-[11px] text-secondary w-6 text-center">{team.d}</span>
+                          <span className="font-mono text-[11px] text-secondary w-6 text-center">{team.l}</span>
+                          <span className={`font-mono text-[11px] w-8 text-center ${team.gd > 0 ? "text-cyan" : team.gd < 0 ? "text-pink" : "text-secondary"}`}>
+                            {team.gd > 0 ? `+${team.gd}` : team.gd}
+                          </span>
+                          <span className={`font-mono text-[11px] font-semibold w-8 text-center ${i < 2 ? "text-purple" : "text-secondary"}`}>
+                            {team.pts}
+                          </span>
+                        </>
+                      ) : (
+                        <span className={`font-mono text-[11px] ${i === 0 ? "text-purple" : "text-secondary"}`} />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             );
           })}
@@ -441,7 +683,7 @@ export default function TournamentPage() {
       </section>
 
       {/* Simulation Controls */}
-      <section className="px-20 py-8 flex items-center justify-center gap-6">
+      <section ref={championRef} className="px-4 md:px-12 lg:px-20 py-6 md:py-8 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
         {phase === "idle" && (
           <button
             onClick={startSimulation}
@@ -514,12 +756,12 @@ export default function TournamentPage() {
 
       {/* Live Match Card — Group Stage */}
       {phase === "group" && currentMatch && (
-        <section className="px-20 py-8">
+        <section ref={groupStageRef} className="px-4 md:px-12 lg:px-20 py-6 md:py-8">
           <h2 className="font-[family-name:var(--font-anton)] text-2xl tracking-wide mb-5">
             GROUP STAGE
           </h2>
-          <div className="flex gap-6">
-            <div className="flex-1 bg-[#111111] border border-border rounded-xl p-6">
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+            <div className="flex-1 bg-[#111111] border border-border rounded-xl p-4 md:p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-secondary text-[10px] font-semibold tracking-[2px]">
                   GROUP {currentMatch.group}
@@ -533,7 +775,7 @@ export default function TournamentPage() {
                   <span className={`fi fi-${currentMatch.homeCode} text-4xl`} />
                   <span className="text-sm font-semibold">{currentMatch.home}</span>
                 </div>
-                <div className="font-[family-name:var(--font-anton)] text-[48px] tracking-wider">
+                <div className="font-[family-name:var(--font-anton)] text-[36px] md:text-[48px] tracking-wider">
                   {currentMatch.homeGoals} – {currentMatch.awayGoals}
                 </div>
                 <div className="flex flex-col items-center gap-2">
@@ -553,7 +795,7 @@ export default function TournamentPage() {
               </div>
             </div>
 
-            <div className="w-[340px] bg-[#111111] border border-border rounded-xl overflow-hidden">
+            <div className="w-full lg:w-[340px] bg-[#111111] border border-border rounded-xl overflow-hidden">
               <div className="flex items-center justify-between px-4 h-9 bg-[#1A1A1A]">
                 <span className="font-[family-name:var(--font-anton)] text-[13px] tracking-wide">
                   GROUP {currentMatch.group}
@@ -599,7 +841,7 @@ export default function TournamentPage() {
 
       {/* Live Match Card — Knockout */}
       {(phase === "r32" || phase === "r16" || phase === "qf" || phase === "sf" || phase === "final") && currentKOMatch && (
-        <section className="px-20 py-8">
+        <section ref={knockoutMatchRef} className="px-4 md:px-12 lg:px-20 py-6 md:py-8">
           <h2 className="font-[family-name:var(--font-anton)] text-2xl tracking-wide mb-5">
             {phase === "r32" ? "ROUND OF 32" : phase === "r16" ? "ROUND OF 16" : phase === "qf" ? "QUARTER FINALS" : phase === "sf" ? "SEMI FINALS" : "FINAL"}
           </h2>
@@ -612,7 +854,7 @@ export default function TournamentPage() {
                 </span>
               </div>
               <div className="flex flex-col items-center">
-                <div className="font-[family-name:var(--font-anton)] text-[48px] tracking-wider">
+                <div className="font-[family-name:var(--font-anton)] text-[36px] md:text-[48px] tracking-wider">
                   {currentKOMatch.homeGoals} – {currentKOMatch.awayGoals}
                 </div>
                 {currentKOMatch.penalties && (
@@ -643,12 +885,12 @@ export default function TournamentPage() {
 
       {/* Knockout Bracket */}
       {(phase !== "idle" && phase !== "loading" && phase !== "group") && (
-        <section className="px-20 py-10">
+        <section ref={bracketRef} className="px-4 md:px-12 lg:px-20 py-8 md:py-10">
           <h2 className="font-[family-name:var(--font-anton)] text-2xl tracking-wide mb-6">
             KNOCKOUT BRACKET
           </h2>
-          <div>
-            <div className="flex gap-2 items-center">
+          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="flex gap-2 items-center min-w-[1100px]">
               <BracketColumn matches={bracket.r32.slice(0, 8)} label="R32" />
               <BracketColumn matches={bracket.r16.slice(0, 4)} label="R16" />
               <BracketColumn matches={bracket.qf.slice(0, 2)} label="QF" />
@@ -680,7 +922,7 @@ export default function TournamentPage() {
 
       {/* Group Stage Complete Banner */}
       {phase !== "idle" && phase !== "loading" && phase !== "group" && (
-        <section className="px-20 py-4">
+        <section className="px-4 md:px-12 lg:px-20 py-4">
           <div className="text-center py-3 bg-[#0D0D0D] border border-border rounded-lg">
             <span className="text-xs text-secondary font-mono">
               Group Stage Complete — 32 teams qualified for knockout rounds

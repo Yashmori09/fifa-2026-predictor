@@ -11,10 +11,7 @@ env/
 *.ipynb_checkpoints
 
 # Data — raw source files (too large for git)
-data/D1/
-data/D2/
-data/D3/
-data/processed/
+data/
 
 # Large model files
 models/*.pkl
@@ -29,9 +26,14 @@ design/
 # Frontend
 frontend/.next/
 frontend/node_modules/
+frontend/.env.local
 
 # Research
 research/
+
+# Claude
+CLAUDE.md
+AGENTS.md
 
 # OS
 .DS_Store
