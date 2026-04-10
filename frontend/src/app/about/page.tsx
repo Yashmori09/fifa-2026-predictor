@@ -31,7 +31,7 @@ export default function AboutPage() {
           </p>
           <div className="flex gap-3">
             <a
-              href="https://github.com/Yashmori09"
+              href="https://github.com/Yashmori09/fifa-2026-predictor"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center px-5 py-2.5 bg-[#141414] border border-[#1A1A1A] rounded text-[13px] font-medium hover:border-secondary transition-colors"
@@ -39,7 +39,7 @@ export default function AboutPage() {
               GitHub &rarr;
             </a>
             <a
-              href="https://linkedin.com/in/YashMori"
+              href="https://www.linkedin.com/in/yash-mori090102/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center px-5 py-2.5 bg-purple rounded text-[13px] font-medium hover:opacity-90 transition-opacity"
