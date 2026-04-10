@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { TEAMS, GROUPS, getTeamsByGroup } from "@/lib/teams";
+import { DETERMINISTIC_DATA } from "@/lib/deterministic-data";
 import Tip from "@/components/Tip";
 
 /* ──────────────────────── types ──────────────────────── */
@@ -47,16 +48,17 @@ interface KnockoutMatch {
 
 type SimPhase = "idle" | "loading" | "group" | "r32" | "r16" | "qf" | "sf" | "final" | "done";
 type Speed = "slow" | "fast" | "instant";
+type SimMode = "prediction" | "simulation";
 
 /* ──────────────────── static cards ──────────────────── */
 
 const ROUND_CARDS = [
-  { label: "GROUP STAGE", pct: "26.6%", team: "Spain", code: "es", color: "text-purple" },
-  { label: "ROUND OF 32", pct: "18.1%", team: "France", code: "fr", color: "text-purple" },
-  { label: "ROUND OF 16", pct: "11.1%", team: "Argentina", code: "ar", color: "text-cyan" },
-  { label: "QUARTER FINAL", pct: "9.9%", team: "England", code: "gb-eng", color: "text-cyan" },
-  { label: "SEMI FINAL", pct: "7.4%", team: "Brazil", code: "br", color: "text-pink" },
-  { label: "CHAMPION", pct: "26.6%", team: "Spain", code: "es", color: "text-purple", highlight: true },
+  { label: "GROUP STAGE", pct: "21.4%", team: "Spain", code: "es", color: "text-purple" },
+  { label: "ROUND OF 32", pct: "21.0%", team: "France", code: "fr", color: "text-purple" },
+  { label: "ROUND OF 16", pct: "10.8%", team: "Argentina", code: "ar", color: "text-cyan" },
+  { label: "QUARTER FINAL", pct: "9.7%", team: "England", code: "gb-eng", color: "text-cyan" },
+  { label: "SEMI FINAL", pct: "9.5%", team: "Germany", code: "de", color: "text-pink" },
+  { label: "CHAMPION", pct: "21.4%", team: "Spain", code: "es", color: "text-purple", highlight: true },
 ];
 
 const GROUP_ELOS: Record<string, number> = {
@@ -192,6 +194,7 @@ interface ApiSimulateResponse {
 /* ──────────────────────────── page ──────────────────────────── */
 
 export default function TournamentPage() {
+  const [mode, setMode] = useState<SimMode>("prediction");
   const [phase, setPhase] = useState<SimPhase>("idle");
   const [speed, setSpeed] = useState<Speed>("fast");
   const [currentMatch, setCurrentMatch] = useState<MatchResult | null>(null);
@@ -370,21 +373,29 @@ export default function TournamentPage() {
       return s;
     });
 
-    // Fetch from backend
+    // Get data — either pre-computed or from API
     setHoveredGroup(null);
-    setPhase("loading");
     let data: ApiSimulateResponse;
-    try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const res = await fetch(`${apiBase}/simulate/full`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (!res.ok) throw new Error("Simulation failed");
-      data = await res.json();
-    } catch {
-      setPhase("idle");
-      return;
+    if (mode === "prediction") {
+      // Use pre-computed deterministic results (no API call)
+      data = DETERMINISTIC_DATA as ApiSimulateResponse;
+      setPhase("loading");
+      // Brief loading state for visual continuity
+      await sleep(400);
+    } else {
+      setPhase("loading");
+      try {
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await fetch(`${apiBase}/simulate/full`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!res.ok) throw new Error("Simulation failed");
+        data = await res.json();
+      } catch {
+        setPhase("idle");
+        return;
+      }
     }
 
     runningRef.current = true;
@@ -404,7 +415,7 @@ export default function TournamentPage() {
     setChampion(data.champion);
     setPhase("done");
     runningRef.current = false;
-  }, [animateGroups, animateKnockout]);
+  }, [mode, animateGroups, animateKnockout]);
 
   /* ────── skip to results (instant) ────── */
   const skipToResults = useCallback(() => {
@@ -682,100 +693,139 @@ export default function TournamentPage() {
       <section ref={championRef} className="px-4 md:px-12 lg:px-20 py-8 md:py-12 bg-[#0D0D0D] border-t border-border">
         {phase === "idle" && (
           <div className="flex flex-col items-center gap-8 max-w-[800px] mx-auto">
-            <div className="text-center">
-              <p className="text-purple text-[11px] font-semibold tracking-[3px] mb-2">HOW IT WORKS</p>
-              <h2 className="font-[family-name:var(--font-anton)] text-[24px] md:text-[32px] tracking-wide">
-                WATCH ONE POSSIBLE WORLD CUP
-              </h2>
+            {/* Mode toggle */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setMode("prediction")}
+                className={`px-5 py-2.5 rounded-lg text-xs font-semibold tracking-wide border transition-all ${
+                  mode === "prediction"
+                    ? "border-purple bg-purple/10 text-purple"
+                    : "border-border text-secondary hover:border-secondary hover:text-foreground"
+                }`}
+              >
+                Our Prediction
+              </button>
+              <button
+                onClick={() => setMode("simulation")}
+                className={`px-5 py-2.5 rounded-lg text-xs font-semibold tracking-wide border transition-all ${
+                  mode === "simulation"
+                    ? "border-cyan bg-cyan/10 text-cyan"
+                    : "border-border text-secondary hover:border-secondary hover:text-foreground"
+                }`}
+              >
+                What If?
+              </button>
             </div>
 
-            {/* 3-step visual walkthrough */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
-              {/* Step 1 */}
-              <div className="flex flex-col items-center gap-3 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 text-center">
-                <span className="font-mono text-xs font-semibold text-purple tracking-wider">STEP 1</span>
-                <span className="text-sm font-bold">AI predicts every match</span>
-                <div className="flex items-center gap-2 bg-[#1A1A1A] rounded-lg px-3 py-2 w-full">
-                  <span className="fi fi-ar text-base" />
-                  <span className="text-[11px] flex-1 text-left">Argentina</span>
-                  <span className="font-mono text-[11px] text-purple font-bold">65%</span>
+            {mode === "prediction" ? (
+              /* Prediction mode — simple prompt */
+              <>
+                <div className="text-center">
+                  <p className="text-purple text-[11px] font-semibold tracking-[3px] mb-2">OUR PREDICTION</p>
+                  <h2 className="font-[family-name:var(--font-anton)] text-[24px] md:text-[32px] tracking-wide">
+                    WHO DOES THE AI THINK WINS?
+                  </h2>
                 </div>
-                <div className="flex items-center gap-2 bg-[#1A1A1A] rounded-lg px-3 py-2 w-full">
-                  <span className="fi fi-mx text-base" />
-                  <span className="text-[11px] flex-1 text-left">Mexico</span>
-                  <span className="font-mono text-[11px] text-pink font-bold">15%</span>
-                </div>
-                <p className="text-[11px] text-[#A1A1AA] leading-relaxed">
-                  The model gives win/draw/loss odds for all 104 matches
+                <p className="text-[12px] text-secondary text-center max-w-[500px] leading-relaxed">
+                  For every match, the AI picks the team most likely to win — no luck, no upsets. This is what the data says should happen.
                 </p>
-              </div>
+              </>
+            ) : (
+              /* Simulation mode — 3-step explainer */
+              <>
+                <div className="text-center">
+                  <p className="text-cyan text-[11px] font-semibold tracking-[3px] mb-2">WHAT IF?</p>
+                  <h2 className="font-[family-name:var(--font-anton)] text-[24px] md:text-[32px] tracking-wide">
+                    WATCH ONE POSSIBLE WORLD CUP
+                  </h2>
+                </div>
 
-              {/* Step 2 */}
-              <div className="flex flex-col items-center gap-3 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 text-center">
-                <span className="font-mono text-xs font-semibold text-cyan tracking-wider">STEP 2</span>
-                <span className="text-sm font-bold">Randomness decides the result</span>
-                <div className="flex items-center justify-center gap-1 py-2 w-full">
-                  <div className="flex gap-[2px]">
-                    {Array.from({ length: 13 }).map((_, i) => (
-                      <div key={`h${i}`} className="w-2 h-6 rounded-sm bg-purple" />
-                    ))}
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <div key={`d${i}`} className="w-2 h-6 rounded-sm bg-secondary" />
-                    ))}
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={`a${i}`} className="w-2 h-6 rounded-sm bg-pink" />
-                    ))}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                  <div className="flex flex-col items-center gap-3 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 text-center">
+                    <span className="font-mono text-xs font-semibold text-purple tracking-wider">STEP 1</span>
+                    <span className="text-sm font-bold">AI predicts every match</span>
+                    <div className="flex items-center gap-2 bg-[#1A1A1A] rounded-lg px-3 py-2 w-full">
+                      <span className="fi fi-ar text-base" />
+                      <span className="text-[11px] flex-1 text-left">Argentina</span>
+                      <span className="font-mono text-[11px] text-purple font-bold">65%</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-[#1A1A1A] rounded-lg px-3 py-2 w-full">
+                      <span className="fi fi-mx text-base" />
+                      <span className="text-[11px] flex-1 text-left">Mexico</span>
+                      <span className="font-mono text-[11px] text-pink font-bold">15%</span>
+                    </div>
+                    <p className="text-[11px] text-[#A1A1AA] leading-relaxed">
+                      The model gives win/draw/loss odds for all 104 matches
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center gap-3 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 text-center">
+                    <span className="font-mono text-xs font-semibold text-cyan tracking-wider">STEP 2</span>
+                    <span className="text-sm font-bold">Randomness decides the result</span>
+                    <div className="flex items-center justify-center gap-1 py-2 w-full">
+                      <div className="flex gap-[2px]">
+                        {Array.from({ length: 13 }).map((_, i) => (
+                          <div key={`h${i}`} className="w-2 h-6 rounded-sm bg-purple" />
+                        ))}
+                        {Array.from({ length: 4 }).map((_, i) => (
+                          <div key={`d${i}`} className="w-2 h-6 rounded-sm bg-secondary" />
+                        ))}
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <div key={`a${i}`} className="w-2 h-6 rounded-sm bg-pink" />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded-full bg-purple" />
+                      <span className="text-[10px] text-secondary">65% Home</span>
+                      <div className="w-2 h-2 rounded-full bg-secondary ml-2" />
+                      <span className="text-[10px] text-secondary">20% Draw</span>
+                      <div className="w-2 h-2 rounded-full bg-pink ml-2" />
+                      <span className="text-[10px] text-secondary">15% Away</span>
+                    </div>
+                    <p className="text-[11px] text-[#A1A1AA] leading-relaxed">
+                      Like picking a random ball — the favorite usually wins, but upsets happen
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-center gap-3 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 text-center">
+                    <span className="font-mono text-xs font-semibold text-pink tracking-wider">STEP 3</span>
+                    <span className="text-sm font-bold">A full World Cup plays out</span>
+                    <div className="flex flex-col gap-1.5 w-full py-1">
+                      <div className="flex items-center justify-between bg-[#1A1A1A] rounded px-2.5 py-1.5">
+                        <span className="text-[11px]">Groups</span>
+                        <span className="font-mono text-[10px] text-secondary">72 matches</span>
+                      </div>
+                      <div className="flex items-center justify-between bg-[#1A1A1A] rounded px-2.5 py-1.5">
+                        <span className="text-[11px]">Knockouts</span>
+                        <span className="font-mono text-[10px] text-secondary">32 matches</span>
+                      </div>
+                      <div className="flex items-center justify-between bg-purple/10 border border-purple/30 rounded px-2.5 py-1.5">
+                        <span className="text-[11px] text-purple font-semibold">Champion</span>
+                        <span className="font-mono text-[10px] text-purple">?</span>
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-[#A1A1AA] leading-relaxed">
+                      Every run produces a different winner — that&apos;s why it&apos;s a simulation, not a prediction
+                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-purple" />
-                  <span className="text-[10px] text-secondary">65% Home</span>
-                  <div className="w-2 h-2 rounded-full bg-secondary ml-2" />
-                  <span className="text-[10px] text-secondary">20% Draw</span>
-                  <div className="w-2 h-2 rounded-full bg-pink ml-2" />
-                  <span className="text-[10px] text-secondary">15% Away</span>
-                </div>
-                <p className="text-[11px] text-[#A1A1AA] leading-relaxed">
-                  Like picking a random ball — the favorite usually wins, but upsets happen
+
+                <p className="text-[11px] text-secondary text-center max-w-[500px]">
+                  The probabilities on the home page come from running this 10,000 times. You&apos;re about to watch one.
                 </p>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex flex-col items-center gap-3 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 text-center">
-                <span className="font-mono text-xs font-semibold text-pink tracking-wider">STEP 3</span>
-                <span className="text-sm font-bold">A full World Cup plays out</span>
-                <div className="flex flex-col gap-1.5 w-full py-1">
-                  <div className="flex items-center justify-between bg-[#1A1A1A] rounded px-2.5 py-1.5">
-                    <span className="text-[11px]">Groups</span>
-                    <span className="font-mono text-[10px] text-secondary">72 matches</span>
-                  </div>
-                  <div className="flex items-center justify-between bg-[#1A1A1A] rounded px-2.5 py-1.5">
-                    <span className="text-[11px]">Knockouts</span>
-                    <span className="font-mono text-[10px] text-secondary">32 matches</span>
-                  </div>
-                  <div className="flex items-center justify-between bg-purple/10 border border-purple/30 rounded px-2.5 py-1.5">
-                    <span className="text-[11px] text-purple font-semibold">Champion</span>
-                    <span className="font-mono text-[10px] text-purple">?</span>
-                  </div>
-                </div>
-                <p className="text-[11px] text-[#A1A1AA] leading-relaxed">
-                  Every run produces a different winner — that&apos;s why it&apos;s a simulation, not a prediction
-                </p>
-              </div>
-            </div>
-
-            {/* Note tying to home page */}
-            <p className="text-[11px] text-secondary text-center max-w-[500px]">
-              The probabilities on the home page come from running this 10,000 times. You&apos;re about to watch one.
-            </p>
+              </>
+            )}
 
             {/* Controls */}
             <div className="flex flex-col md:flex-row items-center gap-4">
               <button
                 onClick={startSimulation}
-                className="px-10 py-3.5 rounded-lg bg-gradient-to-r from-purple to-pink text-white font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity"
+                className={`px-10 py-3.5 rounded-lg text-white font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity ${
+                  mode === "prediction"
+                    ? "bg-gradient-to-r from-purple to-cyan"
+                    : "bg-gradient-to-r from-purple to-pink"
+                }`}
               >
-                Run One Simulation
+                {mode === "prediction" ? "Show Our Pick" : "Roll the Dice"}
               </button>
               <div className="flex flex-col items-center gap-1.5">
                 <span className="text-[10px] text-secondary font-mono tracking-wider">ANIMATION SPEED</span>
@@ -828,7 +878,9 @@ export default function TournamentPage() {
 
         {phase === "done" && (
           <div className="flex flex-col items-center gap-4 py-4">
-            <p className="text-[10px] text-secondary font-mono tracking-wider">THIS SIMULATION&apos;S CHAMPION</p>
+            <p className="text-[10px] text-secondary font-mono tracking-wider">
+              {mode === "prediction" ? "OUR PREDICTED CHAMPION" : "THIS SIMULATION\u2019S CHAMPION"}
+            </p>
             {champion && (
               <div className="flex items-center gap-4">
                 <span className={`fi fi-${getCode(champion)} text-4xl`} />
@@ -838,13 +890,19 @@ export default function TournamentPage() {
               </div>
             )}
             <p className="text-[12px] text-secondary text-center max-w-[400px]">
-              This was one possible outcome. Run it again — you&apos;ll likely get a different winner.
+              {mode === "prediction"
+                ? "This is our pick \u2014 the AI\u2019s best answer based on the data."
+                : "This was one possible outcome. Try again \u2014 you\u2019ll likely get a different winner."}
             </p>
             <button
               onClick={() => { setPhase("idle"); runningRef.current = false; }}
-              className="px-8 py-3 rounded-lg bg-gradient-to-r from-purple to-pink text-white font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity"
+              className={`px-8 py-3 rounded-lg text-white font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity ${
+                mode === "prediction"
+                  ? "bg-gradient-to-r from-purple to-cyan"
+                  : "bg-gradient-to-r from-purple to-pink"
+              }`}
             >
-              Run Another Simulation
+              {mode === "prediction" ? "Watch Again" : "Roll Again"}
             </button>
           </div>
         )}
