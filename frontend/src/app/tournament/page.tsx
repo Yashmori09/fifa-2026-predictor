@@ -703,7 +703,7 @@ export default function TournamentPage() {
                     : "border-border text-secondary hover:border-secondary hover:text-foreground"
                 }`}
               >
-                Our Prediction
+                The Prediction
               </button>
               <button
                 onClick={() => setMode("simulation")}
@@ -721,7 +721,7 @@ export default function TournamentPage() {
               /* Prediction mode — simple prompt */
               <>
                 <div className="text-center">
-                  <p className="text-purple text-[11px] font-semibold tracking-[3px] mb-2">OUR PREDICTION</p>
+                  <p className="text-purple text-[11px] font-semibold tracking-[3px] mb-2">THE PREDICTION</p>
                   <h2 className="font-[family-name:var(--font-anton)] text-[24px] md:text-[32px] tracking-wide">
                     WHO DOES THE AI THINK WINS?
                   </h2>
@@ -825,7 +825,7 @@ export default function TournamentPage() {
                     : "bg-gradient-to-r from-purple to-pink"
                 }`}
               >
-                {mode === "prediction" ? "Show Our Pick" : "Roll the Dice"}
+                {mode === "prediction" ? "Reveal Winner" : "Roll the Dice"}
               </button>
               <div className="flex flex-col items-center gap-1.5">
                 <span className="text-[10px] text-secondary font-mono tracking-wider">ANIMATION SPEED</span>
@@ -879,7 +879,7 @@ export default function TournamentPage() {
         {phase === "done" && (
           <div className="flex flex-col items-center gap-4 py-4">
             <p className="text-[10px] text-secondary font-mono tracking-wider">
-              {mode === "prediction" ? "OUR PREDICTED CHAMPION" : "THIS SIMULATION\u2019S CHAMPION"}
+              {mode === "prediction" ? "PREDICTED CHAMPION" : "THIS SIMULATION\u2019S CHAMPION"}
             </p>
             {champion && (
               <div className="flex items-center gap-4">
@@ -891,7 +891,7 @@ export default function TournamentPage() {
             )}
             <p className="text-[12px] text-secondary text-center max-w-[400px]">
               {mode === "prediction"
-                ? "This is our pick \u2014 the AI\u2019s best answer based on the data."
+                ? "The AI\u2019s best answer based on the data."
                 : "This was one possible outcome. Try again \u2014 you\u2019ll likely get a different winner."}
             </p>
             <button
