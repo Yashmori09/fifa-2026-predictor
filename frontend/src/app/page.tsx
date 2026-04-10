@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Tip from "@/components/Tip";
 
 const CHART_DATA = [
   { rank: "01", team: "Spain", code: "es", pct: 26.61, top: true },
@@ -26,7 +27,7 @@ export default function HomePage() {
           2026 WORLD CUP?
         </h1>
         <p className="text-secondary text-[13px] md:text-[15px] max-w-[820px]">
-          10,000 Monte Carlo simulations &middot; Player-rated squad analysis
+          10,000 <Tip term="Monte Carlo">Monte Carlo</Tip> simulations &middot; Player-rated squad analysis
         </p>
         <div className="w-[60px] h-1 bg-purple rounded-sm" />
       </section>
@@ -34,12 +35,12 @@ export default function HomePage() {
       {/* Championship Probability */}
       <section className="px-4 md:px-12 lg:px-20 py-8 md:py-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-2">
-          <h2 className="font-[family-name:var(--font-anton)] text-[22px] md:text-[28px] tracking-wide">
-            CHAMPIONSHIP PROBABILITY
-          </h2>
-          <p className="font-mono text-secondary text-[10px] md:text-xs">
-            10,000 tournament simulations · XGB×3 + RF×1 · EA + ELO
-          </p>
+          <div>
+            <h2 className="font-[family-name:var(--font-anton)] text-[22px] md:text-[28px] tracking-wide">
+              CHAMPIONSHIP PROBABILITY
+            </h2>
+            <p className="text-secondary text-[11px] mt-1">How often each team wins across 10,000 simulated tournaments</p>
+          </div>
         </div>
 
         <div className="flex flex-col gap-3">
@@ -80,6 +81,9 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+        <p className="font-mono text-[10px] text-secondary mt-4">
+          Model: <Tip term="XGBoost">XGB</Tip>×3 + <Tip term="Random Forest">RF</Tip>×1 · Features: <Tip term="EA FC">EA FC</Tip> + <Tip term="ELO">ELO</Tip> + Form
+        </p>
       </section>
 
       {/* Quick Predict — Head to Head */}

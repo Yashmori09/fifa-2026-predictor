@@ -21,7 +21,7 @@ export default function AboutPage() {
             YASH MORI
           </h1>
           <p className="text-secondary text-base">
-            AI Engineer &middot; Bangalore, India
+            AI/ML Engineer &middot; Bangalore, India
           </p>
           <p className="text-secondary text-sm leading-relaxed max-w-[520px]">
             Built this project to explore the intersection of sports analytics
@@ -151,7 +151,7 @@ export default function AboutPage() {
       {/* Footer */}
       <footer className="flex items-center justify-center py-4 md:h-[60px] bg-[#050505] border-t border-border">
         <span className="text-secondary text-xs text-center px-4">
-          FIFA 2026 Predictor &middot; Built by Yash Mori &middot; AI Engineer
+          FIFA 2026 Predictor &middot; Built by Yash Mori &middot; AI/ML Engineer
         </span>
       </footer>
     </div>

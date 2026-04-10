@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { TEAMS } from "@/lib/teams";
 import squadData from "@/data/squad_players.json";
+import Tip from "@/components/Tip";
 
 /* ──────────────────── constants ──────────────────── */
 
@@ -232,7 +233,7 @@ export default function PredictPage() {
             }`}>
               {homeData && <span className={`fi fi-${homeData.code} text-5xl md:text-6xl transition-transform duration-300 ${predicting ? "scale-110" : ""}`} />}
               <span className="font-[family-name:var(--font-anton)] text-[24px] md:text-[28px]">{homeTeam || "Select"}</span>
-              <span className="font-mono text-[11px] text-secondary">{CONF_MAP[homeTeam] || "—"} · EA {homeStats.overall}</span>
+              <span className="font-mono text-[11px] text-secondary">{CONF_MAP[homeTeam] || "—"} · <Tip term="EA FC">EA</Tip> {homeStats.overall}</span>
               <div className="relative w-full">
                 <button onClick={() => { setShowHomeSelector(!showHomeSelector); setShowAwaySelector(false); }} className="w-full h-9 bg-[#1A1A1A] rounded text-xs text-secondary hover:text-foreground transition-colors">Change Team</button>
                 {showHomeSelector && (
@@ -259,7 +260,7 @@ export default function PredictPage() {
             }`}>
               {awayData && <span className={`fi fi-${awayData.code} text-5xl md:text-6xl transition-transform duration-300 ${predicting ? "scale-110" : ""}`} />}
               <span className="font-[family-name:var(--font-anton)] text-[24px] md:text-[28px]">{awayTeam || "Select"}</span>
-              <span className="font-mono text-[11px] text-secondary">{CONF_MAP[awayTeam] || "—"} · EA {awayStats.overall}</span>
+              <span className="font-mono text-[11px] text-secondary">{CONF_MAP[awayTeam] || "—"} · <Tip term="EA FC">EA</Tip> {awayStats.overall}</span>
               <div className="relative w-full">
                 <button onClick={() => { setShowAwaySelector(!showAwaySelector); setShowHomeSelector(false); }} className="w-full h-9 bg-[#1A1A1A] rounded text-xs text-secondary hover:text-foreground transition-colors">Change Team</button>
                 {showAwaySelector && (
@@ -313,6 +314,11 @@ export default function PredictPage() {
                 {/* Home top 5 — slide from left */}
                 <div className="flex-1 flex flex-col gap-2">
                   <span className="text-purple text-[13px] font-semibold">{homeTeam} — Top 5</span>
+                  <div className="flex items-center gap-3 px-3 text-[10px] text-secondary font-mono">
+                    <span className="flex-1">Player</span>
+                    <span className="w-8 text-center"><Tip term="Pos">Pos</Tip></span>
+                    <span className="w-8 text-right"><Tip term="OVR">OVR</Tip></span>
+                  </div>
                   {homeStats.topPlayers.map((p, i) => (
                     <div
                       key={i}
@@ -328,6 +334,11 @@ export default function PredictPage() {
                 {/* Away top 5 — slide from right */}
                 <div className="flex-1 flex flex-col gap-2">
                   <span className="text-pink text-[13px] font-semibold">{awayTeam} — Top 5</span>
+                  <div className="flex items-center gap-3 px-3 text-[10px] text-secondary font-mono">
+                    <span className="flex-1">Player</span>
+                    <span className="w-8 text-center"><Tip term="Pos">Pos</Tip></span>
+                    <span className="w-8 text-right"><Tip term="OVR">OVR</Tip></span>
+                  </div>
                   {awayStats.topPlayers.map((p, i) => (
                     <div
                       key={i}
@@ -349,6 +360,7 @@ export default function PredictPage() {
             <div ref={statsRef} className="flex flex-col gap-5 animate-fadeInUp scroll-mt-4">
               <div className="border-t border-border pt-6">
                 <h3 className="font-[family-name:var(--font-anton)] text-[22px] tracking-wide">STAT COMPARISON</h3>
+                <p className="text-[11px] text-secondary font-mono mt-1">Average <Tip term="EA FC">EA FC</Tip> player ratings by position (1–99 scale)</p>
               </div>
               <div className="flex flex-col gap-3">
                 {statRows.map((row, idx) => {

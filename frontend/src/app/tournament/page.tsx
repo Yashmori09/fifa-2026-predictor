@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { TEAMS, GROUPS, getTeamsByGroup } from "@/lib/teams";
+import Tip from "@/components/Tip";
 
 /* ──────────────────────── types ──────────────────────── */
 
@@ -428,18 +429,6 @@ export default function TournamentPage() {
           48 teams · 12 groups · Round-by-round survival probabilities from
           10,000 simulations
         </p>
-        <div className="text-secondary text-[11px] bg-[#1A1A1A] border border-border rounded-lg px-4 py-3 max-w-[720px] mt-1 leading-relaxed space-y-1.5">
-          <p>
-            <span className="text-foreground font-semibold">How does the simulation work?</span>{" "}
-            Our ML model analyzes each matchup using ELO ratings, squad strength (EA FC), recent form, and head-to-head history to predict win probabilities.
-          </p>
-          <p>
-            For example, if Argentina vs Mexico gives: <span className="text-purple font-mono">Argentina 60%</span>, <span className="text-secondary font-mono">Draw 20%</span>, <span className="text-pink font-mono">Mexico 20%</span> — imagine a bag with 60 Argentina balls, 20 draw balls, and 20 Mexico balls. We randomly pick one ball to decide the result.
-          </p>
-          <p>
-            Argentina wins most of the time, but sometimes Mexico pulls off an upset — just like in real football. This happens for every match in the tournament, so each simulation run can produce a different champion. The stronger team is always more likely to win, but never guaranteed.
-          </p>
-        </div>
       </section>
 
       {/* Round-by-Round Survival */}
@@ -448,7 +437,7 @@ export default function TournamentPage() {
           ROUND-BY-ROUND SURVIVAL
         </h2>
         <p className="text-secondary text-xs mb-5">
-          Highest survival probability at each stage from 10,000 Monte Carlo simulations
+          Highest survival probability at each stage — aggregated from 10,000 <Tip term="Monte Carlo">Monte Carlo</Tip> simulations, not a single run
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
           {ROUND_CARDS.map((card) => (
@@ -500,9 +489,15 @@ export default function TournamentPage() {
                 Group {fg.group}
               </span>
               <span className="font-mono text-xs text-[#A1A1AA]">
-                Avg Squad: {fg.avg}
+                Avg <Tip term="EA FC">EA FC</Tip> Rating: {fg.avg}
               </span>
               <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm w-[18px]" />
+                  <span className="text-[10px] text-secondary font-mono w-[100px]"></span>
+                  <span className="flex-1" />
+                  <span className="text-[10px] text-secondary font-mono w-10 text-right"><Tip term="EA FC">EA FC</Tip></span>
+                </div>
                 {fg.teams.map((t, i) => (
                   <div key={t.name} className="flex items-center gap-2">
                     <span className={`fi fi-${t.code} text-sm`} />
@@ -529,6 +524,7 @@ export default function TournamentPage() {
                           ? "text-cyan"
                           : "text-secondary"
                       }`}
+                      title="EA FC Rating"
                     >
                       {t.rating}
                     </span>
@@ -541,7 +537,7 @@ export default function TournamentPage() {
 
         {/* All groups bar chart */}
         <p className="font-mono text-[11px] font-semibold tracking-[2px] text-secondary mb-4">
-          ALL GROUPS BY SQUAD QUALITY
+          ALL GROUPS BY AVG <Tip term="EA FC">EA FC</Tip> RATING
         </p>
         <div className="flex gap-2 items-end h-[120px]">
           {ALL_GROUPS_RANKED.map((g, i) => {
@@ -604,25 +600,25 @@ export default function TournamentPage() {
                     GROUP {group}
                   </span>
                   <span className="font-mono text-[10px] text-secondary">
-                    {isHovered ? `squad avg ${groupSquadAvg}` : `elo avg ${avgElo}`}
+                    {isHovered ? <><Tip term="EA FC">EA FC</Tip> avg {groupSquadAvg}</> : <><Tip term="ELO">ELO</Tip> avg {avgElo}</>}
                   </span>
                 </div>
                 {phase !== "idle" && phase !== "loading" && !isHovered && (
                   <div className="flex items-center justify-between px-3.5 h-7 border-b border-border text-[10px] text-secondary font-mono">
                     <span className="w-32">Team</span>
-                    <span className="w-6 text-center">MP</span>
-                    <span className="w-6 text-center">W</span>
-                    <span className="w-6 text-center">D</span>
-                    <span className="w-6 text-center">L</span>
-                    <span className="w-8 text-center">GD</span>
-                    <span className="w-8 text-center">PTS</span>
+                    <span className="w-6 text-center"><Tip term="MP">MP</Tip></span>
+                    <span className="w-6 text-center"><Tip term="W">W</Tip></span>
+                    <span className="w-6 text-center"><Tip term="D">D</Tip></span>
+                    <span className="w-6 text-center"><Tip term="L">L</Tip></span>
+                    <span className="w-8 text-center"><Tip term="GD">GD</Tip></span>
+                    <span className="w-8 text-center"><Tip term="PTS">PTS</Tip></span>
                   </div>
                 )}
                 {isHovered && (
                   <div className="flex items-center justify-between px-3.5 h-7 border-b border-border text-[10px] text-secondary font-mono">
                     <span className="w-28">Team</span>
                     <span className="flex-1 text-center">Squad Rating</span>
-                    <span className="w-10 text-right">EA FC</span>
+                    <span className="w-10 text-right"><Tip term="EA FC">EA FC</Tip></span>
                   </div>
                 )}
                 {groupTeams.map((team, i) => {
@@ -682,35 +678,129 @@ export default function TournamentPage() {
         </div>
       </section>
 
-      {/* Simulation Controls */}
-      <section ref={championRef} className="px-4 md:px-12 lg:px-20 py-6 md:py-8 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
+      {/* Simulation Section */}
+      <section ref={championRef} className="px-4 md:px-12 lg:px-20 py-8 md:py-12 bg-[#0D0D0D] border-t border-border">
         {phase === "idle" && (
-          <button
-            onClick={startSimulation}
-            className="px-10 py-3.5 rounded-lg bg-gradient-to-r from-purple to-pink text-white font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity"
-          >
-            Start Simulation
-          </button>
-        )}
-        {phase === "idle" && (
-          <div className="flex items-center gap-2">
-            {(["slow", "fast", "instant"] as Speed[]).map((s) => (
+          <div className="flex flex-col items-center gap-8 max-w-[800px] mx-auto">
+            <div className="text-center">
+              <p className="text-purple text-[11px] font-semibold tracking-[3px] mb-2">HOW IT WORKS</p>
+              <h2 className="font-[family-name:var(--font-anton)] text-[24px] md:text-[32px] tracking-wide">
+                WATCH ONE POSSIBLE WORLD CUP
+              </h2>
+            </div>
+
+            {/* 3-step visual walkthrough */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+              {/* Step 1 */}
+              <div className="flex flex-col items-center gap-3 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 text-center">
+                <span className="font-mono text-xs font-semibold text-purple tracking-wider">STEP 1</span>
+                <span className="text-sm font-bold">AI predicts every match</span>
+                <div className="flex items-center gap-2 bg-[#1A1A1A] rounded-lg px-3 py-2 w-full">
+                  <span className="fi fi-ar text-base" />
+                  <span className="text-[11px] flex-1 text-left">Argentina</span>
+                  <span className="font-mono text-[11px] text-purple font-bold">65%</span>
+                </div>
+                <div className="flex items-center gap-2 bg-[#1A1A1A] rounded-lg px-3 py-2 w-full">
+                  <span className="fi fi-mx text-base" />
+                  <span className="text-[11px] flex-1 text-left">Mexico</span>
+                  <span className="font-mono text-[11px] text-pink font-bold">15%</span>
+                </div>
+                <p className="text-[11px] text-[#A1A1AA] leading-relaxed">
+                  The model gives win/draw/loss odds for all 104 matches
+                </p>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex flex-col items-center gap-3 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 text-center">
+                <span className="font-mono text-xs font-semibold text-cyan tracking-wider">STEP 2</span>
+                <span className="text-sm font-bold">Randomness decides the result</span>
+                <div className="flex items-center justify-center gap-1 py-2 w-full">
+                  <div className="flex gap-[2px]">
+                    {Array.from({ length: 13 }).map((_, i) => (
+                      <div key={`h${i}`} className="w-2 h-6 rounded-sm bg-purple" />
+                    ))}
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div key={`d${i}`} className="w-2 h-6 rounded-sm bg-secondary" />
+                    ))}
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={`a${i}`} className="w-2 h-6 rounded-sm bg-pink" />
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-purple" />
+                  <span className="text-[10px] text-secondary">65% Home</span>
+                  <div className="w-2 h-2 rounded-full bg-secondary ml-2" />
+                  <span className="text-[10px] text-secondary">20% Draw</span>
+                  <div className="w-2 h-2 rounded-full bg-pink ml-2" />
+                  <span className="text-[10px] text-secondary">15% Away</span>
+                </div>
+                <p className="text-[11px] text-[#A1A1AA] leading-relaxed">
+                  Like picking a random ball — the favorite usually wins, but upsets happen
+                </p>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex flex-col items-center gap-3 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 text-center">
+                <span className="font-mono text-xs font-semibold text-pink tracking-wider">STEP 3</span>
+                <span className="text-sm font-bold">A full World Cup plays out</span>
+                <div className="flex flex-col gap-1.5 w-full py-1">
+                  <div className="flex items-center justify-between bg-[#1A1A1A] rounded px-2.5 py-1.5">
+                    <span className="text-[11px]">Groups</span>
+                    <span className="font-mono text-[10px] text-secondary">72 matches</span>
+                  </div>
+                  <div className="flex items-center justify-between bg-[#1A1A1A] rounded px-2.5 py-1.5">
+                    <span className="text-[11px]">Knockouts</span>
+                    <span className="font-mono text-[10px] text-secondary">32 matches</span>
+                  </div>
+                  <div className="flex items-center justify-between bg-purple/10 border border-purple/30 rounded px-2.5 py-1.5">
+                    <span className="text-[11px] text-purple font-semibold">Champion</span>
+                    <span className="font-mono text-[10px] text-purple">?</span>
+                  </div>
+                </div>
+                <p className="text-[11px] text-[#A1A1AA] leading-relaxed">
+                  Every run produces a different winner — that&apos;s why it&apos;s a simulation, not a prediction
+                </p>
+              </div>
+            </div>
+
+            {/* Note tying to home page */}
+            <p className="text-[11px] text-secondary text-center max-w-[500px]">
+              The probabilities on the home page come from running this 10,000 times. You&apos;re about to watch one.
+            </p>
+
+            {/* Controls */}
+            <div className="flex flex-col md:flex-row items-center gap-4">
               <button
-                key={s}
-                onClick={() => { setSpeed(s); speedRef.current = s; }}
-                className={`px-4 py-2 rounded text-xs font-mono border transition-colors ${
-                  speed === s
-                    ? "border-purple text-purple bg-purple/10"
-                    : "border-border text-secondary hover:border-secondary"
-                }`}
+                onClick={startSimulation}
+                className="px-10 py-3.5 rounded-lg bg-gradient-to-r from-purple to-pink text-white font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity"
               >
-                {s.charAt(0).toUpperCase() + s.slice(1)}
+                Run One Simulation
               </button>
-            ))}
+              <div className="flex flex-col items-center gap-1.5">
+                <span className="text-[10px] text-secondary font-mono tracking-wider">ANIMATION SPEED</span>
+                <div className="flex items-center gap-2">
+                  {(["slow", "fast", "instant"] as Speed[]).map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => { setSpeed(s); speedRef.current = s; }}
+                      className={`px-4 py-2 rounded text-xs font-mono border transition-colors ${
+                        speed === s
+                          ? "border-purple text-purple bg-purple/10"
+                          : "border-border text-secondary hover:border-secondary"
+                      }`}
+                    >
+                      {s === "slow" ? "Slow" : s === "fast" ? "Fast" : "Skip"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
+
         {phase === "loading" && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center gap-3 py-8">
             <div className="flex gap-1.5">
               <div className="w-2 h-2 rounded-full bg-purple animate-bounce" style={{ animationDelay: "0ms" }} />
               <div className="w-2 h-2 rounded-full bg-cyan animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -719,8 +809,9 @@ export default function TournamentPage() {
             <span className="text-sm text-secondary font-mono">Running simulation on server...</span>
           </div>
         )}
+
         {isRunning && (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center gap-4 py-4">
             <span className="text-sm text-secondary font-mono">
               {phase === "group"
                 ? `Group Stage — Match ${groupMatchIndex}/72`
@@ -734,21 +825,26 @@ export default function TournamentPage() {
             </button>
           </div>
         )}
+
         {phase === "done" && (
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col items-center gap-4 py-4">
+            <p className="text-[10px] text-secondary font-mono tracking-wider">THIS SIMULATION&apos;S CHAMPION</p>
             {champion && (
-              <div className="flex items-center gap-3">
-                <span className={`fi fi-${getCode(champion)} text-3xl`} />
-                <span className="font-[family-name:var(--font-anton)] text-2xl text-purple">
+              <div className="flex items-center gap-4">
+                <span className={`fi fi-${getCode(champion)} text-4xl`} />
+                <span className="font-[family-name:var(--font-anton)] text-[32px] text-purple">
                   {champion}
                 </span>
               </div>
             )}
+            <p className="text-[12px] text-secondary text-center max-w-[400px]">
+              This was one possible outcome. Run it again — you&apos;ll likely get a different winner.
+            </p>
             <button
               onClick={() => { setPhase("idle"); runningRef.current = false; }}
               className="px-8 py-3 rounded-lg bg-gradient-to-r from-purple to-pink text-white font-semibold text-sm tracking-wide hover:opacity-90 transition-opacity"
             >
-              Simulate Again
+              Run Another Simulation
             </button>
           </div>
         )}
@@ -804,12 +900,12 @@ export default function TournamentPage() {
               </div>
               <div className="flex items-center px-4 h-7 border-b border-border text-[10px] text-secondary font-mono">
                 <span className="flex-1">Team</span>
-                <span className="w-6 text-center">MP</span>
-                <span className="w-6 text-center">W</span>
-                <span className="w-6 text-center">D</span>
-                <span className="w-6 text-center">L</span>
-                <span className="w-8 text-center">GD</span>
-                <span className="w-8 text-center">PTS</span>
+                <span className="w-6 text-center"><Tip term="MP">MP</Tip></span>
+                <span className="w-6 text-center"><Tip term="W">W</Tip></span>
+                <span className="w-6 text-center"><Tip term="D">D</Tip></span>
+                <span className="w-6 text-center"><Tip term="L">L</Tip></span>
+                <span className="w-8 text-center"><Tip term="GD">GD</Tip></span>
+                <span className="w-8 text-center"><Tip term="PTS">PTS</Tip></span>
               </div>
               {(standings[currentMatch.group] || []).map((t, i) => (
                 <div

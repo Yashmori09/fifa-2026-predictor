@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { TEAMS } from "@/lib/teams";
 import squadData from "@/data/squad_players.json";
+import Tip from "@/components/Tip";
 
 /* ──────────────────────── types ──────────────────────── */
 
@@ -229,20 +230,20 @@ export default function SquadsPage() {
               <thead>
                 <tr className="text-[11px] text-secondary font-semibold tracking-wider border-b border-border">
                   <th className="text-left px-3 py-2 w-[160px]">PLAYER</th>
-                  <th className="text-center px-1 py-2 w-[40px]">POS</th>
+                  <th className="text-center px-1 py-2 w-[40px]"><Tip term="Pos">POS</Tip></th>
                   <th className="text-center px-1 py-2 w-[36px]">AGE</th>
-                  <th className="text-center px-1 py-2 w-[42px]">OVR</th>
-                  <th className="text-center px-1 py-2 w-[42px]">POT</th>
-                  <th className="text-center px-1 py-2 w-[36px]">PAC</th>
-                  <th className="text-center px-1 py-2 w-[36px]">SHO</th>
-                  <th className="text-center px-1 py-2 w-[36px]">PAS</th>
-                  <th className="text-center px-1 py-2 w-[36px]">DRI</th>
-                  <th className="text-center px-1 py-2 w-[36px]">DEF</th>
-                  <th className="text-center px-1 py-2 w-[36px]">PHY</th>
-                  <th className="text-center px-1 py-2 w-[44px]">CAPS</th>
+                  <th className="text-center px-1 py-2 w-[42px]"><Tip term="OVR">OVR</Tip></th>
+                  <th className="text-center px-1 py-2 w-[42px]"><Tip term="POT">POT</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="PAC">PAC</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="SHO">SHO</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="PAS">PAS</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="DRI">DRI</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="DEF">DEF</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="PHY">PHY</Tip></th>
+                  <th className="text-center px-1 py-2 w-[44px]"><Tip term="caps">CAPS</Tip></th>
                   <th className="text-center px-1 py-2 w-[44px]">GOALS</th>
-                  <th className="text-center px-1 py-2 w-[52px]">REP</th>
-                  <th className="text-center px-1 py-2 w-[72px]">VALUE</th>
+                  <th className="text-center px-1 py-2 w-[52px]"><Tip term="REP">REP</Tip></th>
+                  <th className="text-center px-1 py-2 w-[72px]"><Tip term="VAL">VALUE</Tip></th>
                   <th className="text-left px-3 py-2">CLUB</th>
                 </tr>
               </thead>
@@ -296,17 +297,17 @@ export default function SquadsPage() {
                 <tr className="text-[11px] text-secondary font-semibold tracking-wider border-b border-border">
                   <th className="text-left px-3 py-2 w-[160px]">PLAYER</th>
                   <th className="text-center px-1 py-2 w-[36px]">AGE</th>
-                  <th className="text-center px-1 py-2 w-[42px]">OVR</th>
-                  <th className="text-center px-1 py-2 w-[42px]">POT</th>
-                  <th className="text-center px-1 py-2 w-[36px]">DIV</th>
-                  <th className="text-center px-1 py-2 w-[36px]">HAN</th>
-                  <th className="text-center px-1 py-2 w-[36px]">KIC</th>
-                  <th className="text-center px-1 py-2 w-[36px]">POS</th>
-                  <th className="text-center px-1 py-2 w-[36px]">REF</th>
-                  <th className="text-center px-1 py-2 w-[44px]">CAPS</th>
+                  <th className="text-center px-1 py-2 w-[42px]"><Tip term="OVR">OVR</Tip></th>
+                  <th className="text-center px-1 py-2 w-[42px]"><Tip term="POT">POT</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="DIV">DIV</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="HAN">HAN</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="KIC">KIC</Tip></th>
+                  <th className="text-center px-1 py-2 w-[36px]" title="Goalkeeper Positioning">POS</th>
+                  <th className="text-center px-1 py-2 w-[36px]"><Tip term="REF">REF</Tip></th>
+                  <th className="text-center px-1 py-2 w-[44px]"><Tip term="caps">CAPS</Tip></th>
                   <th className="text-center px-1 py-2 w-[44px]">GOALS</th>
-                  <th className="text-center px-1 py-2 w-[52px]">REP</th>
-                  <th className="text-center px-1 py-2 w-[72px]">VALUE</th>
+                  <th className="text-center px-1 py-2 w-[52px]"><Tip term="REP">REP</Tip></th>
+                  <th className="text-center px-1 py-2 w-[72px]"><Tip term="VAL">VALUE</Tip></th>
                   <th className="text-left px-3 py-2">CLUB</th>
                 </tr>
               </thead>

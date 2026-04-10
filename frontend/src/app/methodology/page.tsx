@@ -1,11 +1,12 @@
 import Image from "next/image";
+import Tip from "@/components/Tip";
 
 const SIGNALS = [
   {
     num: "01",
     numColor: "text-purple",
     title: "ELO Ratings",
-    desc: "A chess-inspired rating system adapted for international football. Every team starts with a base rating that goes up after wins and down after losses \u2014 weighted by opponent strength and match importance. Teams that consistently beat strong opponents rise to the top.",
+    desc: "A chess-inspired rating system adapted for international football. Every team starts with a base rating that goes up after wins and down after losses — weighted by opponent strength and match importance. Teams that consistently beat strong opponents rise to the top.",
     stat: "30.2% of model importance",
     statColor: "text-purple",
   },
@@ -13,7 +14,7 @@ const SIGNALS = [
     num: "02",
     numColor: "text-cyan",
     title: "EA FC Squad Ratings",
-    desc: "Player ratings from EA Sports FC (formerly FIFA) video games. Professional scouts rate every player\u2019s pace, shooting, passing, defending, and physicality on a 1\u201399 scale. We aggregate these into squad-level metrics \u2014 overall strength, positional depth, and top-player quality.",
+    desc: "Player ratings from EA Sports FC (formerly FIFA) video games. Professional scouts rate every player\u2019s pace, shooting, passing, defending, and physicality on a 1–99 scale. These are aggregated into squad-level metrics — overall strength, positional depth, and top-player quality.",
     stat: "31.2% of model importance",
     statColor: "text-cyan",
   },
@@ -62,7 +63,7 @@ const STEPS = [
     num: "STEP 2",
     numColor: "text-cyan",
     title: "Reverse-Engineer Goal Rates",
-    desc: "Using a precomputed Poisson grid, we find the goal-scoring rates (\u03bb) that best reproduce those probabilities. If France has a 45% win chance, we find \u03bb values where Poisson-generated scores give ~45% home wins.",
+    desc: "Using a precomputed Poisson grid, the model finds the goal-scoring rates (λ) that best reproduce those probabilities. If France has a 45% win chance, it finds λ values where Poisson-generated scores give ~45% home wins.",
   },
   {
     num: "STEP 3",
@@ -84,7 +85,7 @@ const DISCOVERIES = [
       tag: "THE COVERAGE TRADE-OFF",
       tagColor: "text-amber-500",
       title: "More matches > better features",
-      desc: "EA player ratings only exist from 2014, but our training data goes back to 1884. We tried training only on modern data (6,000 matches with full features) vs all data (35,000 matches with gaps). The larger dataset won every time \u2014 old matches still teach the model about ELO patterns, form, and home advantage.",
+      desc: "EA player ratings only exist from 2014, but the training data goes back to 1884. I tried training only on modern data (6,000 matches with full features) vs all data (35,000 matches with gaps). The larger dataset won every time — old matches still teach the model about ELO patterns, form, and home advantage.",
     },
   ],
   [
@@ -92,13 +93,13 @@ const DISCOVERIES = [
       tag: "CALIBRATION > RAW ACCURACY",
       tagColor: "text-cyan",
       title: "A well-calibrated model matters more for simulation",
-      desc: "When the model says \u201870% chance of winning,\u2019 does it actually happen 70% of the time? That\u2019s calibration. For Monte Carlo simulation, calibration matters more than getting individual matches right \u2014 you want the dice to be fair, even if you can\u2019t predict every roll. Our model achieves ECE of 0.018 (near-perfect calibration).",
+      desc: "When the model says \u201870% chance of winning,\u2019 does it actually happen 70% of the time? That\u2019s calibration. For Monte Carlo simulation, calibration matters more than getting individual matches right — you want the dice to be fair, even if you can\u2019t predict every roll. This model achieves ECE of 0.018 (near-perfect calibration).",
     },
     {
       tag: "LEAN BEATS COMPLEX",
       tagColor: "text-green-500",
       title: "9 difference features outperform 44 detailed features",
-      desc: "We tried feeding the model 44 individual squad attributes (pace, shooting, defending for each team). But simple difference features \u2014 \u2018how much better is Team A\u2019s attack than Team B\u2019s defense?\u2019 \u2014 performed equally well with far less noise. When 82% of training rows have missing squad data, simpler is better.",
+      desc: "I tried feeding the model 44 individual squad attributes (pace, shooting, defending for each team). But simple difference features — \u2018how much better is Team A\u2019s attack than Team B\u2019s defense?\u2019 — performed equally well with far less noise. When 82% of training rows have missing squad data, simpler is better.",
     },
   ],
   [
@@ -118,10 +119,10 @@ const DISCOVERIES = [
 ];
 
 const BIAS_ROWS = [
-  { team: "Mexico", before: "6.28%", after: "0.31%", delta: "\u22125.97" },
-  { team: "Senegal", before: "6.76%", after: "1.55%", delta: "\u22125.21" },
-  { team: "Japan", before: "6.27%", after: "0.18%", delta: "\u22126.09" },
-  { team: "Australia", before: "5.19%", after: "0.06%", delta: "\u22125.13" },
+  { team: "Mexico", before: "6.28%", after: "0.31%", delta: "\u22125.97%" },
+  { team: "Senegal", before: "6.76%", after: "1.55%", delta: "\u22125.21%" },
+  { team: "Japan", before: "6.27%", after: "0.18%", delta: "\u22126.09%" },
+  { team: "Australia", before: "5.19%", after: "0.06%", delta: "\u22125.13%" },
 ];
 
 export default function MethodologyPage() {
@@ -150,7 +151,7 @@ export default function MethodologyPage() {
           THE THREE SIGNALS
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[600px] mb-6 md:mb-8">
-          Our model combines three independent sources of team strength. Each
+          The model combines three independent sources of team strength. Each
           captures something the others miss.
         </p>
         <div className="flex flex-col md:flex-row gap-4">
@@ -182,7 +183,7 @@ export default function MethodologyPage() {
           THE MODEL
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[650px] mb-6 md:mb-8">
-          Instead of one model making all decisions, we use an ensemble — four
+          Instead of one model making all decisions, this uses an ensemble — four
           models that each learn different patterns, then vote on the outcome.
         </p>
 
@@ -231,8 +232,8 @@ export default function MethodologyPage() {
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[650px] mb-6 md:mb-7">
           The model predicts the probability of home win, draw, or away win. But
-          to simulate a tournament, we need actual scorelines. Here&apos;s how we
-          bridge that gap.
+          to simulate a tournament, you need actual scorelines. Here&apos;s how the
+          model bridges that gap.
         </p>
         <div className="flex flex-col md:flex-row gap-4">
           {STEPS.map((s) => (
@@ -254,13 +255,13 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* What We Discovered */}
+      {/* What I Discovered */}
       <section className="px-4 md:px-12 lg:px-20 py-8 md:py-12">
         <h2 className="font-[family-name:var(--font-anton)] text-[22px] md:text-[28px] tracking-wide mb-2">
-          WHAT WE DISCOVERED
+          WHAT I DISCOVERED
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[600px] mb-6 md:mb-8">
-          Building this model taught us things about football prediction that
+          Building this model taught me things about football prediction that
           weren&apos;t obvious at the start.
         </p>
         <div className="flex flex-col gap-4">
@@ -304,7 +305,7 @@ export default function MethodologyPage() {
               0.018
             </span>
             <span className="text-[13px] text-secondary">
-              Expected Calibration Error
+              <Tip term="ECE">Expected Calibration Error</Tip>
             </span>
             <span className="text-xs text-[#A1A1AA]">
               Near-perfect probability accuracy
@@ -325,7 +326,7 @@ export default function MethodologyPage() {
             <span className="font-[family-name:var(--font-anton)] text-[32px] md:text-[40px] text-pink">
               0.826
             </span>
-            <span className="text-[13px] text-secondary">Log Loss</span>
+            <span className="text-[13px] text-secondary"><Tip term="Log Loss">Log Loss</Tip></span>
             <span className="text-xs text-[#A1A1AA]">
               Lower is better &mdash; measures prediction confidence
             </span>
@@ -361,7 +362,7 @@ export default function MethodologyPage() {
           2022 WORLD CUP BACKTEST
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[650px] mb-6 md:mb-7">
-          We ran 10,000 simulations of the 2022 Qatar World Cup to see how the
+          I ran 10,000 simulations of the 2022 Qatar World Cup to see how the
           model would have performed. It correctly identified Argentina as a top
           contender with 24.5% championship probability.
         </p>
@@ -410,7 +411,7 @@ export default function MethodologyPage() {
                   <span className="font-mono text-[11px] md:text-xs text-green-500 flex-1">
                     {r.before} &rarr; {r.after}
                   </span>
-                  <span className="font-mono text-[11px] md:text-xs font-bold text-green-500">
+                  <span className="font-mono text-[11px] md:text-xs font-bold text-red-500">
                     {r.delta}
                   </span>
                 </div>
