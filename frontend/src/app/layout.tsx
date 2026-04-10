@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "FIFA 2026 Predictor",
   description:
-    "XGB + RF + Dixon-Coles ensemble model for FIFA World Cup 2026 predictions",
+    "AI-powered FIFA World Cup 2026 predictions — 10,000 simulations using machine learning and squad analysis",
 };
 
 export default function RootLayout({
