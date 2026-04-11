@@ -17,22 +17,33 @@ An ensemble of 4 models votes on every match:
 
 Each match prediction outputs three probabilities (home win, draw, away win). For tournament simulation, we use **outcome-first sampling** — the model's probabilities directly decide the winner, then a Poisson rejection sampler generates a matching scoreline. This ensures simulation results faithfully follow model predictions while producing realistic, varied scores.
 
-Tournament simulation runs **10,000 Monte Carlo iterations** through all 104 matches (12 groups of 4 → Round of 32 → knockout rounds).
+The bracket uses the **official FIFA 2026 format** with Annex C third-place allocation (495 combinations) and fixed R16/QF/SF pairings matching FIFA match numbers 73–88.
 
-### Top Predictions
+### Two Ways to See the Result
+
+| Mode | What it does |
+|---|---|
+| **The Prediction** | Picks the most likely outcome for every match — no randomness. Same answer every time. **Winner: France** |
+| **What If?** | One Monte Carlo simulation with random outcomes weighted by model probabilities. Different winner each run. |
+
+### Top Predictions (10,000 simulations)
 
 | Rank | Team | Win Probability |
 |---|---|---|
-| 1 | Spain | 19.4% |
-| 2 | France | 11.2% |
-| 3 | Argentina | 8.6% |
-| 4 | England | 8.1% |
-| 5 | Germany | 7.0% |
-| 6 | Brazil | 6.8% |
+| 1 | Spain | 21.40% |
+| 2 | France | 21.03% |
+| 3 | Argentina | 10.83% |
+| 4 | England | 9.72% |
+| 5 | Germany | 9.50% |
+| 6 | Brazil | 6.79% |
+| 7 | Netherlands | 4.88% |
+| 8 | Portugal | 2.42% |
+| 9 | Norway | 2.26% |
 
 ### 2022 World Cup Backtest
-- Predicted champion (Argentina) ranked #2 with 23.8% probability
-- Correctly identified all top-4 contenders
+- Predicted champion (Argentina) ranked #2 with 25.3% probability
+- Runner-up (France) ranked #3 with 12.6% probability
+- Correctly identified top contenders
 
 ### The Three Signals
 
@@ -47,11 +58,14 @@ Adding EA squad ratings was critical — it corrects the **confederation bias** 
 ## Project Structure
 
 ```
+fifa-2026-predictor/
 ├── notebooks/           # Jupyter notebooks (exploration → simulation)
-├── backend/             # FastAPI — /predict and /simulate/full endpoints
-├── frontend/            # Next.js, TypeScript, Tailwind CSS
-├── data/                # Raw match data (4 datasets, gitignored)
-├── models/              # Trained .pkl ensemble + metadata .json
+│   └── phase2/          # Phase 2: EA features, backtest, deterministic prediction
+├── backend/             # FastAPI backend (predictor + simulator + official FIFA bracket)
+│   └── app/core/        # Predictor (97-feature builder) + simulator (Annex C bracket)
+├── frontend/            # Next.js, TypeScript, Tailwind CSS (deployed on Vercel)
+├── data/                # Raw match data + processed features
+├── models/              # Trained .pkl ensemble + metadata
 └── research/            # Experiment scripts and analysis
 ```
 
@@ -92,4 +106,4 @@ npm run dev    # http://localhost:3000
 
 **Yash Mori** — AI Engineer
 
-[GitHub](https://github.com/Yashmori09) · [LinkedIn](https://linkedin.com/in/YashMori)
+[GitHub](https://github.com/Yashmori09/fifa-2026-predictor) · [LinkedIn](https://www.linkedin.com/in/yash-mori090102/)
