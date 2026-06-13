@@ -6,6 +6,7 @@ import { useState } from "react";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
+  { href: "/live", label: "Live", indicator: true },
   { href: "/tournament", label: "Tournament" },
   { href: "/predict", label: "Match Predictor" },
   { href: "/squads", label: "Squads" },
@@ -50,10 +51,13 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-sm transition-colors hover:text-purple ${
+              className={`flex items-center gap-1.5 text-sm transition-colors hover:text-purple ${
                 pathname === link.href ? "text-purple" : "text-secondary"
               }`}
             >
+              {link.indicator && (
+                <span className="w-1.5 h-1.5 rounded-full bg-pink animate-livePulse" />
+              )}
               {link.label}
             </Link>
           ))}
@@ -79,10 +83,13 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className={`px-4 py-3 text-sm border-b border-border transition-colors ${
+              className={`flex items-center gap-2 px-4 py-3 text-sm border-b border-border transition-colors ${
                 pathname === link.href ? "text-purple bg-purple/5" : "text-secondary"
               }`}
             >
+              {link.indicator && (
+                <span className="w-1.5 h-1.5 rounded-full bg-pink animate-livePulse" />
+              )}
               {link.label}
             </Link>
           ))}

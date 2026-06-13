@@ -74,6 +74,10 @@ body {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes livePulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(236, 72, 153, 0.8); }
+  50% { opacity: 0.4; box-shadow: 0 0 12px rgba(236, 72, 153, 0.4); }
+}
 
 .animate-fadeInUp { animation: fadeInUp 0.5s ease-out both; }
 .animate-slideLeft { animation: slideFromLeft 0.4s ease-out both; }
@@ -82,6 +86,7 @@ body {
 .animate-glowPulse { animation: glowPulse 1.5s ease-in-out; }
 .animate-verdictReveal { animation: verdictReveal 0.6s ease-out both; }
 .animate-staggerFadeIn { animation: staggerFadeIn 0.4s ease-out both; }
+.animate-livePulse { animation: livePulse 1.4s ease-in-out infinite; }
 
 /* Flag icon sizing */
 .fi {
