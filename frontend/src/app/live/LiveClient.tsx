@@ -66,23 +66,24 @@ function MatchRow({
   const homeCode = teamCode(match.home.name);
   const awayCode = teamCode(match.away.name);
 
-  // Status indicators
+  // Status indicators — color edge + right-side score by Match Score band
   let edgeColor = "bg-border";
   let statusIcon: React.ReactNode = null;
   if (isLive) {
     edgeColor = "bg-pink";
     statusIcon = <span className="text-[10px] text-pink font-mono font-bold tracking-wider animate-pulse">▶ LIVE</span>;
   } else if (isFinished && match.actual) {
-    if (match.actual.is_upset) {
-      edgeColor = "bg-pink";
-      statusIcon = <span className="text-pink text-sm">⚡</span>;
-    } else if (match.actual.outcome_correct) {
-      edgeColor = "bg-green-500";
-      statusIcon = <span className="text-green-500 text-sm">✓</span>;
-    } else {
-      edgeColor = "bg-secondary/40";
-      statusIcon = <span className="text-secondary text-sm">✗</span>;
-    }
+    const ms = match.actual.match_score ?? 0;
+    let textColor = "text-red-500";
+    if (ms >= 80) { textColor = "text-green-500"; edgeColor = "bg-green-500"; }
+    else if (ms >= 50) { textColor = "text-amber-500"; edgeColor = "bg-amber-500"; }
+    else { edgeColor = "bg-red-500"; }
+    statusIcon = (
+      <div className="flex items-center gap-1">
+        {match.actual.is_upset && <span className="text-pink text-[11px]" title="Upset">⚡</span>}
+        <span className={`font-mono text-[11px] font-bold ${textColor}`}>{ms}</span>
+      </div>
+    );
   } else {
     statusIcon = <span className="text-secondary text-[10px] font-mono">UTC</span>;
   }
