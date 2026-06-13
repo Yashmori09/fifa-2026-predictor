@@ -23,22 +23,22 @@ The bracket uses the **official FIFA 2026 format** with Annex C third-place allo
 
 | Mode | What it does |
 |---|---|
-| **The Prediction** | Picks the most likely outcome for every match — no randomness. Same answer every time. **Winner: France** |
+| **The Prediction** | Picks the most likely outcome for every match — no randomness. Same answer every time. **Winner: Spain** |
 | **What If?** | One Monte Carlo simulation with random outcomes weighted by model probabilities. Different winner each run. |
 
 ### Top Predictions (10,000 simulations)
 
 | Rank | Team | Win Probability |
 |---|---|---|
-| 1 | Spain | 21.40% |
-| 2 | France | 21.03% |
-| 3 | Argentina | 10.83% |
-| 4 | England | 9.72% |
-| 5 | Germany | 9.50% |
-| 6 | Brazil | 6.79% |
-| 7 | Netherlands | 4.88% |
-| 8 | Portugal | 2.42% |
-| 9 | Norway | 2.26% |
+| 1 | Spain | 25.20% |
+| 2 | France | 17.11% |
+| 3 | Argentina | 15.29% |
+| 4 | England | 12.61% |
+| 5 | Brazil | 5.03% |
+| 6 | Germany | 4.34% |
+| 7 | Portugal | 3.57% |
+| 8 | Netherlands | 3.36% |
+| 9 | Colombia | 1.95% |
 
 ### 2022 World Cup Backtest
 - Predicted champion (Argentina) ranked #2 with 25.3% probability

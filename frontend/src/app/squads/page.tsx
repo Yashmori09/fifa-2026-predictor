@@ -140,11 +140,11 @@ export default function SquadsPage() {
           SQUAD EXPLORER
         </h1>
         <p className="text-secondary text-xs md:text-sm max-w-[600px]">
-          1,054 players across 48 World Cup nations. EA FC ratings, positional
+          1,248 players across 48 World Cup nations. EA FC ratings, positional
           depth, and squad profiles.
         </p>
         <span className="text-secondary text-[10px] md:text-[11px] bg-[#1A1A1A] border border-border rounded px-3 py-1.5 w-fit mt-1">
-          Squads reflect the most recent international call-ups per team. Final 2026 World Cup selections may differ.
+          Official FIFA 2026 squads, submitted June 1 2026. Ratings via EA FC 26 (1,048 players) and Football Manager 23 for non-EA-licensed leagues.
         </span>
       </section>
 

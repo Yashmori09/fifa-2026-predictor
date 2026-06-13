@@ -53,12 +53,12 @@ type SimMode = "prediction" | "simulation";
 /* ──────────────────── static cards ──────────────────── */
 
 const ROUND_CARDS = [
-  { label: "GROUP STAGE", pct: "21.4%", team: "Spain", code: "es", color: "text-purple" },
-  { label: "ROUND OF 32", pct: "21.0%", team: "France", code: "fr", color: "text-purple" },
-  { label: "ROUND OF 16", pct: "10.8%", team: "Argentina", code: "ar", color: "text-cyan" },
-  { label: "QUARTER FINAL", pct: "9.7%", team: "England", code: "gb-eng", color: "text-cyan" },
-  { label: "SEMI FINAL", pct: "9.5%", team: "Germany", code: "de", color: "text-pink" },
-  { label: "CHAMPION", pct: "21.4%", team: "Spain", code: "es", color: "text-purple", highlight: true },
+  { label: "GROUP STAGE", pct: "25.2%", team: "Spain", code: "es", color: "text-purple" },
+  { label: "ROUND OF 32", pct: "17.1%", team: "France", code: "fr", color: "text-purple" },
+  { label: "ROUND OF 16", pct: "15.3%", team: "Argentina", code: "ar", color: "text-cyan" },
+  { label: "QUARTER FINAL", pct: "12.6%", team: "England", code: "gb-eng", color: "text-cyan" },
+  { label: "SEMI FINAL", pct: "5.0%", team: "Brazil", code: "br", color: "text-pink" },
+  { label: "CHAMPION", pct: "25.2%", team: "Spain", code: "es", color: "text-purple", highlight: true },
 ];
 
 const GROUP_ELOS: Record<string, number> = {
@@ -69,18 +69,18 @@ const GROUP_ELOS: Record<string, number> = {
 /* ──────────── squad quality (EA FC ratings) ──────────── */
 
 const SQUAD_QUALITY: Record<string, number> = {
-  France: 83.2, Spain: 82.1, England: 80.8, Germany: 80.7, Netherlands: 80.5,
-  Portugal: 79.9, Argentina: 79.2, Brazil: 79.0, Belgium: 77.7, Turkey: 76.4,
-  Croatia: 76.1, Switzerland: 75.8, "Ivory Coast": 74.9, Norway: 74.8,
-  Uruguay: 74.6, Austria: 74.5, Senegal: 74.4, Colombia: 74.3,
-  "Czech Republic": 74.3, "United States": 73.8, Sweden: 73.8, Morocco: 73.9,
-  Scotland: 73.0, Japan: 72.2, Algeria: 71.8, Mexico: 71.7, Ghana: 71.3,
-  "DR Congo": 71.2, Ecuador: 70.1, "Bosnia and Herzegovina": 70.0,
-  Paraguay: 70.0, "South Korea": 69.4, Canada: 68.7, Uzbekistan: 68.7,
-  Egypt: 68.0, "Cape Verde": 67.0, Australia: 66.4, Qatar: 66.4,
-  "New Zealand": 65.6, Tunisia: 65.6, Haiti: 65.1, Iran: 64.0,
-  Panama: 63.4, Jordan: 62.9, "Saudi Arabia": 62.3, Iraq: 62.0,
-  "South Africa": 57.9, "Curaçao": 55.0,
+  France: 83.2, Spain: 82.8, Brazil: 81.8, Germany: 81.7, Portugal: 81.5,
+  England: 81.4, Argentina: 81.1, Netherlands: 80.5, Belgium: 78.2, Turkey: 77.2,
+  Croatia: 77.1, Colombia: 76.0, Uruguay: 75.7, Switzerland: 75.6,
+  Senegal: 75.5, Norway: 75.3, Sweden: 75.0, Austria: 74.8,
+  "United States": 74.7, "Ivory Coast": 74.5, "Czech Republic": 74.5,
+  Morocco: 74.2, Algeria: 74.0, Mexico: 73.4, Ghana: 73.2,
+  Scotland: 72.9, Japan: 72.7, Iran: 72.7, Egypt: 72.6, "DR Congo": 72.6,
+  Ecuador: 72.5, Uzbekistan: 71.6, Paraguay: 71.6, Canada: 71.4,
+  "Cape Verde": 71.3, "Bosnia and Herzegovina": 70.3, "Curaçao": 70.3,
+  "South Korea": 69.8, Tunisia: 69.4, Haiti: 69.1, Panama: 69.0,
+  Jordan: 69.0, Qatar: 68.7, "New Zealand": 67.2, Australia: 67.2,
+  Iraq: 66.3, "Saudi Arabia": 65.8, "South Africa": 63.4,
 };
 
 interface FeaturedGroup {
@@ -94,42 +94,42 @@ interface FeaturedGroup {
 
 const FEATURED_GROUPS: FeaturedGroup[] = [
   {
-    group: "L", tag: "#1 GROUP OF DEATH", tagColor: "text-red-500", borderColor: "border-red-500",
-    avg: 72.9,
+    group: "K", tag: "#1 GROUP OF DEATH", tagColor: "text-red-500", borderColor: "border-red-500",
+    avg: 75.4,
     teams: [
-      { name: "England", code: "gb-eng", rating: 80.8 },
-      { name: "Croatia", code: "hr", rating: 76.1 },
-      { name: "Ghana", code: "gh", rating: 71.3 },
-      { name: "Panama", code: "pa", rating: 63.4 },
+      { name: "Portugal", code: "pt", rating: 81.5 },
+      { name: "Colombia", code: "co", rating: 76.0 },
+      { name: "DR Congo", code: "cd", rating: 72.6 },
+      { name: "Uzbekistan", code: "uz", rating: 71.6 },
     ],
   },
   {
-    group: "K", tag: "#2 MOST COMPETITIVE", tagColor: "text-amber-500", borderColor: "border-amber-500",
-    avg: 73.5,
+    group: "L", tag: "#2 MOST COMPETITIVE", tagColor: "text-amber-500", borderColor: "border-amber-500",
+    avg: 75.2,
     teams: [
-      { name: "Portugal", code: "pt", rating: 79.9 },
-      { name: "Colombia", code: "co", rating: 74.3 },
-      { name: "DR Congo", code: "cd", rating: 71.2 },
-      { name: "Uzbekistan", code: "uz", rating: 68.7 },
+      { name: "England", code: "gb-eng", rating: 81.4 },
+      { name: "Croatia", code: "hr", rating: 77.1 },
+      { name: "Ghana", code: "gh", rating: 73.2 },
+      { name: "Panama", code: "pa", rating: 69.0 },
     ],
   },
   {
     group: "I", tag: "#3 STRONGEST FAVORITE", tagColor: "text-purple", borderColor: "border-purple",
-    avg: 73.6,
+    avg: 75.1,
     teams: [
       { name: "France", code: "fr", rating: 83.2 },
-      { name: "Norway", code: "no", rating: 74.8 },
-      { name: "Senegal", code: "sn", rating: 74.4 },
-      { name: "Iraq", code: "iq", rating: 62.0 },
+      { name: "Senegal", code: "sn", rating: 75.5 },
+      { name: "Norway", code: "no", rating: 75.3 },
+      { name: "Iraq", code: "iq", rating: 66.3 },
     ],
   },
 ];
 
 const ALL_GROUPS_RANKED = [
-  { group: "E", avg: 75.2 }, { group: "I", avg: 73.6 }, { group: "K", avg: 73.5 },
-  { group: "F", avg: 73.0 }, { group: "L", avg: 72.9 }, { group: "C", avg: 72.8 },
-  { group: "J", avg: 72.1 }, { group: "D", avg: 71.6 }, { group: "H", avg: 71.5 },
-  { group: "B", avg: 70.2 }, { group: "G", avg: 68.8 }, { group: "A", avg: 68.3 },
+  { group: "K", avg: 75.4 }, { group: "L", avg: 75.2 }, { group: "I", avg: 75.1 },
+  { group: "E", avg: 74.8 }, { group: "J", avg: 74.7 }, { group: "C", avg: 74.5 },
+  { group: "F", avg: 74.4 }, { group: "H", avg: 73.9 }, { group: "G", avg: 72.7 },
+  { group: "D", avg: 72.6 }, { group: "B", avg: 71.5 }, { group: "A", avg: 70.3 },
 ];
 
 /* ──────────── helpers ──────────── */
@@ -554,7 +554,7 @@ export default function TournamentPage() {
           {ALL_GROUPS_RANKED.map((g, i) => {
             const h = ((g.avg - 65) / 12) * 100;
             const isTop = i < 5;
-            const isDeath = g.group === "L";
+            const isDeath = g.group === "K";
             return (
               <div
                 key={g.group}

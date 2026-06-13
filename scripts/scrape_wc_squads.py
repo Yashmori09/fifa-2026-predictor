@@ -1,6 +1,10 @@
 """
-Scrape actual World Cup squad data for 2014, 2018, 2022 from Wikipedia.
-Uses the same parsing logic as scrape_squads.py but from tournament squad pages.
+Scrape actual World Cup squad data from Wikipedia.
+Supports 2014, 2018, 2022, 2026.
+
+Usage:
+  python scrape_wc_squads.py             # scrapes all years
+  python scrape_wc_squads.py 2026        # scrapes only 2026
 
 Output: data/processed/wc_squads_{year}.csv for each year
 """
@@ -26,6 +30,7 @@ WC_PAGES = {
     2014: "2014_FIFA_World_Cup_squads",
     2018: "2018_FIFA_World_Cup_squads",
     2022: "2022_FIFA_World_Cup_squads",
+    2026: "2026_FIFA_World_Cup_squads",
 }
 
 # Wikipedia section names -> our standard team names
@@ -191,7 +196,17 @@ def scrape_wc_year(year: int) -> list:
 
 
 def main():
-    for year in [2014, 2018, 2022]:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    if len(sys.argv) > 1:
+        years = [int(arg) for arg in sys.argv[1:]]
+    else:
+        years = list(WC_PAGES.keys())
+
+    for year in years:
+        if year not in WC_PAGES:
+            print(f"Skipping {year} — no Wikipedia page configured")
+            continue
         players = scrape_wc_year(year)
 
         output_path = DATA_DIR / f"wc_squads_{year}.csv"
