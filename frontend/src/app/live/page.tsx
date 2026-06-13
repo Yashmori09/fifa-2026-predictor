@@ -1,9 +1,9 @@
 import LiveClient from "./LiveClient";
 import { getLiveData } from "@/lib/live-data";
 
-// Revalidate the page every 30 minutes (ISR).
-// First user after expiry triggers a background refetch; rest get instant cached data.
-export const revalidate = 1800;
+// Revalidate the page every 60 seconds (ISR).
+// Client also polls every 60s when any match is IN_PLAY (see LiveClient).
+export const revalidate = 60;
 
 export default async function LivePage() {
   let data;

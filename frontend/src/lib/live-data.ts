@@ -34,6 +34,8 @@ export interface Actual {
   exact_score?: boolean;
   within_1_goal?: boolean;
   is_upset?: boolean;
+  match_score?: number;       // 0-100 from per-match Brier
+  goal_diff_error?: number;   // |predicted goal-diff - actual goal-diff|
 }
 
 export interface Match {
@@ -60,6 +62,8 @@ export interface Stats {
   within_1_goal_pct?: number;
   n_upsets?: number;
   biggest_upset?: { match_id: number; fav_team: string; fav_prob: number; winner: string } | null;
+  avg_confidence_score?: number;  // 0-100, mean of per-match match_score
+  avg_goal_diff_error?: number;   // mean |predicted - actual| goal diff
 }
 
 export interface LiveData {
@@ -189,7 +193,7 @@ export async function getLiveData(): Promise<LiveData> {
     "https://api.football-data.org/v4/competitions/WC/matches?season=2026",
     {
       headers: { "X-Auth-Token": apiKey },
-      next: { revalidate: 1800 }, // 30 minutes
+      next: { revalidate: 60 }, // 60 seconds — football-data.org free tier = 10 req/min, plenty of headroom
     }
   );
 
@@ -256,6 +260,18 @@ export async function getLiveData(): Promise<LiveData> {
         } else {
           actual.is_upset = false;
         }
+        // Per-match Brier-derived score (0-100; higher is better)
+        // brier = sum( (p_i - actual_i)^2 ), range 0-2 for 3-class. score = (1 - brier/2) * 100
+        const aH = outcome === "home" ? 1 : 0;
+        const aD = outcome === "draw" ? 1 : 0;
+        const aA = outcome === "away" ? 1 : 0;
+        const brier =
+          (p.prob_home - aH) ** 2 + (p.prob_draw - aD) ** 2 + (p.prob_away - aA) ** 2;
+        actual.match_score = Math.round(Math.max(0, (1 - brier / 2) * 100));
+        // Goal-diff error
+        const predDiff = p.score.home - p.score.away;
+        const actDiff = ft.home - ft.away;
+        actual.goal_diff_error = Math.abs(predDiff - actDiff);
       }
       record.actual = actual;
     }
@@ -290,6 +306,9 @@ export async function getLiveData(): Promise<LiveData> {
       }
     }
 
+    const totalScore = finished.reduce((acc, m) => acc + (m.actual!.match_score ?? 0), 0);
+    const totalGdErr = finished.reduce((acc, m) => acc + (m.actual!.goal_diff_error ?? 0), 0);
+
     stats = {
       n_played: n,
       n_with_predictions: n,
@@ -301,6 +320,8 @@ export async function getLiveData(): Promise<LiveData> {
       within_1_goal_pct: nWithin1 / n,
       n_upsets: nUpsets,
       biggest_upset: biggestUpset,
+      avg_confidence_score: Math.round(totalScore / n),
+      avg_goal_diff_error: Math.round((totalGdErr / n) * 10) / 10, // 1 decimal
     };
   }
 

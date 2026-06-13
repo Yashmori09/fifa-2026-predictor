@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef } from "react";
 import { TEAMS } from "@/lib/teams";
+import Tip from "@/components/Tip";
 import type { LiveData, Match } from "@/lib/live-data";
 
 /* ──────────────────── helpers ──────────────────── */
@@ -289,7 +290,7 @@ function StatCard({
   color,
   highlight,
 }: {
-  label: string;
+  label: React.ReactNode;
   value: string;
   sublabel: string;
   color: string;
@@ -312,10 +313,15 @@ function ResultCard({ match }: { match: Match }) {
   const { date, time } = formatKickoff(match.kickoff_utc);
 
   const isUpset = a.is_upset;
-  const correct = a.outcome_correct;
+  const matchScore = a.match_score ?? 0;
   const borderColor = isUpset ? "border-pink" : "border-border";
   const predTeamName = p.predicted_outcome === "home" ? match.home.name : p.predicted_outcome === "away" ? match.away.name : "Draw";
   const predProb = p.predicted_outcome === "home" ? p.prob_home : p.predicted_outcome === "away" ? p.prob_away : p.prob_draw;
+
+  // Color the score badge: green 80+, amber 50-79, red <50
+  let scoreClasses = "border-red-500 text-red-500";
+  if (matchScore >= 80) scoreClasses = "border-green-500 text-green-500";
+  else if (matchScore >= 50) scoreClasses = "border-amber-500 text-amber-500";
 
   return (
     <div className={`flex flex-col bg-[#111111] border ${borderColor} rounded-2xl overflow-hidden`}>
@@ -334,13 +340,14 @@ function ResultCard({ match }: { match: Match }) {
               <span className="text-[10px] font-mono font-bold tracking-[1.5px] text-white">UPSET</span>
             </div>
           )}
-          <div className={`flex items-center gap-1.5 rounded px-2.5 py-1 ${
-            correct ? "bg-green-500" : "bg-[#1A1A1A] border border-secondary/40"
-          }`}>
-            <span className={`text-[10px] font-mono font-bold tracking-[1.5px] ${correct ? "text-white" : "text-secondary"}`}>
-              {correct ? "✓ CORRECT" : "✗ OUTCOME WRONG"}
-            </span>
-          </div>
+          <Tip term="Match Score">
+            <div className={`flex items-baseline gap-1.5 bg-[#0A0A0A] border rounded px-2.5 py-1 ${scoreClasses}`}>
+              <span className={`font-[family-name:var(--font-anton)] text-lg leading-none ${scoreClasses.split(" ")[1]}`}>
+                {matchScore}
+              </span>
+              <span className="text-[9px] font-mono font-bold tracking-[1.5px] text-secondary">/ 100</span>
+            </div>
+          </Tip>
         </div>
       </div>
 
@@ -375,7 +382,7 @@ function ResultCard({ match }: { match: Match }) {
         {/* Actual side */}
         <div className="flex-1 flex flex-col gap-3 bg-[#0D0D0D] p-5">
           <div className="flex items-center gap-2">
-            <span className={`text-[10px] font-mono font-bold tracking-[2px] ${correct ? "text-green-500" : isUpset ? "text-pink" : "text-foreground"}`}>
+            <span className={`text-[10px] font-mono font-bold tracking-[2px] ${matchScore >= 80 ? "text-green-500" : isUpset ? "text-pink" : "text-foreground"}`}>
               🏁 ACTUAL
             </span>
           </div>
@@ -397,10 +404,13 @@ function ResultCard({ match }: { match: Match }) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {a.within_1_goal && <span className="text-[11px] font-mono text-secondary">Within 1 goal of prediction</span>}
-            {!a.within_1_goal && <span className="text-[11px] font-mono text-secondary">Goal-diff missed by &gt; 1</span>}
-            {a.exact_score && <span className="text-green-500">✓</span>}
-            {a.within_1_goal && !a.exact_score && <span className="text-green-500">✓</span>}
+            <span className="text-[11px] font-mono text-secondary">Goal-diff</span>
+            <span className={`font-mono text-[13px] font-bold ${
+              (a.goal_diff_error ?? 0) === 0 ? "text-green-500" :
+              (a.goal_diff_error ?? 0) <= 1 ? "text-foreground" : "text-secondary"
+            }`}>
+              ±{a.goal_diff_error ?? 0}
+            </span>
           </div>
         </div>
       </div>
@@ -410,9 +420,47 @@ function ResultCard({ match }: { match: Match }) {
 
 /* ──────────────────────── page ──────────────────────── */
 
-export default function LiveClient({ data }: { data: LiveData }) {
+export default function LiveClient({ data: initialData }: { data: LiveData }) {
+  const [data, setData] = useState<LiveData>(initialData);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const matches = data.matches;
   const stats = data.stats;
+
+  // Auto-refresh: if any match is currently in play, poll the API route every 60s.
+  // Otherwise just refetch when the tab regains focus (cheaper).
+  const anyLive = useMemo(
+    () => matches.some((m) => m.status === "IN_PLAY" || m.status === "PAUSED"),
+    [matches]
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    async function refresh() {
+      try {
+        setIsRefreshing(true);
+        const res = await fetch("/api/live-matches", { cache: "no-store" });
+        if (!res.ok) return;
+        const fresh = (await res.json()) as LiveData;
+        if (!cancelled) setData(fresh);
+      } catch {
+        // silent
+      } finally {
+        if (!cancelled) setIsRefreshing(false);
+      }
+    }
+
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    if (anyLive) {
+      intervalId = setInterval(refresh, 60_000);
+    }
+    const onFocus = () => refresh();
+    window.addEventListener("focus", onFocus);
+    return () => {
+      cancelled = true;
+      if (intervalId) clearInterval(intervalId);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [anyLive]);
 
   // Default selected: live match, else nearest upcoming, else last finished
   const defaultSelected = useMemo(() => {
@@ -498,7 +546,7 @@ export default function LiveClient({ data }: { data: LiveData }) {
           MATCH PREDICTIONS · LIVE
         </h1>
         <p className="text-secondary text-xs md:text-sm">
-          Last updated {formatLastUpdated(data.last_updated)} · {nFinished} of 104 matches played
+          Last updated {formatLastUpdated(data.last_updated)}{isRefreshing && " · refreshing…"} · {nFinished} of 104 matches played
         </p>
         <div className="w-[60px] h-1 bg-cyan rounded-sm mt-1" />
       </section>
@@ -515,8 +563,10 @@ export default function LiveClient({ data }: { data: LiveData }) {
             </p>
           </div>
           <div className="flex items-center gap-2 bg-[#111111] border border-border rounded px-3 py-1.5 w-fit">
-            <span className="w-1.5 h-1.5 rounded-full bg-pink animate-livePulse" />
-            <span className="text-[10px] font-mono font-bold tracking-[1.5px] text-secondary">REFRESHES EVERY 30 MIN</span>
+            <span className={`w-1.5 h-1.5 rounded-full bg-pink ${anyLive ? "animate-livePulse" : ""}`} />
+            <span className="text-[10px] font-mono font-bold tracking-[1.5px] text-secondary">
+              {anyLive ? "AUTO-REFRESH · 60S" : "REFRESH ON VISIT"}
+            </span>
           </div>
         </div>
 
@@ -564,25 +614,25 @@ export default function LiveClient({ data }: { data: LiveData }) {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             <StatCard
-              label="OUTCOME CORRECT"
+              label={<Tip term="outcome accuracy">OUTCOME CORRECT</Tip>}
               color="text-purple"
               value={pct(stats.outcome_accuracy)}
               sublabel={`${stats.n_correct_outcome} of ${stats.n_played} matches`}
             />
             <StatCard
-              label="EXACT SCORE"
+              label={<Tip term="Confidence Score">CONFIDENCE SCORE</Tip>}
               color="text-cyan"
-              value={pct(stats.exact_score_pct)}
-              sublabel={`${stats.n_exact_score} of ${stats.n_played} matches`}
+              value={`${stats.avg_confidence_score ?? 0}`}
+              sublabel="out of 100 · higher is better"
             />
             <StatCard
-              label="WITHIN 1 GOAL"
+              label={<Tip term="Goal-Diff Error">GOAL-DIFF ERROR</Tip>}
               color="text-pink"
-              value={pct(stats.within_1_goal_pct)}
-              sublabel={`${stats.n_within_1_goal} of ${stats.n_played} matches`}
+              value={`±${(stats.avg_goal_diff_error ?? 0).toFixed(1)}`}
+              sublabel="avg goals off · lower is better"
             />
             <StatCard
-              label="UPSETS CALLED"
+              label={<Tip term="Upset">UPSETS CALLED</Tip>}
               color="text-green-500"
               highlight={(stats.n_upsets ?? 0) > 0}
               value={String(stats.n_upsets ?? 0)}
