@@ -17,6 +17,8 @@ Phase 3 fixes the inputs and the data window, not the learner. XGB+RF stays.
 
 ## Goal
 
+**Predict every 2026 FIFA World Cup match — outcome and scoreline — and eventually the tournament winner.**
+
 A model that:
 1. Trains on the modern era only.
 2. Incorporates per-player current form (not just static ratings).
@@ -25,6 +27,16 @@ A model that:
 5. Includes match context (rest days, travel, fatigue).
 6. Validates against literature benchmarks (target RPS ≤ 0.20, ECE < 0.025).
 7. Ships before the knockout stage if possible, otherwise becomes the post-WC retrospective model.
+
+## Locked decisions (Phase 1)
+
+These three were debated and locked on 2026-06-14:
+
+| Decision | Choice | Why |
+|---|---|---|
+| **Success bar** | Beat "pick higher squad rating" baseline by **5%+ outcome accuracy** | The dumb non-ML rule hits ~52% on international football. Our ML earns its complexity only by beating it by a meaningful margin (target ≥60%). Bookmaker-odds parity (~55-60%) is unrealistic in this scope. |
+| **Historical lineups** | Scrape FBref for actual lineups of past international matches | Approach B from the original plan. Time-consuming but the only honest way to compute trailing-12-month player form features for historical training matches. Top-26-by-caps proxy is acceptable fallback if specific matches can't be sourced. |
+| **Architecture** | Two-track hybrid: XGB+RF classifier for outcome + Dixon-Coles bivariate Poisson for scoreline | The current Phase 2 approach reverse-engineers Poisson lambdas from outcome probabilities (approximation). A proper Dixon-Coles model gives real goal expectancies with the rho correction — academic standard for football scoreline prediction. We already have Dixon-Coles infrastructure from Phase 1. |
 
 ---
 
@@ -195,11 +207,26 @@ That's a portfolio story that demonstrates engineering judgment, not just modeli
 
 ---
 
-## Open questions
+## Resolved / open
 
-1. Is FBref scraping acceptable, or do we want to pay for StatsBomb / Opta for cleaner data?
-2. Do we want per-player current form, or is team-level recent-form aggregation good enough?
-3. Do we attempt live injury data (hard, manual) or defer to Phase 3.1?
-4. Do we keep Phase 2 predictions side-by-side with Phase 3 on the frontend, or fully replace?
+| Question | Resolved |
+|---|---|
+| FBref scraping vs paid Opta | FBref (free, scrapeable, Opta-licensed data underneath) |
+| Per-player form vs team aggregate | Per-player → aggregated to team. Both granularities engineered. |
+| Live injury data | **Deferred to Phase 3.1.** Hard to source historically, manual upkeep at runtime. |
+| Phase 2 predictions kept side-by-side? | **No.** Wholesale replace once Phase 3 ships (clean train/test discipline makes retroactive predictions honest). |
 
-Resolve these before starting Phase A.
+## Next step
+
+**Phase A1 — FBref scraping infrastructure.** Concrete first task:
+
+1. Pick 3 test players covering different leagues:
+   - European star — e.g., Vinicius Júnior (Real Madrid)
+   - Asian player — e.g., Mehdi Taremi (Olympiacos)
+   - CONCACAF player — e.g., Cyle Larin (Southampton)
+2. Visit each FBref profile, document the URL pattern + which stat tables we want.
+3. Write a single-player function `fetch_fbref_player(url)` that parses one page and returns structured stats (goals, assists, minutes, xG, xA per season).
+4. Verify parsed data matches what's visible on the page.
+5. *Then* expand to the resolver (map our 1,247 players → FBref URLs) and the throttled batch scrape.
+
+Time budget: the test/parse step is 1-2 hours. Full pipeline once verified: ~2 hours of throttled scraping (1 req per 6 sec × 1,247 players).
