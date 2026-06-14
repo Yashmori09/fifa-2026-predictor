@@ -30,12 +30,13 @@ export interface Prediction {
 export interface Actual {
   score: { home: number; away: number };
   outcome: "home" | "draw" | "away";
+  is_live?: boolean;          // true while the match is IN_PLAY / PAUSED (score is current, not final)
   outcome_correct?: boolean;
   exact_score?: boolean;
   within_1_goal?: boolean;
   is_upset?: boolean;
-  match_score?: number;       // 0-100 from per-match Brier
-  goal_diff_error?: number;   // |predicted goal-diff - actual goal-diff|
+  match_score?: number;       // 0-100 from per-match Brier (only set when match is FINISHED)
+  goal_diff_error?: number;   // |predicted goal-diff - actual goal-diff| (only when FINISHED)
 }
 
 export interface Match {
@@ -236,18 +237,33 @@ export async function getLiveData(): Promise<LiveData> {
       };
     }
 
+    // Use fullTime for finished matches, fall back to halfTime / regularTime for in-progress.
+    // football-data.org sets fullTime to the *current* score while a match is in progress.
     const ft = fdm.score?.fullTime;
-    if (fdm.status === "FINISHED" && ft && ft.home != null && ft.away != null) {
-      const winner = fdm.score.winner;
-      const outcome: "home" | "draw" | "away" =
-        winner === "HOME_TEAM" ? "home" : winner === "AWAY_TEAM" ? "away" : "draw";
+    const isFinal = fdm.status === "FINISHED";
+    const isLive = fdm.status === "IN_PLAY" || fdm.status === "PAUSED" || fdm.status === "LIVE";
+
+    if ((isFinal || isLive) && ft && ft.home != null && ft.away != null) {
+      // Derive outcome from current score (for live) or fullTime winner field (for final)
+      let outcome: "home" | "draw" | "away";
+      if (isFinal && fdm.score?.winner) {
+        outcome =
+          fdm.score.winner === "HOME_TEAM" ? "home" :
+          fdm.score.winner === "AWAY_TEAM" ? "away" : "draw";
+      } else {
+        outcome =
+          ft.home > ft.away ? "home" :
+          ft.away > ft.home ? "away" : "draw";
+      }
 
       const actual: Actual = {
         score: { home: ft.home, away: ft.away },
         outcome,
+        is_live: isLive,
       };
 
-      if (record.prediction) {
+      // Only compute accuracy badges for matches that are actually over.
+      if (isFinal && record.prediction) {
         const p = record.prediction;
         actual.outcome_correct = p.predicted_outcome === outcome;
         actual.exact_score = p.score.home === ft.home && p.score.away === ft.away;
@@ -281,7 +297,8 @@ export async function getLiveData(): Promise<LiveData> {
 
   matches.sort((a, b) => a.kickoff_utc.localeCompare(b.kickoff_utc));
 
-  const finished = matches.filter((m) => m.actual && m.prediction);
+  // Only count actually-finished matches in the stats — exclude live (in-play / paused).
+  const finished = matches.filter((m) => m.actual && !m.actual.is_live && m.prediction);
   const n = finished.length;
   let stats: Stats = { n_played: n };
   if (n > 0) {
