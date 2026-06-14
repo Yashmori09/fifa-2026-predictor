@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas import PredictRequest, PredictResponse
-from app.core.predictor import predict_match, fit_poisson_lambdas, most_likely_scoreline, ALL_WC_TEAMS
+from app.core.predictor import (
+    predict_match_cached, get_lambdas_cached, most_likely_scoreline,
+)
 
 router = APIRouter(prefix="/predict", tags=["predict"])
 
@@ -11,8 +13,10 @@ def predict(req: PredictRequest):
         raise HTTPException(status_code=400, detail="Teams must be different")
 
     try:
-        ph, pd, pa = predict_match(req.home_team, req.away_team, neutral=True)
-        lam_h, lam_a = fit_poisson_lambdas(ph, pd, pa)
+        # Hybrid model: predict (λ_h, λ_a) directly, derive W/D/L + scoreline from
+        # the Dixon-Coles-corrected joint Poisson matrix.
+        ph, pd, pa = predict_match_cached(req.home_team, req.away_team, neutral=True)
+        lam_h, lam_a = get_lambdas_cached(req.home_team, req.away_team)
         home_goals, away_goals = most_likely_scoreline(lam_h, lam_a)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
