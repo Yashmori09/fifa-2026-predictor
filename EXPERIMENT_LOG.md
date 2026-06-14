@@ -3,8 +3,79 @@
 Every experiment is documented here: what we changed, why, what happened, what we learned.
 Results are cumulative — each builds on the previous best.
 
-**Metric:** Log Loss (lower = better). Secondary: Accuracy, F1 Macro.  
-**Test set:** 3,313 matches from Nov 2022 – Mar 2026 (includes 2022 WC).
+---
+
+## Phase 3 — Hybrid goal-scoring rebuild (June 2026)
+
+**New holdout:** 748 international matches from June 2025 to March 2026, validated *with no Dixon-Coles leakage* (refit DC on pre-holdout data only — see PHASE3_PLAN.md).
+
+**Final result: hybrid Poisson model + DC scoreline correction**
+- Log loss: **0.804** (vs Phase 2 deployed 0.826)
+- Accuracy: **62.6%**
+- RPS: **0.156**
+- ECE: **0.027**
+- Draw recall: 1.8% (structural football limit — see LEARNINGS.md)
+
+### The leakage discovery (Phase 3 - 0)
+
+Found the `dc_*` features used in Phase 2 training/eval were computed from a Dixon-Coles model fitted on data through 2026-03-31 — *including the holdout window*. Refit DC on data through 2025-06-10 only. Changed `dc_home_win_prob` by >2% for 629 of 748 holdout matches.
+
+### Experiment 1 — Aggressive data filtering
+
+Tested 8 filter strategies (drop friendlies, drop weak teams ELO<1500, modern era 2020+, combinations). **None improved tournament-holdout log loss.** S5 (most aggressive) improved draw recall from 2.6% to 20.5% but cost 5% on log loss and 1.5% on accuracy. → ship the original training pool.
+
+### Experiment 2 — Time-varying contextual features
+
+Added 8 new per-match-date features from `matches_clean.csv`: ELO momentum (6mo), SOS-adjusted points, goals vs strong opponents, unbeaten streak, goal-diff volatility, tournament XP, days since competitive. Diff features between home/away.
+
+**Result:** ~7.8% of total feature importance. Log loss change: -0.003 (full holdout), -0.010 (tournament). The features are too correlated with existing form features (`home_form_momentum`, `pts_per_match_5/10`) to add new signal.
+
+### Experiment 3 — Architecture comparison (hybrid vs classifier)
+
+3-way XGB classifier (Phase 2 architecture) vs hybrid two-Poisson regressors. With clean DC features:
+
+| Architecture | Log Loss | Acc | RPS | Draw recall |
+|---|---|---|---|---|
+| Phase 2 features (no B5) | 0.868 | 62.4% | 0.160 | 6.1% |
+| Phase 3 classifier (+B5) | 0.818 | 63.0% | 0.160 | 4.9% |
+| **Phase 3 hybrid (Poisson)** | **0.808** | 62.7% | **0.155** | 1.8% |
+| Pure Dixon-Coles (clean) | 0.856 | 60.2% | 0.169 | 9.2% |
+| Hybrid×3 + Phase 3 classifier×1 | **0.807** | 62.6% | **0.156** | 2.5% |
+
+Hybrid wins on log loss / RPS / Brier. The classifier wins barely on accuracy (worse on calibration). Final shipped model is the hybrid×3 + classifier×1 blend.
+
+### Experiment 5 — Ordinal regression on goal difference
+
+XGB multiclass on goal-diff buckets (k=7, k=11) + mord proportional-odds logistic regression.
+
+- XGB ordinal: ties the 3-way classifier (~0.005 log loss improvement)
+- Mord ordinal: solves draws (36.8% recall) but log loss balloons to 1.71
+
+Mord confirms the structural tradeoff observed in Phase 1's TabNet experiment: every approach that gets draws right pays heavily on log loss. The draw wall is real.
+
+### Phase 3 features summary
+
+- **157 total features** (Phase 2 had 97)
+- **6,162 training matches** (modern era 2018–2025; Phase 2 used full 35K)
+- **Added 26 B5 features:** 12 StatsBomb intl (`sb_xg_for_per_match`, `sb_def_overperformance`, etc.), 7 international form (`intl_form_last10`, `intl_win_rate`, etc.), 5 chemistry (`same_club_top3_pct`, `avg_intl_caps`), 9 difference features
+
+### Phase 3 deployment (June 14, 2026)
+
+Pushed `phase3_hybrid_clean.pkl` + DC v2 ratings to HF Space backend. Regenerated frontend deterministic bracket (champion: France). Updated UI: home championship chart, methodology, tournament round cards, about page stats all show Phase 3 100K-sim numbers.
+
+100K Monte Carlo: Spain 13.7% / France 13.6% / Argentina 10.3% / England 5.7% / Brazil 5.4%. No team above 14% — substantially less overconfident than Phase 2 (Spain was at 21.4% there).
+
+---
+
+## Historical experiments (Phase 1 & Phase 2)
+
+**Test set used below:** 3,313 matches from Nov 2022 – Mar 2026 (includes 2022 WC).
+**Metric:** Log Loss (lower = better). Secondary: Accuracy, F1 Macro.
+
+Note: these absolute numbers carried DC feature leakage (see Phase 3 above). The
+relative deltas between Phase 1/2 experiments are still informative, but the
+absolute log-loss values are inflated by ~0.04–0.06. Phase 3 numbers above
+are leak-free and definitive.
 
 ---
 

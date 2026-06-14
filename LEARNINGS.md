@@ -2,6 +2,68 @@
 
 Deep understanding gained while building this project. Not experiment results (see `EXPERIMENT_LOG.md`) — this is the *why* behind things, conceptual insights, and gotchas we discovered.
 
+> **Phase 3 (current model)** — the deployed model is a hybrid Poisson goal-scoring model (XGB Poisson regressors + Dixon-Coles scoreline correction), not a 3-way classifier. The learnings about ELO, EA features, confederation bias, etc. below still apply — they're foundational. The 3-way-classifier-specific architectural notes are kept here as **historical** context for the journey to Phase 3.
+
+---
+
+## Phase 3 Learnings (the hybrid goal-scoring rebuild)
+
+### 1.A The Dixon-Coles leakage bug
+
+DC features (`dc_home_win_prob`, `dc_lambda`, `dc_mu`) used as model inputs were computed from a Dixon-Coles model fitted on **all data through 2026-03-31** — including the holdout window we were validating on. This silently inflated metrics across the entire Phase 2 evaluation pipeline.
+
+**The smoking gun:** refitting DC on pre-holdout data only changed `dc_home_win_prob` by >2% for **629 of 748** holdout matches. The honest validation log loss is **0.804**, not the inflated number we'd have reported.
+
+**Lesson:** even when you're careful about train/test splits on the OUTCOME, derived features fitted globally can leak. Audit every feature computed via optimization (DC parameters, calibrators, embeddings) — they need their own holdout discipline.
+
+### 1.B Why predicting goals beats predicting outcomes
+
+A 3-way W/D/L classifier has to learn *"what makes a draw"* from features. But draws aren't *caused* by features — they happen when two attacking outputs cancel out. The hybrid model predicts each team's expected goals (λₕ, λₐ) directly, then derives W/D/L from the Poisson scoreline matrix.
+
+**The result:** draws emerge naturally when λₕ ≈ λₐ. The classifier collapsed to 5% draw recall (vs 22% actual rate) because it had no way to say "these teams look equal." The hybrid produces a real probability distribution over scorelines first, and the outcome distribution falls out of that.
+
+### 1.C The draw wall — football's structural ceiling
+
+Football has ~22% draws. **Every calibrated model predicts draws as the modal outcome only 3–9% of the time.** We tested 5 architectures (XGB classifier, hybrid Poisson, ordinal XGB with k=7 and k=11 buckets, mord proportional-odds, TabNet). Every approach that solved draw recall blew up the log loss:
+
+| Approach | Log Loss | Draw recall |
+|---|---|---|
+| Phase 3 classifier (3-way XGB) | 0.818 | 4.9% |
+| Phase 3 hybrid (Poisson) | 0.808 | 1.8% |
+| Mord proportional-odds | **1.710** ❌ | **36.8%** ✓ |
+| TabNet (from Phase 1) | 0.860 ❌ | 23% ✓ |
+
+This is a structural property of the sport, not a model defect. Calibrated forecasts of low-information events necessarily distribute probability across multiple outcomes — the modal outcome ends up being the team that's marginally favored, even if a draw is the "best single guess" for tournament-style matches.
+
+### 1.D Aggressive data filtering hurts
+
+Tested four strategies: drop weak teams (ELO <1500), drop friendlies, modern era only (2020+), and all combined. **Every aggressive filter HURT performance on tournament matches.** Even Andorra–Liechtenstein qualifiers teach the model real things about Poisson goal distributions, home advantage, and base rates. The intuition that "more relevant data = better model" failed empirically.
+
+**Lesson:** before throwing away data because it "looks noisy," verify that the noise actually degrades signal on the target task. We didn't.
+
+### 1.E StatsBomb intl data carries concentrated signal
+
+The new B5 features (StatsBomb intl tournament xG, intl form, chemistry) make up **16% of the feature count but 26% of model attention.** They help most on tournament matches specifically — +0.6% accuracy on continental finals and World Cup matches, where their training distribution (international tournament events) matches the prediction context.
+
+**Lesson:** features built on the *exact distribution* of your target task pull above their weight. Generic features (ELO, squad ratings) provide broad signal; task-distribution-matched features (StatsBomb intl matches → predicting intl matches) provide concentrated signal.
+
+### 1.F Where the model genuinely struggles
+
+Sliced by ELO difference between teams:
+- **Blowouts (>400 ELO gap):** 91% accuracy
+- **Lopsided (200–400):** 70%
+- **Clear (100–200):** 68%
+- **Moderate (50–100):** 46%
+- **Close (<50):** **31%** — essentially random
+
+The 31% accuracy on close matches isn't a model failure — it's football's irreducible uncertainty. These are also the matches most likely to be draws, where calibration matters more than picking the winner.
+
+---
+
+## Historical learnings (the journey to Phase 3)
+
+The sections below capture lessons from the original 3-way classifier work. The architectural notes are no longer the current implementation, but the conceptual insights (ELO bias, confederation echo chamber, EA FC counterweight, scoreline-vs-outcome trade-off) still apply.
+
 ---
 
 ## 1. ELO: What It Is and What It Isn't

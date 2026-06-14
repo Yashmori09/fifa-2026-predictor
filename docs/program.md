@@ -1,5 +1,7 @@
 # FIFA 2026 Match Outcome Predictor — AutoResearch Program
 
+> **Historical document.** This was the AutoResearch task spec for a Phase 1 optimization run on the original 3-way XGB/RF/LR classifier. The current deployed model is a Phase 3 hybrid goal-scoring model (XGB Poisson regressors + Dixon-Coles scoreline correction) — see [`PHASE3_PLAN.md`](PHASE3_PLAN.md). Phase 1 results below are kept as a record of the early experimentation phase.
+
 ## Task
 Improve a 3-class football match outcome predictor (home_win / draw / away_win).
 Minimize **log_loss** on the held-out test set. Lower is better.

@@ -2,6 +2,8 @@
 
 This document captures the reasoning behind every major decision in the project — from data selection to preprocessing to model choices. If something was done a certain way, the "why" is here.
 
+> **Phase 3 update (June 2026):** sections 1–3 (data selection, preprocessing, feature engineering rationale) still describe the current system. Section 4 (Model Selection) and section 5 (Tournament Simulation) reflect the original 3-way classifier design — the **current production architecture** is a **hybrid Poisson goal-scoring model** (XGB Poisson regressors + Dixon-Coles scoreline correction) with 157 features (added StatsBomb international, intl form, and chemistry features) and **100,000** Monte Carlo simulations. See [`PHASE3_PLAN.md`](PHASE3_PLAN.md) and [`../LEARNINGS.md`](../LEARNINGS.md#phase-3-learnings-the-hybrid-goal-scoring-rebuild) for the full Phase 3 design + experiment trail.
+
 ---
 
 ## 1. Data Selection

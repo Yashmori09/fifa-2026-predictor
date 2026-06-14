@@ -1,5 +1,7 @@
 # Experiment Log
 
+> **Note:** This is the original Phase 1/2 experiment log. The **comprehensive, current log** including all Phase 3 experiments (5 architectural comparisons, data filtering, time-varying features, ordinal regression, the Dixon-Coles leakage discovery, etc.) is at [`../EXPERIMENT_LOG.md`](../EXPERIMENT_LOG.md). Phase 1/2 absolute log-loss numbers below carried DC feature leakage — the leak-free Phase 3 results put the final model at **log loss 0.804** on the rolling 12-month holdout.
+
 ## Phase 1 Experiments (EXP-1 to EXP-10)
 
 ### Best Result: EXP-10 (Production Model)

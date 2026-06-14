@@ -2,6 +2,8 @@
 
 This document explains every feature used in the model — what it means, why we use it, and how it's computed.
 
+> **Phase 3 update (June 2026):** the **current model uses 157 features.** The 97-feature catalog below (ELO, form, H2H, confederations, EA FC squad ratings) is still active as the **base + squad layer.** Phase 3 added **60 more features** across three new groups — see the **"Phase 3 additions"** section at the end of this document. Total feature counts and importance percentages cited elsewhere refer to the full Phase 3 set.
+
 ---
 
 ## What Are We Predicting?
@@ -203,4 +205,64 @@ We optimize **log loss** rather than accuracy because:
 
 For a tournament simulator running 10,000 Monte Carlo simulations, we need **calibrated probabilities** — not just correct labels. A model saying "Brazil 65% win, Draw 20%, opponent 15%" produces realistic simulations. A model saying "Brazil 99%" produces the same winner every time regardless of opponent.
 
-Current best log loss: **0.8263** (AutoResearch optimized ensemble)
+Current best log loss: **0.804** (Phase 3 hybrid Poisson + DC, leak-free DC v2 features) — see [`PHASE3_PLAN.md`](PHASE3_PLAN.md)
+
+---
+
+## Phase 3 Additions (60 new features — June 2026)
+
+### 1. StatsBomb International Tournament Features (12: 6 per side)
+
+Computed from 314 international tournament matches (WC 2018/2022, Euro 2020/2024, Copa America 2024, AFCON 2023) using StatsBomb Open Data event-level information. Each WC 2026 team that participated in any of those gets:
+
+- `sb_xg_for_per_match` — average expected goals generated per international tournament match
+- `sb_xg_against_per_match` — average xG conceded
+- `sb_def_overperformance` — `(xg_against − goals_against)` per match. Positive = defense + GK saved more than expected (good)
+- `sb_att_overperformance` — `(goals_for − xg_for)` per match. Positive = clinical finishing
+- `sb_xg_set_piece_share` — share of own xG from free kicks + corners (set-piece reliance)
+- `sb_n_matches` — coverage count (recency-weighted matches in the source tournaments)
+
+**Coverage:** 39 of 48 WC 2026 teams have direct StatsBomb data. The 9 missing (Bosnia, Cape Verde, Curaçao, Haiti, Iraq, Jordan, New Zealand, Norway, Uzbekistan) never qualified for any of those tournaments — handled via universal fallback below.
+
+### 2. International Form Fallback (14: 7 per side)
+
+Computed from `matches_clean.csv` (all FIFA-recognized international matches) for **all 48 WC 2026 teams** over a trailing 2-year window before WC opening day, with linear recency weighting:
+
+- `intl_goals_for_per_match` / `intl_goals_against_per_match` (weighted average)
+- `intl_win_rate` / `intl_draw_rate`
+- `intl_form_last10` — average points (W=3, D=1, L=0) over last 10 matches
+- `intl_n_matches_2y` — sample size
+- `intl_competitive_pct` — share of matches that were qualifiers / tournaments / non-friendlies
+
+### 3. Team Chemistry (10: 5 per side)
+
+Computed from the official 2026 WC squads (1,248 players across 48 teams) + Transfermarkt player metadata:
+
+- `same_club_top1_pct` — share of squad at the single most-represented club
+- `same_club_top3_pct` — share of squad at the top 3 clubs combined
+- `n_unique_clubs` — squad spread across N clubs
+- `avg_intl_caps` — average international match count across squad (chemistry / experience proxy)
+- `avg_squad_age` — average squad age (from TM date-of-birth)
+
+### 4. B5 Difference Features (9)
+
+For the highest-signal B5 features, the model also receives the home-minus-away difference:
+
+- `sb_xg_for_diff`, `sb_def_overperf_diff`, `sb_att_overperf_diff`
+- `intl_form_diff`, `intl_win_rate_diff`, `intl_gf_diff`, `intl_ga_diff`
+- `chem_same_club_diff`, `chem_caps_diff`
+
+### Importance
+
+The 60 Phase 3 features account for **26.3% of total model attention** despite being only 16% of the feature count. They help most on **continental finals and World Cup matches** specifically (+0.6% accuracy on that slice) — their training distribution (international tournament data) matches the prediction context.
+
+### Architecture change
+
+Phase 3 also switched the **architecture** from a 3-way classifier (XGB×3 + RF×1 voting on home_win / draw / away_win) to a **hybrid goal-scoring model:**
+
+1. Two XGBoost Poisson regressors predict (λₕ, λₐ) — expected goals for each team
+2. Joint Poisson scoreline matrix P(home=i, away=j) up to 10-10
+3. Dixon-Coles low-score correction (rho) applied to (0-0, 1-0, 0-1, 1-1)
+4. Sum the matrix → W/D/L probabilities
+
+Draws emerge naturally when λₕ ≈ λₐ, fixing the structural draw-collapse of 3-way classifiers.

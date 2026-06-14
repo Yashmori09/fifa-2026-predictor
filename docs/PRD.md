@@ -1,10 +1,14 @@
 # FIFA 2026 Predictor — Product Requirements Document
 
+> **Status (June 2026):** The deployed model is **Phase 3** — a hybrid goal-scoring model (XGB Poisson regressors + Dixon-Coles scoreline correction). See [`PHASE3_PLAN.md`](PHASE3_PLAN.md) for the architecture and full experiment trail. The Phase 1/2 sections below describe the original PRD and remain useful as a record of the project's evolution.
+
 ## Overview
 
-A personal portfolio project to predict the FIFA World Cup 2026 winner and simulate the full tournament. Built with real ML experimentation (multiple models, comparisons, AutoResearch), a clean public-facing web app, and a well-documented GitHub repo showcasing the full ML workflow.
+A personal portfolio project to predict the FIFA World Cup 2026 winner and simulate the full tournament. Built with real ML experimentation (multiple models, comparisons, hybrid Poisson architecture, 5 follow-up experiments), a clean public-facing web app, and a well-documented GitHub repo showcasing the full ML workflow.
 
 **Goal:** Share on LinkedIn. Public users can explore predictions, simulate brackets, and see how the models work.
+
+**Currently live:** [fifa-2026-predictor.vercel.app](https://fifa-2026-predictor.vercel.app) (frontend on Vercel + FastAPI backend on HuggingFace Spaces).
 
 ---
 

@@ -1,5 +1,7 @@
 # FIFA 2026 Predictor — Implementation Plan (Phase 1)
 
+> **Historical document.** This is the original Phase 1 implementation plan. For the current Phase 3 architecture (hybrid Poisson goal-scoring model + Dixon-Coles + StatsBomb intl features), see [`PHASE3_PLAN.md`](PHASE3_PLAN.md). The data sources (D1/D2/D3) and overall project structure described below are still accurate.
+
 ## Project Structure
 
 ```

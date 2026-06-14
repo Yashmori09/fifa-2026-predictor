@@ -1,5 +1,7 @@
 # Learnings
 
+> **Note:** This is the original Phase 1/2 learnings doc. The **comprehensive, current learnings** doc is [`../LEARNINGS.md`](../LEARNINGS.md) which has a Phase 3 section at the top covering the hybrid goal-scoring rebuild: the Dixon-Coles leakage bug, why predicting goals beats predicting outcomes, the structural draw wall, and what we found by aggressively filtering training data. The sections below remain valid as conceptual learnings about confederation bias, ELO limitations, and coverage tradeoffs — they're foundational and still apply to the Phase 3 model.
+
 ## The Confederation Echo Chamber Problem
 
 **Problem:** Both ELO and Dixon-Coles derive ratings from match results. Teams in weak confederations (CONCACAF, AFC) accumulate inflated ratings by beating weak opponents. Since BOTH signals are match-result-derived, they reinforce the same bias — there's no independent correction.
