@@ -35,8 +35,36 @@ These three were debated and locked on 2026-06-14:
 | Decision | Choice | Why |
 |---|---|---|
 | **Success bar** | Beat "pick higher squad rating" baseline by **5%+ outcome accuracy** | The dumb non-ML rule hits ~52% on international football. Our ML earns its complexity only by beating it by a meaningful margin (target ≥60%). Bookmaker-odds parity (~55-60%) is unrealistic in this scope. |
-| **Historical lineups** | Scrape FBref for actual lineups of past international matches | Approach B from the original plan. Time-consuming but the only honest way to compute trailing-12-month player form features for historical training matches. Top-26-by-caps proxy is acceptable fallback if specific matches can't be sourced. |
+| **Historical lineups** | Use Transfermarkt appearances data (per-match records since 2012) | **Replaces original FBref plan.** FBref is hard-blocked by Cloudflare. Pivoted to `dcaribou/transfermarkt-datasets` (community-scraped TM CSVs) which give us per-match appearance records. Top-26-by-caps proxy is still the fallback for the 81 truly-unfindable players. |
 | **Architecture** | Two-track hybrid: XGB+RF classifier for outcome + Dixon-Coles bivariate Poisson for scoreline | The current Phase 2 approach reverse-engineers Poisson lambdas from outcome probabilities (approximation). A proper Dixon-Coles model gives real goal expectancies with the rho correction — academic standard for football scoreline prediction. We already have Dixon-Coles infrastructure from Phase 1. |
+
+## Progress (as of 2026-06-14)
+
+### ✓ Phase A — Data acquisition complete via revised approach
+FBref was blocked by Cloudflare (even with stealth + soccerdata). Pivoted to two sources:
+
+| Source | What | Coverage | Stats |
+|---|---|---|---|
+| **Understat** (via `soccerdata`) | Big 5 leagues × 3 seasons (23/24, 24/25, 25/26) | 4,321 unique players | **xG, xA, np_xG**, key passes, shots, goals, assists, minutes |
+| **Transfermarkt datasets** (`dcaribou/transfermarkt-datasets`, weekly-refreshed CSVs) | All pro leagues globally | 47,716 players + per-match appearances since 2012 | Goals, assists, minutes, market value, **per-match records (date)** |
+
+**Coverage of 1,248 WC squad players:**
+
+| Tier | Players | Has xG? | Basic stats? |
+|---|---|---|---|
+| Both sources (Big 5 → matched in both) | 573 | ✓ | ✓ |
+| Transfermarkt only (non-Big-5 leagues) | 594 | ✗ | ✓ |
+| Truly unfindable (fall back to team-level form) | 81 | ✗ | ✗ |
+
+**Files in place:**
+- `data/processed/understat_players.csv` — 8,326 player-season records
+- `data/raw/transfermarkt/players.csv.gz` — 47,716 player metadata
+- `data/raw/transfermarkt/appearances.csv.gz` — per-match records since 2012 (41 MB)
+- `data/raw/transfermarkt/national_teams.csv.gz` — NT metadata + FIFA ranking
+- `data/processed/wc_tm_resolution.csv` — WC squad name → TM player ID map (93% matched)
+
+### → Phase B — Next (feature engineering)
+Yet to start. Plan below.
 
 ---
 
@@ -74,64 +102,67 @@ These three were debated and locked on 2026-06-14:
 
 ---
 
-## Phase A — Data acquisition
+## Phase A — Data acquisition  ✓ COMPLETE (revised approach)
 
-### A1. FBref player stats pipeline
-- **What:** Per-player club match stats (goals, assists, minutes, xG, xA, position-specific metrics) for the last 1–2 seasons for every WC squad player (~1,200 players).
-- **Source:** [FBref](https://fbref.com) — free, scrapeable, no Cloudflare. Rate-limited to ~10 req/min, so plan accordingly.
-- **Output:** `data/processed/player_form_2024_2026.csv` keyed by player+season.
+### What we did instead of FBref
 
-### A2. Recent international lineups
-- **What:** Starting XI for every national team's matches in the last ~2 years.
-- **Source:** FBref international tab, or Transfermarkt match pages.
-- **Output:** `data/processed/intl_lineups.csv` keyed by (date, team, player) with starter/sub flag.
+| Original plan | What actually happened |
+|---|---|
+| Scrape FBref directly for per-player stats | FBref Cloudflare-blocked even with stealth — no path through soccerdata |
+| Scrape FBref for international lineups | TM appearances data is per-match anyway; lineups are implicit in who-played-when |
+| Coach metadata via Wikipedia | Deferred to Phase B (still doing it, smaller scope) |
+| Match context (travel/rest) | Deferred to Phase B (compute from schedule) |
+| Extended 2023-2026 matches | Have via football-data.org + soccerdata sources |
+| Live injury data | Deferred to Phase 3.1 |
 
-### A3. Coach metadata
-- **What:** Current coach + start date for each of 48 WC teams.
-- **Source:** Wikipedia (manual or scraped).
-- **Output:** `data/processed/coaches.csv` keyed by team.
-
-### A4. Match context features
-- **What:** For each 2026 WC match: venue, travel distance from previous match, days rest, crowd composition.
-- **Source:** football-data.org schedule + simple distance lookup.
-- **Output:** Joined into the feature pipeline.
-
-### A5. Extended match results (2023-2026)
-- **What:** All international matches from Nov 2022 to present.
-- **Source:** football-data.org for 2024 onward; existing D1/D2 datasets cover earlier.
-- **Output:** Extended `matches_clean.csv` with the new window.
-
-### A6. Live injury / availability data (optional)
-- **What:** Per-player fit/injured/suspended status updated through tournament.
-- **Source:** Twitter feeds, Transfermarkt, official team announcements. Hard. Manual updates may be more practical.
-- **Defer if unworkable** — note as Phase 3.1.
+**Net:** all the data we need for Phase B is already on disk. No more scraping required.
 
 ---
 
 ## Phase B — Feature engineering
 
-### B1. Aggregate player form → team-level
-- Weighted by minutes played + position.
-- Position-aware: forwards' xG matters differently than defenders' tackles.
-- Outputs: `team_form_xg_per_90`, `team_form_goals_per_90`, `team_form_clean_sheet_rate`, etc.
+### B1. Per-player trailing-12-month form features
+- For each player + reference date, compute from TM `appearances` + Understat `player_seasons`:
+  - `goals_per_90_last12mo`
+  - `assists_per_90_last12mo`
+  - `minutes_last12mo` (fitness proxy)
+  - `xg_per_90_last12mo` (Big-5 players only — null for others)
+  - `np_xg_per_90_last12mo` (Big-5 only)
+  - `xa_per_90_last12mo` (Big-5 only)
+- Output: function `compute_player_form(player_id, ref_date)` callable per match.
 
-### B2. Chemistry features
-- `same_club_concentration` — share of squad in top 3 clubs.
-- `lineup_continuity_2yr` — average shared minutes between current first-choice XI over last 2 years.
-- `coach_tenure_days` — days since current coach took over.
+### B2. Aggregate player form → team-level (minutes-weighted)
+- Position-aware. Forwards' xG weighted differently than defenders' tackles.
+- Outputs per team per reference date:
+  - `team_form_xg_per_90` (sum xG of squad ÷ team minutes × 90)
+  - `team_form_goals_per_90`
+  - `team_form_top11_avg_overall` (proxy for likely-starting XI strength)
+  - For unmatched players, fall back to using team's recent results-based form
+- Output: `data/processed/team_form_features_by_date.csv` keyed by (team, ref_date)
 
-### B3. Context features (per-match)
-- `is_host_at_home` — binary flag, 1 if team is co-host playing on home soil.
-- `days_rest` — days since this team's last match.
-- `travel_km` — distance from previous match venue.
-- Reuse / extend `neutral_flag` — `neutral=False` for hosts playing at home.
+### B3. Chemistry features
+- `same_club_concentration` — share of squad in top 3 clubs (from `squad_players.json`)
+- `lineup_continuity_2yr` — for each pair of WC squad members, count of shared international match dates in last 2 years (from TM appearances filtered to NT competitions)
+- `coach_tenure_days` — days since current coach took over (Wikipedia scrape, ~30 min for 48 teams)
 
-### B4. Refresh ELO through 2026
-- Recompute via existing `compute_elo` pipeline on extended match results.
-- Output: updated `final_elos.csv`.
+### B4. Match context features (Tier A additions)
+- `is_host_at_home` — binary flag, 1 if team is co-host playing on home soil
+- `neutral` — extend existing flag: `neutral=False` for hosts on home soil
+- `days_rest` — days since this team's last match
+- `travel_km` — distance from previous match venue (uses match coordinates + simple Haversine)
+- `tz_jump` — time zones crossed since last match (proxy for jet lag)
 
-### B5. Drop pre-2010 from training set
-- Update notebook `04_model_training.ipynb` to filter `date >= '2010-01-01'`.
+### B5. Set-piece + GK signals (Tier A additions)
+- `team_set_piece_goals_per_90` — corner/free-kick goals last 12 mo (derivable from Understat for Big-5 players, accept gap for others)
+- `team_gk_psxg_diff_last12mo` — post-shot xG saved above expected (Understat for Big-5 GKs)
+
+### B6. Refresh ELO through 2026
+- Recompute via existing `compute_elo` pipeline on extended match results
+- Output: updated `final_elos.csv`
+
+### B7. Drop pre-2010 from training set
+- Update notebook `04_model_training.ipynb` to filter `date >= '2010-01-01'`
+- Verify match count stays in usable range (~14k matches)
 - Verify match count stays in usable range (~14K matches).
 
 ---
@@ -188,8 +219,8 @@ These three were debated and locked on 2026-06-14:
 
 | Risk | How we handle it |
 |---|---|
-| FBref scraping fails or gets blocked | Figure it out as it comes. Plan A: Playwright + 1-req-per-10s throttle. Plan B: Transfermarkt for similar coverage. Plan C: StatsBomb (paid). Don't pre-engineer for failures we may not hit. |
-| Player form data has gaps for non-EU-league players | Pull from secondary sources for those players (Iranian/Uzbek/Panama domestic leagues). FM23 already in repo is the natural fallback for whatever still slips through. |
+| ~~FBref scraping fails or gets blocked~~ | ✓ Resolved — FBref WAS blocked; pivoted to Understat + Transfermarkt datasets. |
+| Player form data has gaps for non-EU-league players | ✓ Tracked — 81 of 1,248 WC players unmatched. Fall back to team-level form for those. Concentrated in low-probability teams (Iran, Haiti, etc.). |
 | New features hurt calibration | Standard ML hygiene — add one at a time, watch ECE on the held-out set, drop anything that hurts. Same approach Phase 2 used in `EXPERIMENT_LOG.md`. |
 | **Hindsight overfitting to 2026 WC matches** | **Non-negotiable: no 2026 match enters the training set, ever.** Validate exclusively on 2024-2025 international matches. Run on 2026 matches only at the end as the final sanity check. If we keep training clean, retroactive predictions on past 2026 matches are honest model output, not hindsight. |
 | Mid-tournament deployment looks like cheating | Not a real concern — nobody is auditing this in real time. As long as risk #4 is enforced, the model's predictions are honest no matter when they're computed. |
@@ -211,22 +242,21 @@ That's a portfolio story that demonstrates engineering judgment, not just modeli
 
 | Question | Resolved |
 |---|---|
-| FBref scraping vs paid Opta | FBref (free, scrapeable, Opta-licensed data underneath) |
+| ~~FBref scraping vs paid Opta~~ | Pivoted entirely — Understat for Big-5 xG + Transfermarkt datasets for everything else. No paid sources. |
 | Per-player form vs team aggregate | Per-player → aggregated to team. Both granularities engineered. |
 | Live injury data | **Deferred to Phase 3.1.** Hard to source historically, manual upkeep at runtime. |
 | Phase 2 predictions kept side-by-side? | **No.** Wholesale replace once Phase 3 ships (clean train/test discipline makes retroactive predictions honest). |
+| Tier-A "what hedge funds have" additions? | **Yes.** Folded into Phase B: host flag, days rest, travel km, coach tenure, set-piece, GK PSxG, lineup continuity. |
 
 ## Next step
 
-**Phase A1 — FBref scraping infrastructure.** Concrete first task:
+**Phase B1-B2 — Build player form features and team aggregation.**
 
-1. Pick 3 test players covering different leagues:
-   - European star — e.g., Vinicius Júnior (Real Madrid)
-   - Asian player — e.g., Mehdi Taremi (Olympiacos)
-   - CONCACAF player — e.g., Cyle Larin (Southampton)
-2. Visit each FBref profile, document the URL pattern + which stat tables we want.
-3. Write a single-player function `fetch_fbref_player(url)` that parses one page and returns structured stats (goals, assists, minutes, xG, xA per season).
-4. Verify parsed data matches what's visible on the page.
-5. *Then* expand to the resolver (map our 1,247 players → FBref URLs) and the throttled batch scrape.
+Concrete first task:
+1. Open the TM `appearances.csv.gz` (per-match records since 2012).
+2. Build `compute_player_form(player_id, ref_date)` that returns trailing-12-month stats (goals_per_90, assists_per_90, minutes, etc.) for any player at any reference date.
+3. Same for Understat for the 573 Big-5 players (adds xG/xA per 90).
+4. Test on 3 players: Vinicius, Taremi, Davies — verify the trailing-12-month numbers look right.
+5. Then aggregate player → team for each historical match's date (minutes-weighted).
 
-Time budget: the test/parse step is 1-2 hours. Full pipeline once verified: ~2 hours of throttled scraping (1 req per 6 sec × 1,247 players).
+Time budget: ~2-3 hours for B1-B2.
