@@ -317,10 +317,18 @@ def _matrix_to_wdl(M: np.ndarray) -> tuple[float, float, float]:
 
 
 def most_likely_scoreline(lam_h: float, lam_a: float, max_goals: int = 6) -> tuple[int, int]:
-    M = _scoreline_matrix(lam_h, lam_a)
-    idx = np.unravel_index(np.argmax(M[: max_goals + 1, : max_goals + 1]),
-                            (max_goals + 1, max_goals + 1))
-    return int(idx[0]), int(idx[1])
+    """Return the expected scoreline = round(λ_h)-round(λ_a).
+
+    Why expected (mean) instead of modal (argmax of joint Poisson):
+      The Poisson distribution is concentrated near its mean but discrete.
+      For a heavy favorite (e.g. λ_h=2.6, λ_a=0.7), the single most-likely
+      scoreline is 2-0 (12.5% prob), but the mean is 2.6-0.7 which rounds
+      to 3-1. The argmax systematically understates blowouts because the
+      Poisson has a long right tail when λ is high. Showing round(λ_h, λ_a)
+      gives a displayed scoreline that matches the model's actual goal
+      expectations.
+    """
+    return int(round(lam_h)), int(round(lam_a))
 
 
 # ── Predict + cache API (same as Phase 2 predictor) ──────────────────────

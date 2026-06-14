@@ -33,21 +33,34 @@ MAX_G = 8
 
 
 def most_likely_score(lam_h: float, lam_a: float, outcome: str) -> tuple[int, int]:
-    """Return (hg, ag) maximizing Poisson(lam_h)*Poisson(lam_a) subject to outcome."""
-    pmf_h = poisson.pmf(np.arange(MAX_G + 1), lam_h)
-    pmf_a = poisson.pmf(np.arange(MAX_G + 1), lam_a)
-    grid = np.outer(pmf_h, pmf_a)  # grid[h, a]
+    """Return the expected scoreline = round(λ_h)-round(λ_a), nudged to satisfy
+    the chosen outcome.
 
-    if outcome == "home":
-        mask = np.tril(np.ones_like(grid, dtype=bool), -1)
-    elif outcome == "away":
-        mask = np.triu(np.ones_like(grid, dtype=bool), 1)
-    else:
-        mask = np.eye(MAX_G + 1, dtype=bool)
+    Why expected (mean) instead of modal (argmax of joint Poisson):
+      The Poisson is concentrated near its mean but discrete. For a heavy
+      favorite (λ_h=2.6, λ_a=0.7) the single most-likely scoreline is 2-0
+      (12.5% prob), but the mean is 2.6-0.7 which rounds to 3-1. The argmax
+      systematically understates blowouts because the Poisson has a long
+      right tail when λ is high. Showing round(λ_h, λ_a) gives a scoreline
+      that matches the model's actual goal expectations.
 
-    masked = np.where(mask, grid, -1)
-    idx = np.unravel_index(np.argmax(masked), masked.shape)
-    return int(idx[0]), int(idx[1])
+    If the rounded expected scoreline doesn't satisfy the chosen W/D/L
+    outcome (e.g. λ=(1.3,1.1) rounds to 1-1 but outcome is "home"), nudge
+    the appropriate side by 1.
+    """
+    hg = int(round(lam_h))
+    ag = int(round(lam_a))
+
+    if outcome == "home" and hg <= ag:
+        hg = ag + 1
+    elif outcome == "away" and ag <= hg:
+        ag = hg + 1
+    elif outcome == "draw" and hg != ag:
+        # average the two and use it for both sides
+        m = int(round((lam_h + lam_a) / 2))
+        hg = ag = m
+
+    return hg, ag
 
 
 def det_group_match(home: str, away: str) -> dict:
