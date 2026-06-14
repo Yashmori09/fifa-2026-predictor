@@ -49,6 +49,8 @@ const TERMS: Record<string, string> = {
   "ECE": "Expected Calibration Error — measures if predicted probabilities match reality (0 = perfect)",
   "calibration": "When a model says '70% chance', does it actually happen 70% of the time? That's calibration",
   "Poisson": "A statistical method for modeling random events like goals — used to generate realistic scorelines",
+  "Dixon-Coles": "A goal-scoring model that gives each team an attack and defense rating, then predicts match outcomes via Poisson goal distributions — corrected for the fact that low-score draws happen more than pure Poisson predicts",
+  "StatsBomb": "Free open-source event-level data covering every shot, pass, and tackle in major international tournaments (WC 2018/2022, Euro 2020/2024, Copa America 2024, AFCON 2023) — we use it to compute team attack/defense quality in international matches specifically",
   "ensemble": "Multiple ML models combined — they vote on each prediction, reducing individual errors",
   "feature": "A measurable input the model uses to make predictions (e.g., ELO rating, recent form)",
   "form": "A team's recent performance — win rate, goals scored/conceded over the last few matches",

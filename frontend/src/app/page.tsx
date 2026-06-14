@@ -2,15 +2,15 @@ import Link from "next/link";
 import Tip from "@/components/Tip";
 
 const CHART_DATA = [
-  { rank: "01", team: "Spain", code: "es", pct: 25.20, top: true },
-  { rank: "02", team: "France", code: "fr", pct: 17.11, top: true },
-  { rank: "03", team: "Argentina", code: "ar", pct: 15.29, top: true },
-  { rank: "04", team: "England", code: "gb-eng", pct: 12.61, top: true },
-  { rank: "05", team: "Brazil", code: "br", pct: 5.03, top: false },
-  { rank: "06", team: "Germany", code: "de", pct: 4.34, top: false },
-  { rank: "07", team: "Portugal", code: "pt", pct: 3.57, top: false },
-  { rank: "08", team: "Netherlands", code: "nl", pct: 3.36, top: false },
-  { rank: "09", team: "Colombia", code: "co", pct: 1.95, top: false },
+  { rank: "01", team: "Spain", code: "es", pct: 13.73, top: true },
+  { rank: "02", team: "France", code: "fr", pct: 13.62, top: true },
+  { rank: "03", team: "Argentina", code: "ar", pct: 10.28, top: true },
+  { rank: "04", team: "England", code: "gb-eng", pct: 5.66, top: false },
+  { rank: "05", team: "Brazil", code: "br", pct: 5.41, top: false },
+  { rank: "06", team: "Portugal", code: "pt", pct: 4.74, top: false },
+  { rank: "07", team: "Japan", code: "jp", pct: 3.94, top: false },
+  { rank: "08", team: "Morocco", code: "ma", pct: 3.81, top: false },
+  { rank: "09", team: "Netherlands", code: "nl", pct: 3.59, top: false },
 ];
 
 export default function HomePage() {
@@ -27,7 +27,7 @@ export default function HomePage() {
           2026 WORLD CUP?
         </h1>
         <p className="text-secondary text-[13px] md:text-[15px] max-w-[820px]">
-          10,000 <Tip term="Monte Carlo">Monte Carlo</Tip> simulations &middot; Player-rated squad analysis
+          100,000 <Tip term="Monte Carlo">Monte Carlo</Tip> simulations &middot; Hybrid Poisson goal-scoring model
         </p>
         <div className="w-[60px] h-1 bg-purple rounded-sm" />
       </section>
@@ -39,7 +39,7 @@ export default function HomePage() {
             <h2 className="font-[family-name:var(--font-anton)] text-[22px] md:text-[28px] tracking-wide">
               CHAMPIONSHIP PROBABILITY
             </h2>
-            <p className="text-secondary text-[11px] mt-1">How often each team wins across 10,000 simulated tournaments</p>
+            <p className="text-secondary text-[11px] mt-1">How often each team wins across 100,000 simulated tournaments</p>
           </div>
         </div>
 
@@ -82,7 +82,7 @@ export default function HomePage() {
           ))}
         </div>
         <p className="font-mono text-[10px] text-secondary mt-4">
-          Model: <Tip term="XGBoost">XGB</Tip>×3 + <Tip term="Random Forest">RF</Tip>×1 · Features: <Tip term="EA FC">EA FC</Tip> + <Tip term="ELO">ELO</Tip> + Form
+          Model: <Tip term="XGBoost">XGB</Tip> Poisson + <Tip term="Dixon-Coles">Dixon-Coles</Tip> · Features: <Tip term="EA FC">EA FC</Tip> + <Tip term="ELO">ELO</Tip> + <Tip term="StatsBomb">StatsBomb</Tip> intl + Form
         </p>
       </section>
 

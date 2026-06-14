@@ -5,124 +5,117 @@ const SIGNALS = [
   {
     num: "01",
     numColor: "text-purple",
-    title: "ELO Ratings",
-    desc: "A chess-inspired rating system adapted for international football. Every team starts with a base rating that goes up after wins and down after losses — weighted by opponent strength and match importance. Teams that consistently beat strong opponents rise to the top.",
-    stat: "30.2% of model importance",
+    title: "ELO, Form & Match Context",
+    desc: "A chess-inspired rating system adapted for international football, plus recent form (last 5 and 10 matches), head-to-head history, confederation, and tournament importance. The model also receives a Dixon-Coles attack/defense rating per team — computed without leaking into the holdout window.",
+    stat: "42.3% of model importance",
     statColor: "text-purple",
   },
   {
     num: "02",
     numColor: "text-cyan",
     title: "EA FC Squad Ratings",
-    desc: "Player ratings from EA Sports FC (formerly FIFA) video games. Professional scouts rate every player\u2019s pace, shooting, passing, defending, and physicality on a 1–99 scale. These are aggregated into squad-level metrics — overall strength, positional depth, and top-player quality.",
-    stat: "31.2% of model importance",
+    desc: "Per-year squad ratings from EA Sports FC (FIFA 15 through FC 26). Scout-assessed attributes are aggregated per team into overall strength, positional splits (GK / DEF / MID / FWD), top-player quality, depth, and the six core team attributes (pace, shooting, passing, dribbling, defending, physic).",
+    stat: "31.3% of model importance",
     statColor: "text-cyan",
   },
   {
     num: "03",
     numColor: "text-pink",
-    title: "Form, History & Context",
-    desc: "Recent win rate, goals scored and conceded, head-to-head record between the two teams, tournament importance (World Cup vs friendly), home advantage, and momentum \u2014 whether a team is on a winning or losing streak heading into the match.",
-    stat: "38.6% of model importance",
+    title: "StatsBomb Intl & Chemistry",
+    desc: "New in Phase 3. Event-level data from 314 international tournament matches (WC 2018/2022, Euro 2020/2024, Copa America 2024, AFCON 2023) gives each team an xG profile in international football specifically. Combined with squad chemistry (same-club concentration, average international caps, average age) and 24-month international form.",
+    stat: "26.3% of model importance",
     statColor: "text-pink",
   },
 ];
 
 const MODEL_CARDS = [
   {
-    tag: "\u00d7 3 COPIES",
+    tag: "× 2 REGRESSORS",
     tagColor: "text-purple",
     borderColor: "border-purple",
-    title: "XGBoost",
-    desc: "Gradient-boosted decision trees. Learns complex non-linear patterns \u2014 like how ELO difference matters more in knockout rounds than group stages. Handles missing data natively.",
+    title: "XGBoost Poisson",
+    desc: "Two gradient-boosted regressors trained with Poisson loss — one predicts the home team's expected goals (λₕ), the other the away team's (λₐ). Predicting goals directly (instead of W/D/L) means draws emerge naturally when the two λ's are close.",
   },
   {
-    tag: "\u00d7 1 COPY",
+    tag: "SCORELINE ENGINE",
     tagColor: "text-cyan",
     borderColor: "border-cyan",
-    title: "Random Forest",
-    desc: "500 independent decision trees that each see a random subset of features. Provides stability and reduces overfitting \u2014 when XGBoost is too confident, the Random Forest pulls predictions back toward reality.",
+    title: "Dixon-Coles",
+    desc: "The 11×11 joint scoreline matrix P(home=i, away=j) is built from the two Poisson distributions, then corrected for the four low-score cells (0–0, 1–0, 0–1, 1–1) where real-world football diverges from pure Poisson. Match outcome probabilities sum from the matrix.",
   },
 ];
 
 const STATS = [
-  { value: "97", label: "Input Features", color: "text-purple" },
-  { value: "35,304", label: "Training Matches", color: "text-cyan" },
-  { value: "1884\u20132024", label: "Training Period", color: "text-pink" },
-  { value: "10,000", label: "Tournament Sims", color: "text-green-500" },
+  { value: "157", label: "Input Features", color: "text-purple" },
+  { value: "6,162", label: "Training Matches", color: "text-cyan" },
+  { value: "2018–2025", label: "Training Period", color: "text-pink" },
+  { value: "100,000", label: "Tournament Sims", color: "text-green-500" },
 ];
 
 const STEPS = [
   {
     num: "STEP 1",
     numColor: "text-purple",
-    title: "Predict Outcome Probabilities",
-    desc: "The ensemble outputs three probabilities for each match. Example: France vs Brazil \u2192 45% home win, 28% draw, 27% away win.",
+    title: "Predict Expected Goals",
+    desc: "The two Poisson regressors output λₕ and λₐ directly from the 157 features. Example: Spain vs France → λₕ = 2.16, λₐ = 1.40.",
   },
   {
     num: "STEP 2",
     numColor: "text-cyan",
-    title: "Reverse-Engineer Goal Rates",
-    desc: "Using a precomputed Poisson grid, the model finds the goal-scoring rates (λ) that best reproduce those probabilities. If France has a 45% win chance, it finds λ values where Poisson-generated scores give ~45% home wins.",
+    title: "Build Scoreline Matrix",
+    desc: "Joint probability P(home=i, away=j) for every (i, j) up to 10–10 from the two Poisson distributions. Apply the Dixon-Coles correction to the four low-score cells where real football deviates from independent Poisson.",
   },
   {
     num: "STEP 3",
     numColor: "text-pink",
-    title: "Simulate Scorelines",
-    desc: "Random goals are drawn from the Poisson distribution \u2014 so the same match might be 2-1 in one simulation and 0-0 in another. Over 10,000 runs, the randomness averages out and the true probabilities emerge.",
+    title: "Sum to W / D / L",
+    desc: "Above the diagonal = home win, on the diagonal = draw, below = away win. The full scoreline matrix lets the Monte Carlo simulator sample a realistic (2–1, 0–0, 3–2...) for each of the tournament's 103 matches per simulation.",
   },
 ];
 
 const DISCOVERIES = [
   [
     {
-      tag: "THE ECHO CHAMBER PROBLEM",
+      tag: "THE LEAKAGE BUG",
       tagColor: "text-red-500",
-      title: "Win-based ratings inflate weak-region teams",
-      desc: "ELO ratings are calculated from match results. Teams in weaker regions (like CONCACAF or AFC) accumulate inflated ratings by beating other weak teams. Mexico and Japan appeared as realistic contenders in early models \u2014 anyone who watches football knows that\u2019s wrong. Adding scout-assessed player ratings from EA FC broke the echo chamber.",
+      title: "Found a Dixon-Coles leak in the original pipeline",
+      desc: "The DC features (dc_home_win_prob, dc_lambda, dc_mu) used as model inputs were computed from a Dixon-Coles model fitted on all data through 2026-03-31 — the same window we were validating on. Refitting DC on pre-holdout data only changed dc_home_win_prob by >2% for 629 of the 748 holdout matches. The honest validation log loss is 0.804, not the inflated number we'd have reported.",
     },
     {
-      tag: "THE COVERAGE TRADE-OFF",
+      tag: "MORE DATA, NOT CLEANER",
       tagColor: "text-amber-500",
-      title: "More matches > better features",
-      desc: "EA player ratings only exist from 2014, but the training data goes back to 1884. I tried training only on modern data (6,000 matches with full features) vs all data (35,000 matches with gaps). The larger dataset won every time — old matches still teach the model about ELO patterns, form, and home advantage.",
+      title: "Aggressive filtering hurts every metric",
+      desc: "I tested four filter strategies: drop friendlies (already filtered), drop weak teams (ELO < 1500), modern era only (2020+), and all three combined. Every aggressive filter HURT performance on tournament matches. Even Andorra-Liechtenstein qualifiers teach the model real things about Poisson goal distributions, home advantage, and underdog conversion rates.",
     },
   ],
   [
     {
-      tag: "CALIBRATION > RAW ACCURACY",
+      tag: "THE DRAW WALL",
       tagColor: "text-cyan",
-      title: "A well-calibrated model matters more for simulation",
-      desc: "When the model says \u201870% chance of winning,\u2019 does it actually happen 70% of the time? That\u2019s calibration. For Monte Carlo simulation, calibration matters more than getting individual matches right — you want the dice to be fair, even if you can\u2019t predict every roll. This model achieves ECE of 0.018 (near-perfect calibration).",
+      title: "Football's irreducible structural limit",
+      desc: "Football has ~22% draws but every calibrated model predicts draws as the modal outcome only 3-9% of the time. Tested 5 architectures (XGB classifier, hybrid Poisson, ordinal XGB, mord proportional-odds, TabNet). Every approach that solved draw recall blew up the log loss. The tradeoff is structural to the sport, not specific to any one model.",
     },
     {
-      tag: "LEAN BEATS COMPLEX",
+      tag: "STATSBOMB CARRIES SIGNAL",
       tagColor: "text-green-500",
-      title: "9 difference features outperform 44 detailed features",
-      desc: "I tried feeding the model 44 individual squad attributes (pace, shooting, defending for each team). But simple difference features — \u2018how much better is Team A\u2019s attack than Team B\u2019s defense?\u2019 — performed equally well with far less noise. When 82% of training rows have missing squad data, simpler is better.",
+      title: "Intl tournament data > generic club stats",
+      desc: "The new B5 features (international xG, intl form, chemistry) make up 16% of the feature count but 26% of model attention. They help most on tournament matches specifically — +0.6% accuracy improvement on continental finals and World Cup matches, where their training distribution matches the prediction context.",
     },
   ],
   [
     {
-      tag: "FOOTBALL HAS EVOLVED",
+      tag: "WHY POISSON BEATS CLASSIFIER",
       tagColor: "text-purple",
-      title: "A 3-0 win in 1920 is not the same as a 3-0 win today",
-      desc: "Goals per game have dropped from 5.5 to 2.7 over 140 years. Home advantage has shrunk from 40% to 23%. The game has fundamentally changed \u2014 tactics are more defensive, away teams are better prepared, and international squads are more balanced. The model is trained on all eras but learns to weight recent patterns more heavily.",
+      title: "A draw is not a positive event — it's the absence of a decisive one",
+      desc: "The 3-way W/D/L classifier had to learn 'what makes a draw' from features. But draws aren't caused by features — they happen when two attacking outputs cancel out. The hybrid model predicts each team's expected goals separately, then derives W/D/L. Draws emerge naturally when λₕ ≈ λₐ.",
     },
     {
-      tag: "THE 17% THAT MATTERS",
+      tag: "LESS OVERCONFIDENT",
       tagColor: "text-pink",
-      title: "ELO and EA ratings agree 83% of the time \u2014 the value is where they disagree",
-      desc: "Both ELO and EA FC ratings correctly rank France above Norway and Brazil above Bolivia. That\u2019s the easy 83%. The real value of adding squad ratings is the 17% where they disagree \u2014 teams like Mexico and Japan whose ELO is inflated by beating weak opponents, but whose player ratings reveal they lack the individual quality to compete with Europe and South America\u2019s best.",
+      title: "No team above 14% to win the World Cup",
+      desc: "The hybrid model puts Spain at 13.7% — still the favorite, but honestly hedged. No team in modern WC history has won pre-tournament at much above 18%. The model spreads probability evenly across the top 10 contenders, which is what a well-calibrated tournament forecast should do — not concentrate all certainty on one or two teams.",
     },
   ],
-];
-
-const BIAS_ROWS = [
-  { team: "Mexico", before: "6.28%", after: "0.40%", delta: "\u22125.88%" },
-  { team: "Senegal", before: "6.76%", after: "1.18%", delta: "\u22125.58%" },
-  { team: "Japan", before: "6.27%", after: "0.29%", delta: "\u22125.98%" },
-  { team: "Australia", before: "5.19%", after: "0.11%", delta: "\u22125.08%" },
 ];
 
 export default function MethodologyPage() {
@@ -139,9 +132,10 @@ export default function MethodologyPage() {
           THE WORLD CUP
         </h1>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[700px]">
-          A machine learning ensemble trained on 35,000+ international matches,
-          combining team strength ratings, squad quality data, and historical
-          form to simulate the entire tournament 10,000 times.
+          A hybrid Poisson goal-scoring model trained on 6,162 modern-era
+          international matches, combining team strength ratings, squad
+          quality, recent form, and StatsBomb international tournament data
+          to simulate the entire tournament 100,000 times.
         </p>
       </section>
 
@@ -183,8 +177,12 @@ export default function MethodologyPage() {
           THE MODEL
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[650px] mb-6 md:mb-8">
-          Instead of one model making all decisions, this uses an ensemble — four
-          models that each learn different patterns, then vote on the outcome.
+          The hybrid architecture predicts each team&apos;s expected goals
+          directly with two <Tip term="Poisson">Poisson</Tip>-loss XGBoost
+          regressors, then converts those into match outcomes via the{" "}
+          <Tip term="Dixon-Coles">Dixon-Coles</Tip> scoreline matrix. This
+          is the same approach used by FiveThirtyEight&apos;s SPI and most
+          serious football models.
         </p>
 
         {/* Model cards */}
@@ -225,15 +223,15 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* From Win Probability to Scorelines */}
+      {/* From Expected Goals to Match Outcomes */}
       <section className="px-4 md:px-12 lg:px-20 py-8 md:py-12 bg-[#0D0D0D] border-t border-border">
         <h2 className="font-[family-name:var(--font-anton)] text-[22px] md:text-[28px] tracking-wide mb-2">
-          FROM WIN PROBABILITY TO SCORELINES
+          FROM EXPECTED GOALS TO MATCH OUTCOMES
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[650px] mb-6 md:mb-7">
-          The model predicts the probability of home win, draw, or away win. But
-          to simulate a tournament, you need actual scorelines. Here&apos;s how the
-          model bridges that gap.
+          Instead of predicting win/draw/loss directly, the model predicts each
+          team&apos;s expected goals and lets the scoreline distribution decide.
+          This is why draws emerge naturally when teams are evenly matched.
         </p>
         <div className="flex flex-col md:flex-row gap-4">
           {STEPS.map((s) => (
@@ -261,8 +259,8 @@ export default function MethodologyPage() {
           WHAT I DISCOVERED
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[600px] mb-6 md:mb-8">
-          Building this model taught me things about football prediction that
-          weren&apos;t obvious at the start.
+          Six experiments. Five architectures. One real leakage bug. Here&apos;s
+          what came out of it.
         </p>
         <div className="flex flex-col gap-4">
           {DISCOVERIES.map((row, ri) => (
@@ -294,39 +292,41 @@ export default function MethodologyPage() {
           MODEL ACCURACY
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[650px] mb-6 md:mb-8">
-          Tested on 3,313 matches from 2023&ndash;2024 that the model never saw
-          during training, and backtested against the 2022 World Cup.
+          Validated on 748 international matches from June 2025 to March 2026 —
+          the 12 months immediately before the World Cup. The model never saw
+          these matches during training, and no WC 2026 match enters either
+          training or validation.
         </p>
 
         {/* Stat cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6 md:mb-8">
           <div className="flex flex-col items-center gap-2 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 md:p-6">
             <span className="font-[family-name:var(--font-anton)] text-[32px] md:text-[40px] text-purple">
-              0.018
+              0.027
             </span>
             <span className="text-[13px] text-secondary">
               <Tip term="ECE">Expected Calibration Error</Tip>
             </span>
             <span className="text-xs text-[#A1A1AA]">
-              Near-perfect probability accuracy
+              When the model says 70%, it&apos;s right ~70% of the time
             </span>
           </div>
           <div className="flex flex-col items-center gap-2 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 md:p-6">
             <span className="font-[family-name:var(--font-anton)] text-[32px] md:text-[40px] text-cyan">
-              1.3%
+              62.6%
             </span>
-            <span className="text-[13px] text-secondary">
-              Maximum Prediction Bias
-            </span>
+            <span className="text-[13px] text-secondary">Outcome Accuracy</span>
             <span className="text-xs text-[#A1A1AA]">
-              Home win slightly overestimated
+              vs 53% baseline (always pick higher-rated squad)
             </span>
           </div>
           <div className="flex flex-col items-center gap-2 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 md:p-6">
             <span className="font-[family-name:var(--font-anton)] text-[32px] md:text-[40px] text-pink">
-              0.826
+              0.804
             </span>
-            <span className="text-[13px] text-secondary"><Tip term="Log Loss">Log Loss</Tip></span>
+            <span className="text-[13px] text-secondary">
+              <Tip term="Log Loss">Log Loss</Tip>
+            </span>
             <span className="text-xs text-[#A1A1AA]">
               Lower is better &mdash; measures prediction confidence
             </span>
@@ -337,8 +337,8 @@ export default function MethodologyPage() {
         <div className="flex flex-col gap-5">
           <div className="rounded-lg overflow-hidden">
             <Image
-              src="/graphs/phase2_05_calibration_curves.png"
-              alt="Calibration curves showing predicted vs actual probabilities"
+              src="/graphs/phase3_calibration.png"
+              alt="Calibration curves showing predicted vs actual probabilities for the hybrid model"
               width={1200}
               height={420}
               className="w-full"
@@ -346,8 +346,8 @@ export default function MethodologyPage() {
           </div>
           <div className="rounded-lg overflow-hidden">
             <Image
-              src="/graphs/phase2_05_reliability_diagrams.png"
-              alt="Reliability diagrams with sample counts"
+              src="/graphs/phase3_confusion.png"
+              alt="Confusion matrix showing per-class accuracy"
               width={1200}
               height={420}
               className="w-full"
@@ -356,72 +356,57 @@ export default function MethodologyPage() {
         </div>
       </section>
 
-      {/* 2022 World Cup Backtest */}
+      {/* Where the model is right and wrong */}
       <section className="px-4 md:px-12 lg:px-20 py-8 md:py-12 border-t border-border">
         <h2 className="font-[family-name:var(--font-anton)] text-[22px] md:text-[28px] tracking-wide mb-2">
-          2022 WORLD CUP BACKTEST
+          WHERE THE MODEL IS STRONG AND WEAK
         </h2>
         <p className="text-secondary text-xs md:text-sm leading-relaxed max-w-[650px] mb-6 md:mb-7">
-          I ran 10,000 simulations of the 2022 Qatar World Cup to see how the
-          model would have performed. It correctly identified Argentina as a top
-          contender with 25.3% championship probability.
+          Error sliced by <Tip term="ELO">ELO</Tip> difference between the two
+          teams. Blowouts are easy. Lopsided matches are mostly predictable.
+          But close matches collapse to near-random &mdash; this is football&apos;s
+          irreducible uncertainty.
         </p>
 
-        <div className="flex flex-col md:flex-row gap-4">
-          {/* Left — champion & runner-up */}
-          <div className="flex-1 flex flex-col gap-3">
-            <div className="flex flex-col gap-2 bg-[#111111] border border-purple rounded-xl p-5 md:p-6">
-              <span className="font-mono text-xs font-semibold tracking-[2px] text-purple">
-                CHAMPION &mdash; ARGENTINA
-              </span>
-              <span className="text-base font-bold">
-                Ranked #2 &mdash; 25.30% win probability
-              </span>
-              <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
-                Behind only Spain (25.5%) &mdash; correctly identified as a
-                top-2 contender
-              </p>
-            </div>
-            <div className="flex flex-col gap-2 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 md:p-6">
-              <span className="font-mono text-xs font-semibold tracking-[2px] text-cyan">
-                RUNNER-UP &mdash; FRANCE
-              </span>
-              <span className="text-base font-bold">
-                Ranked #3 &mdash; 12.59% win probability
-              </span>
-              <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
-                Top 3 prediction &mdash; correctly flagged as a finalist-caliber team
-              </p>
-            </div>
-          </div>
+        <div className="rounded-lg overflow-hidden mb-6 md:mb-8">
+          <Image
+            src="/graphs/phase3_error_by_elo.png"
+            alt="Error by |ELO diff| bucket — log loss and accuracy across close/moderate/clear/lopsided/blowout matches"
+            width={1200}
+            height={420}
+            className="w-full"
+          />
+        </div>
 
-          {/* Right — bias correction */}
-          <div className="flex-1">
-            <div className="flex flex-col gap-3.5 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 md:p-7 h-full">
-              <span className="font-mono text-xs font-semibold tracking-[2px] text-green-500">
-                BIAS CORRECTION VALIDATED
-              </span>
-              <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
-                Teams that were unrealistically ranked in early models got
-                corrected:
-              </p>
-              {BIAS_ROWS.map((r) => (
-                <div key={r.team} className="flex items-center gap-2">
-                  <span className="text-[13px] w-[80px] md:w-[120px]">{r.team}</span>
-                  <span className="font-mono text-[11px] md:text-xs text-green-500 flex-1">
-                    {r.before} &rarr; {r.after}
-                  </span>
-                  <span className="font-mono text-[11px] md:text-xs font-bold text-red-500">
-                    {r.delta}
-                  </span>
-                </div>
-              ))}
-              <p className="text-xs text-secondary leading-relaxed mt-1">
-                Adding EA squad ratings &mdash; assessed by scouts, not match
-                results &mdash; corrected the inflated rankings of teams from
-                weaker confederations.
-              </p>
-            </div>
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 flex flex-col gap-2 bg-[#111111] border border-green-500/40 rounded-xl p-5 md:p-6">
+            <span className="font-mono text-xs font-semibold tracking-[2px] text-green-500">
+              BLOWOUTS &mdash; 91% ACCURACY
+            </span>
+            <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
+              Matches with &gt;400 ELO difference (e.g. Spain vs San Marino).
+              The favorite wins almost every time and the model knows it.
+            </p>
+          </div>
+          <div className="flex-1 flex flex-col gap-2 bg-[#111111] border border-cyan/40 rounded-xl p-5 md:p-6">
+            <span className="font-mono text-xs font-semibold tracking-[2px] text-cyan">
+              LOPSIDED &mdash; 70% ACCURACY
+            </span>
+            <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
+              ELO difference 200&ndash;400. Most knockout R32 and R16 matches
+              fall here &mdash; the model picks the right team 7 times out of 10.
+            </p>
+          </div>
+          <div className="flex-1 flex flex-col gap-2 bg-[#111111] border border-red-500/40 rounded-xl p-5 md:p-6">
+            <span className="font-mono text-xs font-semibold tracking-[2px] text-red-500">
+              CLOSE &mdash; 31% ACCURACY
+            </span>
+            <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
+              ELO difference &lt;50 (e.g. Spain vs France). Football&apos;s
+              irreducible noise &mdash; even the best models collapse to
+              near-random here. These are also the matches most likely to be
+              draws, where calibration matters more than picking the winner.
+            </p>
           </div>
         </div>
       </section>

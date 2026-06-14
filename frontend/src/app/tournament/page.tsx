@@ -53,12 +53,12 @@ type SimMode = "prediction" | "simulation";
 /* ──────────────────── static cards ──────────────────── */
 
 const ROUND_CARDS = [
-  { label: "GROUP STAGE", pct: "25.2%", team: "Spain", code: "es", color: "text-purple" },
-  { label: "ROUND OF 32", pct: "17.1%", team: "France", code: "fr", color: "text-purple" },
-  { label: "ROUND OF 16", pct: "15.3%", team: "Argentina", code: "ar", color: "text-cyan" },
-  { label: "QUARTER FINAL", pct: "12.6%", team: "England", code: "gb-eng", color: "text-cyan" },
-  { label: "SEMI FINAL", pct: "5.0%", team: "Brazil", code: "br", color: "text-pink" },
-  { label: "CHAMPION", pct: "25.2%", team: "Spain", code: "es", color: "text-purple", highlight: true },
+  { label: "GROUP STAGE", pct: "100%", team: "All 48", code: "un", color: "text-secondary" },
+  { label: "ROUND OF 16", pct: "66.7%", team: "Spain", code: "es", color: "text-purple" },
+  { label: "QUARTER FINAL", pct: "46.5%", team: "France", code: "fr", color: "text-purple" },
+  { label: "SEMI FINAL", pct: "34.0%", team: "France", code: "fr", color: "text-cyan" },
+  { label: "FINAL", pct: "20.9%", team: "France", code: "fr", color: "text-cyan" },
+  { label: "CHAMPION", pct: "13.7%", team: "Spain", code: "es", color: "text-purple", highlight: true },
 ];
 
 const GROUP_ELOS: Record<string, number> = {
@@ -438,7 +438,7 @@ export default function TournamentPage() {
         </h1>
         <p className="text-secondary text-sm">
           48 teams · 12 groups · Round-by-round survival probabilities from
-          10,000 simulations
+          100,000 simulations
         </p>
       </section>
 
@@ -448,7 +448,7 @@ export default function TournamentPage() {
           ROUND-BY-ROUND SURVIVAL
         </h2>
         <p className="text-secondary text-xs mb-5">
-          Highest survival probability at each stage — aggregated from 10,000 <Tip term="Monte Carlo">Monte Carlo</Tip> simulations, not a single run
+          Highest survival probability at each stage — aggregated from 100,000 <Tip term="Monte Carlo">Monte Carlo</Tip> simulations, not a single run
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
           {ROUND_CARDS.map((card) => (
@@ -810,7 +810,7 @@ export default function TournamentPage() {
                 </div>
 
                 <p className="text-[11px] text-secondary text-center max-w-[500px]">
-                  The probabilities on the home page come from running this 10,000 times. You&apos;re about to watch one.
+                  The probabilities on the home page come from running this 100,000 times. You&apos;re about to watch one.
                 </p>
               </>
             )}

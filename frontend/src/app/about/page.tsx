@@ -1,10 +1,10 @@
 const PROJECT_STATS = [
-  { label: "Calibration (ECE)", value: "0.018", color: "text-purple" },
-  { label: "Log Loss", value: "0.826", color: "text-cyan" },
-  { label: "Input Features", value: "97", color: "text-pink" },
-  { label: "Training Matches", value: "35,304", color: "text-purple" },
-  { label: "Training Span", value: "1884–2024", color: "text-cyan" },
-  { label: "Simulations", value: "10,000", color: "text-pink" },
+  { label: "Calibration (ECE)", value: "0.027", color: "text-purple" },
+  { label: "Log Loss", value: "0.804", color: "text-cyan" },
+  { label: "Input Features", value: "157", color: "text-pink" },
+  { label: "Training Matches", value: "6,162", color: "text-purple" },
+  { label: "Training Span", value: "2018–2025", color: "text-cyan" },
+  { label: "Simulations", value: "100,000", color: "text-pink" },
 ];
 
 export default function AboutPage() {
@@ -26,8 +26,9 @@ export default function AboutPage() {
           <p className="text-secondary text-sm leading-relaxed max-w-[520px]">
             Built this project to explore the intersection of sports analytics
             and machine learning — from raw match data to a fully simulated 2026
-            World Cup using an XGBoost + Random Forest ensemble with ELO and EA
-            FC squad ratings.
+            World Cup using a hybrid Poisson goal-scoring model with Dixon-Coles
+            scoreline correction, ELO, EA FC squad ratings, and StatsBomb
+            international tournament data.
           </p>
           <div className="flex gap-3">
             <a
@@ -118,13 +119,13 @@ export default function AboutPage() {
           DATA SOURCES
         </h2>
         <p className="text-secondary text-xs md:text-sm mb-6 md:mb-8">
-          Four independent datasets, combined to give the model a complete picture.
+          Five independent datasets, combined to give the model a complete picture.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 md:p-6">
             <span className="text-base font-bold">International Match Database</span>
             <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
-              35,304 matches from 1884 to 2024 — every FIFA-recognized international result including friendlies, qualifiers, and tournament matches.
+              Every FIFA-recognized international result back to 1872, filtered to a modern-era 2018&ndash;2025 training window (6,162 matches) to keep tactics and fitness comparable.
             </p>
           </div>
           <div className="flex flex-col gap-2 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 md:p-6">
@@ -140,9 +141,15 @@ export default function AboutPage() {
             </p>
           </div>
           <div className="flex flex-col gap-2 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 md:p-6">
+            <span className="text-base font-bold">StatsBomb Open Data</span>
+            <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
+              Event-level data from 314 international tournament matches (WC 2018/2022, Euro 2020/2024, Copa America 2024, AFCON 2023) &mdash; used to compute team xG for/against, set-piece share, and defensive overperformance.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2 bg-[#111111] border border-[#1A1A1A] rounded-xl p-5 md:p-6">
             <span className="text-base font-bold">Football Manager 2023</span>
             <p className="text-[13px] text-[#A1A1AA] leading-relaxed">
-              Player attributes for 209 nationalities — calibrated to EA scale to fill coverage gaps for nations not in the EA FC database.
+              Player attributes for 209 nationalities &mdash; calibrated to EA scale to fill coverage gaps for nations not in the EA FC database.
             </p>
           </div>
         </div>

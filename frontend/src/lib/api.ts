@@ -10,7 +10,7 @@ export async function predictMatch(homeTeam: string, awayTeam: string) {
   return res.json();
 }
 
-export async function simulateTournament(iterations: number = 10000) {
+export async function simulateTournament(iterations: number = 100000) {
   const res = await fetch(`${API_BASE}/simulate/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
