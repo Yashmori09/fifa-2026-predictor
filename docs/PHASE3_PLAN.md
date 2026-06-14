@@ -63,8 +63,17 @@ FBref was blocked by Cloudflare (even with stealth + soccerdata). Pivoted to two
 - `data/raw/transfermarkt/national_teams.csv.gz` — NT metadata + FIFA ranking
 - `data/processed/wc_tm_resolution.csv` — WC squad name → TM player ID map (93% matched)
 
-### → Phase B — Next (feature engineering)
-Yet to start. Plan below.
+### → Phase B — In progress (feature engineering)
+
+| Step | Status | Output |
+|---|---|---|
+| B1. Per-player trailing form | ✓ done | `data/processed/player_form_features.csv` (1,248 players) |
+| B2. Player → team aggregation | ✓ done | `data/processed/team_form_features.csv` (48 × 33) |
+| B3. Chemistry | ✓ done | `data/processed/team_chemistry_features.csv` (48 × 8) |
+| B4. Match context | ✓ done | `data/processed/match_context_features.csv` (144 rows) |
+| B5. xG / defense / GK signals | ✓ done via **StatsBomb Open Data** | `team_statsbomb_features.csv` (39/48) + `team_intl_form_features.csv` (48/48) |
+| B6. Refresh ELO through 2026 | ✓ done | `final_elos.csv` — 342 teams, computed against matches through 2026-03-31 |
+| B7. Drop pre-2010 from training | ✓ done (decision) | 18,795 matches available 2010+, 0 WC 2026 matches in training set |
 
 ---
 
@@ -152,18 +161,56 @@ Yet to start. Plan below.
 - `travel_km` — distance from previous match venue (uses match coordinates + simple Haversine)
 - `tz_jump` — time zones crossed since last match (proxy for jet lag)
 
-### B5. Set-piece + GK signals (Tier A additions)
-- `team_set_piece_goals_per_90` — corner/free-kick goals last 12 mo (derivable from Understat for Big-5 players, accept gap for others)
-- `team_gk_psxg_diff_last12mo` — post-shot xG saved above expected (Understat for Big-5 GKs)
+### B5. Set-piece + GK signals — pivoted from FBref to StatsBomb Open Data
 
-### B6. Refresh ELO through 2026
-- Recompute via existing `compute_elo` pipeline on extended match results
-- Output: updated `final_elos.csv`
+**FBref attempt (rejected):** Bypassed Cloudflare via Camoufox (`/tmp/cfbypass/`),
+fetched 9 pages successfully — but the FBref-StatsBomb partnership ended
+mid-2023 and the pages no longer contain xG / PSxG / tackles / blocks / aerials.
+Only basic counting stats (goals, shots, interceptions, penalties) remain,
+which we already have from TM. Camoufox solution preserved for future use.
 
-### B7. Drop pre-2010 from training set
-- Update notebook `04_model_training.ipynb` to filter `date >= '2010-01-01'`
-- Verify match count stays in usable range (~14k matches)
-- Verify match count stays in usable range (~14K matches).
+**StatsBomb Open Data (shipped):** Free event-level data on GitHub for
+international tournaments — better fit for WC predictions than club leagues.
+
+Downloaded 314 matches across 6 tournaments:
+- WC 2018 + WC 2022
+- Euro 2020 + Euro 2024
+- Copa America 2024
+- AFCON 2023
+
+Coverage: **39/48** WC 2026 teams have direct StatsBomb features. The 9
+missing (Bosnia, Cape Verde, Curaçao, Haiti, Iraq, Jordan, New Zealand,
+Norway, Uzbekistan) never qualified for any of these tournaments.
+
+Output `data/processed/team_statsbomb_features.csv`:
+- `sb_xg_for_per_match`, `sb_xg_against_per_match`
+- `sb_def_overperformance` — xG conceded − goals conceded (D+GK quality)
+- `sb_att_overperformance` — goals scored − xG (finishing clinical-ness)
+- `sb_xg_set_piece_share` — share of own xG from FKs + corners
+- `sb_n_matches`, `sb_avg_year` (recency weighting input)
+
+**Universal fallback (B5c):** `team_intl_form_features.csv` computed from
+`matches_clean.csv` covers **all 48 teams** with basic international form
+(goals for/against, win-rate, last-10 form) over trailing 2 years.
+
+Combined: every WC team has at least basic intl-form signal; 39 teams have
+xG-quality signal on top. XGBoost handles the missing-SB-data NaNs natively.
+
+Scripts: `scripts/download_statsbomb.py`, `scripts/build_statsbomb_features.py`,
+`scripts/build_intl_form.py`.
+
+### B6. Refresh ELO through 2026 — ✓ done
+- `data/processed/final_elos.csv` was already computed (2026-04-03) against
+  matches through 2026-03-31. 342 teams, all 48 WC 2026 teams covered.
+- Top 10: Spain, Argentina, France, England, Colombia, Brazil, Portugal,
+  Netherlands, Japan, Germany — sanity check passed.
+
+### B7. Filter training data to 2010+ — ✓ decision locked
+- `matches_clean.csv`: 18,795 matches in 2010-01-01 → 2026-03-31 window
+  - 12,666 competitive (qualifiers, continental finals, WCs, other)
+  - 6,129 friendlies (kept; downweight in training if needed)
+  - 0 WC 2026 matches — honesty rule preserved
+- Phase C training script will apply `df = df[df.date >= '2010-01-01']`.
 
 ---
 

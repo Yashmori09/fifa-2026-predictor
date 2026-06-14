@@ -8,7 +8,7 @@
  */
 
 export const DETERMINISTIC_DATA = {
-  "champion": "Spain",
+  "champion": "France",
   "groups": [
     {
       "group": "A",
@@ -20,20 +20,20 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.7255,
-          "prob_draw": 0.225,
-          "prob_away": 0.0495
+          "prob_home": 0.7181,
+          "prob_draw": 0.2099,
+          "prob_away": 0.0721
         },
         {
           "home_team": "South Korea",
           "away_team": "Czech Republic",
-          "home_goals": 0,
+          "home_goals": 1,
           "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.2551,
-          "prob_draw": 0.5018,
-          "prob_away": 0.2431
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.5674,
+          "prob_draw": 0.2523,
+          "prob_away": 0.1802
         },
         {
           "home_team": "Czech Republic",
@@ -42,20 +42,20 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.529,
-          "prob_draw": 0.307,
-          "prob_away": 0.164
+          "prob_home": 0.5266,
+          "prob_draw": 0.2778,
+          "prob_away": 0.1957
         },
         {
           "home_team": "Mexico",
           "away_team": "South Korea",
-          "home_goals": 0,
+          "home_goals": 1,
           "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.3501,
-          "prob_draw": 0.4621,
-          "prob_away": 0.1877
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.5534,
+          "prob_draw": 0.296,
+          "prob_away": 0.1506
         },
         {
           "home_team": "Czech Republic",
@@ -64,9 +64,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.2238,
-          "prob_draw": 0.3531,
-          "prob_away": 0.4231
+          "prob_home": 0.2984,
+          "prob_draw": 0.2702,
+          "prob_away": 0.4314
         },
         {
           "home_team": "South Africa",
@@ -75,44 +75,44 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.1281,
-          "prob_draw": 0.3304,
-          "prob_away": 0.5415
+          "prob_home": 0.268,
+          "prob_draw": 0.3177,
+          "prob_away": 0.4144
         }
       ],
       "table": [
         {
           "team": "Mexico",
-          "pts": 7,
-          "gd": 2,
-          "gf": 2,
+          "pts": 9,
+          "gd": 3,
+          "gf": 3,
           "ga": 0,
           "mp": 3,
-          "w": 2,
-          "d": 1,
+          "w": 3,
+          "d": 0,
           "l": 0
         },
         {
           "team": "South Korea",
-          "pts": 5,
+          "pts": 6,
           "gd": 1,
-          "gf": 1,
-          "ga": 0,
+          "gf": 2,
+          "ga": 1,
           "mp": 3,
-          "w": 1,
-          "d": 2,
-          "l": 0
+          "w": 2,
+          "d": 0,
+          "l": 1
         },
         {
           "team": "Czech Republic",
-          "pts": 4,
-          "gd": 0,
+          "pts": 3,
+          "gd": -1,
           "gf": 1,
-          "ga": 1,
+          "ga": 2,
           "mp": 3,
           "w": 1,
-          "d": 1,
-          "l": 1
+          "d": 0,
+          "l": 2
         },
         {
           "team": "South Africa",
@@ -133,13 +133,13 @@ export const DETERMINISTIC_DATA = {
         {
           "home_team": "Canada",
           "away_team": "Bosnia and Herzegovina",
-          "home_goals": 1,
+          "home_goals": 2,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5247,
-          "prob_draw": 0.2974,
-          "prob_away": 0.1779
+          "prob_home": 0.7846,
+          "prob_draw": 0.149,
+          "prob_away": 0.0663
         },
         {
           "home_team": "Qatar",
@@ -148,20 +148,20 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.0577,
-          "prob_draw": 0.2217,
-          "prob_away": 0.7206
+          "prob_home": 0.2196,
+          "prob_draw": 0.2594,
+          "prob_away": 0.521
         },
         {
           "home_team": "Switzerland",
           "away_team": "Bosnia and Herzegovina",
-          "home_goals": 1,
+          "home_goals": 2,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.6318,
-          "prob_draw": 0.2777,
-          "prob_away": 0.0905
+          "prob_home": 0.767,
+          "prob_draw": 0.1616,
+          "prob_away": 0.0714
         },
         {
           "home_team": "Canada",
@@ -170,20 +170,20 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.6886,
-          "prob_draw": 0.2422,
-          "prob_away": 0.0692
+          "prob_home": 0.7197,
+          "prob_draw": 0.2036,
+          "prob_away": 0.0767
         },
         {
           "home_team": "Switzerland",
           "away_team": "Canada",
-          "home_goals": 0,
+          "home_goals": 1,
           "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.408,
-          "prob_draw": 0.4103,
-          "prob_away": 0.1817
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.5349,
+          "prob_draw": 0.2552,
+          "prob_away": 0.2099
         },
         {
           "home_team": "Bosnia and Herzegovina",
@@ -192,40 +192,40 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.4186,
-          "prob_draw": 0.3375,
-          "prob_away": 0.2439
+          "prob_home": 0.3675,
+          "prob_draw": 0.2815,
+          "prob_away": 0.3509
         }
       ],
       "table": [
         {
-          "team": "Canada",
-          "pts": 7,
-          "gd": 2,
-          "gf": 2,
+          "team": "Switzerland",
+          "pts": 9,
+          "gd": 4,
+          "gf": 4,
           "ga": 0,
           "mp": 3,
-          "w": 2,
-          "d": 1,
+          "w": 3,
+          "d": 0,
           "l": 0
         },
         {
-          "team": "Switzerland",
-          "pts": 7,
+          "team": "Canada",
+          "pts": 6,
           "gd": 2,
-          "gf": 2,
-          "ga": 0,
+          "gf": 3,
+          "ga": 1,
           "mp": 3,
           "w": 2,
-          "d": 1,
-          "l": 0
+          "d": 0,
+          "l": 1
         },
         {
           "team": "Bosnia and Herzegovina",
           "pts": 3,
-          "gd": -1,
+          "gd": -3,
           "gf": 1,
-          "ga": 2,
+          "ga": 4,
           "mp": 3,
           "w": 1,
           "d": 0,
@@ -254,9 +254,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.498,
-          "prob_draw": 0.3584,
-          "prob_away": 0.1436
+          "prob_home": 0.4763,
+          "prob_draw": 0.304,
+          "prob_away": 0.2197
         },
         {
           "home_team": "Haiti",
@@ -265,31 +265,31 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.1466,
-          "prob_draw": 0.3374,
-          "prob_away": 0.516
+          "prob_home": 0.3598,
+          "prob_draw": 0.2638,
+          "prob_away": 0.3763
         },
         {
           "home_team": "Scotland",
           "away_team": "Morocco",
           "home_goals": 0,
-          "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.2295,
-          "prob_draw": 0.4105,
-          "prob_away": 0.36
+          "away_goals": 1,
+          "home_pts": 0,
+          "away_pts": 3,
+          "prob_home": 0.1747,
+          "prob_draw": 0.2635,
+          "prob_away": 0.5618
         },
         {
           "home_team": "Brazil",
           "away_team": "Haiti",
-          "home_goals": 1,
+          "home_goals": 2,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.7918,
-          "prob_draw": 0.164,
-          "prob_away": 0.0443
+          "prob_home": 0.8662,
+          "prob_draw": 0.1009,
+          "prob_away": 0.0329
         },
         {
           "home_team": "Scotland",
@@ -298,28 +298,28 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.1098,
-          "prob_draw": 0.3503,
-          "prob_away": 0.5399
+          "prob_home": 0.1977,
+          "prob_draw": 0.2516,
+          "prob_away": 0.5507
         },
         {
           "home_team": "Morocco",
           "away_team": "Haiti",
-          "home_goals": 1,
+          "home_goals": 2,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.565,
-          "prob_draw": 0.352,
-          "prob_away": 0.083
+          "prob_home": 0.8226,
+          "prob_draw": 0.1345,
+          "prob_away": 0.0428
         }
       ],
       "table": [
         {
           "team": "Brazil",
           "pts": 9,
-          "gd": 3,
-          "gf": 3,
+          "gd": 4,
+          "gf": 4,
           "ga": 0,
           "mp": 3,
           "w": 3,
@@ -328,32 +328,32 @@ export const DETERMINISTIC_DATA = {
         },
         {
           "team": "Morocco",
-          "pts": 4,
-          "gd": 0,
-          "gf": 1,
+          "pts": 6,
+          "gd": 2,
+          "gf": 3,
           "ga": 1,
           "mp": 3,
-          "w": 1,
-          "d": 1,
+          "w": 2,
+          "d": 0,
           "l": 1
         },
         {
           "team": "Scotland",
-          "pts": 4,
-          "gd": 0,
+          "pts": 3,
+          "gd": -1,
           "gf": 1,
-          "ga": 1,
+          "ga": 2,
           "mp": 3,
           "w": 1,
-          "d": 1,
-          "l": 1
+          "d": 0,
+          "l": 2
         },
         {
           "team": "Haiti",
           "pts": 0,
-          "gd": -3,
+          "gd": -5,
           "gf": 0,
-          "ga": 3,
+          "ga": 5,
           "mp": 3,
           "w": 0,
           "d": 0,
@@ -367,35 +367,35 @@ export const DETERMINISTIC_DATA = {
         {
           "home_team": "United States",
           "away_team": "Paraguay",
-          "home_goals": 0,
-          "away_goals": 1,
-          "home_pts": 0,
-          "away_pts": 3,
-          "prob_home": 0.2596,
-          "prob_draw": 0.3469,
-          "prob_away": 0.3936
+          "home_goals": 1,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.5132,
+          "prob_draw": 0.2873,
+          "prob_away": 0.1995
         },
         {
           "home_team": "Australia",
           "away_team": "Turkey",
-          "home_goals": 0,
-          "away_goals": 1,
-          "home_pts": 0,
-          "away_pts": 3,
-          "prob_home": 0.1196,
-          "prob_draw": 0.358,
-          "prob_away": 0.5224
+          "home_goals": 1,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.5033,
+          "prob_draw": 0.2533,
+          "prob_away": 0.2434
         },
         {
           "home_team": "United States",
           "away_team": "Australia",
-          "home_goals": 0,
+          "home_goals": 1,
           "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.3241,
-          "prob_draw": 0.3628,
-          "prob_away": 0.3131
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.3987,
+          "prob_draw": 0.3056,
+          "prob_away": 0.2958
         },
         {
           "home_team": "Turkey",
@@ -404,9 +404,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.4815,
-          "prob_draw": 0.3071,
-          "prob_away": 0.2114
+          "prob_home": 0.5322,
+          "prob_draw": 0.2615,
+          "prob_away": 0.2063
         },
         {
           "home_team": "Turkey",
@@ -415,164 +415,47 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.4611,
-          "prob_draw": 0.3499,
-          "prob_away": 0.1889
+          "prob_home": 0.4731,
+          "prob_draw": 0.2523,
+          "prob_away": 0.2746
         },
         {
           "home_team": "Paraguay",
           "away_team": "Australia",
-          "home_goals": 0,
+          "home_goals": 1,
           "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.3535,
-          "prob_draw": 0.3904,
-          "prob_away": 0.2561
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.3957,
+          "prob_draw": 0.3044,
+          "prob_away": 0.3
         }
       ],
       "table": [
         {
-          "team": "Turkey",
-          "pts": 9,
-          "gd": 3,
-          "gf": 3,
-          "ga": 0,
+          "team": "United States",
+          "pts": 6,
+          "gd": 1,
+          "gf": 2,
+          "ga": 1,
           "mp": 3,
-          "w": 3,
+          "w": 2,
           "d": 0,
-          "l": 0
+          "l": 1
+        },
+        {
+          "team": "Turkey",
+          "pts": 6,
+          "gd": 1,
+          "gf": 2,
+          "ga": 1,
+          "mp": 3,
+          "w": 2,
+          "d": 0,
+          "l": 1
         },
         {
           "team": "Paraguay",
-          "pts": 4,
-          "gd": 0,
-          "gf": 1,
-          "ga": 1,
-          "mp": 3,
-          "w": 1,
-          "d": 1,
-          "l": 1
-        },
-        {
-          "team": "Australia",
-          "pts": 2,
-          "gd": -1,
-          "gf": 0,
-          "ga": 1,
-          "mp": 3,
-          "w": 0,
-          "d": 2,
-          "l": 1
-        },
-        {
-          "team": "United States",
-          "pts": 1,
-          "gd": -2,
-          "gf": 0,
-          "ga": 2,
-          "mp": 3,
-          "w": 0,
-          "d": 1,
-          "l": 2
-        }
-      ]
-    },
-    {
-      "group": "E",
-      "matches": [
-        {
-          "home_team": "Germany",
-          "away_team": "Curaçao",
-          "home_goals": 1,
-          "away_goals": 0,
-          "home_pts": 3,
-          "away_pts": 0,
-          "prob_home": 0.7606,
-          "prob_draw": 0.1743,
-          "prob_away": 0.0651
-        },
-        {
-          "home_team": "Ivory Coast",
-          "away_team": "Ecuador",
-          "home_goals": 0,
-          "away_goals": 1,
-          "home_pts": 0,
-          "away_pts": 3,
-          "prob_home": 0.1886,
-          "prob_draw": 0.3414,
-          "prob_away": 0.47
-        },
-        {
-          "home_team": "Germany",
-          "away_team": "Ivory Coast",
-          "home_goals": 1,
-          "away_goals": 0,
-          "home_pts": 3,
-          "away_pts": 0,
-          "prob_home": 0.6517,
-          "prob_draw": 0.2473,
-          "prob_away": 0.101
-        },
-        {
-          "home_team": "Ecuador",
-          "away_team": "Curaçao",
-          "home_goals": 1,
-          "away_goals": 0,
-          "home_pts": 3,
-          "away_pts": 0,
-          "prob_home": 0.5005,
-          "prob_draw": 0.4282,
-          "prob_away": 0.0713
-        },
-        {
-          "home_team": "Ecuador",
-          "away_team": "Germany",
-          "home_goals": 0,
-          "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.1686,
-          "prob_draw": 0.4308,
-          "prob_away": 0.4006
-        },
-        {
-          "home_team": "Curaçao",
-          "away_team": "Ivory Coast",
-          "home_goals": 0,
-          "away_goals": 1,
-          "home_pts": 0,
-          "away_pts": 3,
-          "prob_home": 0.2143,
-          "prob_draw": 0.3514,
-          "prob_away": 0.4342
-        }
-      ],
-      "table": [
-        {
-          "team": "Germany",
-          "pts": 7,
-          "gd": 2,
-          "gf": 2,
-          "ga": 0,
-          "mp": 3,
-          "w": 2,
-          "d": 1,
-          "l": 0
-        },
-        {
-          "team": "Ecuador",
-          "pts": 7,
-          "gd": 2,
-          "gf": 2,
-          "ga": 0,
-          "mp": 3,
-          "w": 2,
-          "d": 1,
-          "l": 0
-        },
-        {
-          "team": "Ivory Coast",
           "pts": 3,
           "gd": -1,
           "gf": 1,
@@ -583,7 +466,124 @@ export const DETERMINISTIC_DATA = {
           "l": 2
         },
         {
+          "team": "Australia",
+          "pts": 3,
+          "gd": -1,
+          "gf": 1,
+          "ga": 2,
+          "mp": 3,
+          "w": 1,
+          "d": 0,
+          "l": 2
+        }
+      ]
+    },
+    {
+      "group": "E",
+      "matches": [
+        {
+          "home_team": "Germany",
+          "away_team": "Curaçao",
+          "home_goals": 2,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.7794,
+          "prob_draw": 0.1438,
+          "prob_away": 0.0768
+        },
+        {
+          "home_team": "Ivory Coast",
+          "away_team": "Ecuador",
+          "home_goals": 0,
+          "away_goals": 1,
+          "home_pts": 0,
+          "away_pts": 3,
+          "prob_home": 0.2815,
+          "prob_draw": 0.329,
+          "prob_away": 0.3895
+        },
+        {
+          "home_team": "Germany",
+          "away_team": "Ivory Coast",
+          "home_goals": 1,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.5772,
+          "prob_draw": 0.2515,
+          "prob_away": 0.1713
+        },
+        {
+          "home_team": "Ecuador",
+          "away_team": "Curaçao",
+          "home_goals": 1,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.6979,
+          "prob_draw": 0.2207,
+          "prob_away": 0.0814
+        },
+        {
+          "home_team": "Ecuador",
+          "away_team": "Germany",
+          "home_goals": 1,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.3653,
+          "prob_draw": 0.3273,
+          "prob_away": 0.3074
+        },
+        {
+          "home_team": "Curaçao",
+          "away_team": "Ivory Coast",
+          "home_goals": 1,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.3438,
+          "prob_draw": 0.3233,
+          "prob_away": 0.3329
+        }
+      ],
+      "table": [
+        {
+          "team": "Ecuador",
+          "pts": 9,
+          "gd": 3,
+          "gf": 3,
+          "ga": 0,
+          "mp": 3,
+          "w": 3,
+          "d": 0,
+          "l": 0
+        },
+        {
+          "team": "Germany",
+          "pts": 6,
+          "gd": 2,
+          "gf": 3,
+          "ga": 1,
+          "mp": 3,
+          "w": 2,
+          "d": 0,
+          "l": 1
+        },
+        {
           "team": "Curaçao",
+          "pts": 3,
+          "gd": -2,
+          "gf": 1,
+          "ga": 3,
+          "mp": 3,
+          "w": 1,
+          "d": 0,
+          "l": 2
+        },
+        {
+          "team": "Ivory Coast",
           "pts": 0,
           "gd": -3,
           "gf": 0,
@@ -605,9 +605,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5076,
-          "prob_draw": 0.3072,
-          "prob_away": 0.1851
+          "prob_home": 0.4638,
+          "prob_draw": 0.259,
+          "prob_away": 0.2773
         },
         {
           "home_team": "Sweden",
@@ -616,20 +616,20 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.4812,
-          "prob_draw": 0.3148,
-          "prob_away": 0.204
+          "prob_home": 0.4142,
+          "prob_draw": 0.2943,
+          "prob_away": 0.2915
         },
         {
           "home_team": "Netherlands",
           "away_team": "Sweden",
-          "home_goals": 1,
+          "home_goals": 2,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5402,
-          "prob_draw": 0.2977,
-          "prob_away": 0.1621
+          "prob_home": 0.6616,
+          "prob_draw": 0.1926,
+          "prob_away": 0.1458
         },
         {
           "home_team": "Tunisia",
@@ -638,20 +638,20 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.1177,
-          "prob_draw": 0.3703,
-          "prob_away": 0.512
+          "prob_home": 0.2167,
+          "prob_draw": 0.3344,
+          "prob_away": 0.449
         },
         {
           "home_team": "Japan",
           "away_team": "Sweden",
-          "home_goals": 1,
+          "home_goals": 2,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.3684,
-          "prob_draw": 0.3439,
-          "prob_away": 0.2878
+          "prob_home": 0.6868,
+          "prob_draw": 0.2026,
+          "prob_away": 0.1106
         },
         {
           "home_team": "Tunisia",
@@ -660,17 +660,17 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.0619,
-          "prob_draw": 0.2722,
-          "prob_away": 0.6659
+          "prob_home": 0.263,
+          "prob_draw": 0.3135,
+          "prob_away": 0.4235
         }
       ],
       "table": [
         {
           "team": "Netherlands",
           "pts": 9,
-          "gd": 3,
-          "gf": 3,
+          "gd": 4,
+          "gf": 4,
           "ga": 0,
           "mp": 3,
           "w": 3,
@@ -680,8 +680,8 @@ export const DETERMINISTIC_DATA = {
         {
           "team": "Japan",
           "pts": 6,
-          "gd": 1,
-          "gf": 2,
+          "gd": 2,
+          "gf": 3,
           "ga": 1,
           "mp": 3,
           "w": 2,
@@ -691,9 +691,9 @@ export const DETERMINISTIC_DATA = {
         {
           "team": "Sweden",
           "pts": 3,
-          "gd": -1,
+          "gd": -3,
           "gf": 1,
-          "ga": 2,
+          "ga": 4,
           "mp": 3,
           "w": 1,
           "d": 0,
@@ -718,13 +718,13 @@ export const DETERMINISTIC_DATA = {
         {
           "home_team": "Iran",
           "away_team": "New Zealand",
-          "home_goals": 0,
+          "home_goals": 1,
           "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.3529,
-          "prob_draw": 0.4632,
-          "prob_away": 0.1839
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.5132,
+          "prob_draw": 0.2566,
+          "prob_away": 0.2301
         },
         {
           "home_team": "Belgium",
@@ -733,42 +733,42 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.4356,
-          "prob_draw": 0.3322,
-          "prob_away": 0.2322
+          "prob_home": 0.4122,
+          "prob_draw": 0.2789,
+          "prob_away": 0.3089
         },
         {
           "home_team": "Belgium",
           "away_team": "Iran",
-          "home_goals": 1,
-          "away_goals": 0,
+          "home_goals": 2,
+          "away_goals": 1,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.4508,
-          "prob_draw": 0.3208,
-          "prob_away": 0.2284
+          "prob_home": 0.4851,
+          "prob_draw": 0.2491,
+          "prob_away": 0.2659
         },
         {
           "home_team": "New Zealand",
           "away_team": "Egypt",
-          "home_goals": 0,
-          "away_goals": 1,
-          "home_pts": 0,
-          "away_pts": 3,
-          "prob_home": 0.2023,
-          "prob_draw": 0.3338,
-          "prob_away": 0.464
+          "home_goals": 1,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.3966,
+          "prob_draw": 0.3141,
+          "prob_away": 0.2893
         },
         {
           "home_team": "Egypt",
           "away_team": "Iran",
-          "home_goals": 0,
+          "home_goals": 1,
           "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.2437,
-          "prob_draw": 0.3931,
-          "prob_away": 0.3632
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.4087,
+          "prob_draw": 0.2878,
+          "prob_away": 0.3035
         },
         {
           "home_team": "New Zealand",
@@ -777,9 +777,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.1184,
-          "prob_draw": 0.2724,
-          "prob_away": 0.6091
+          "prob_home": 0.3279,
+          "prob_draw": 0.2899,
+          "prob_away": 0.3822
         }
       ],
       "table": [
@@ -787,44 +787,44 @@ export const DETERMINISTIC_DATA = {
           "team": "Belgium",
           "pts": 9,
           "gd": 3,
-          "gf": 3,
-          "ga": 0,
+          "gf": 4,
+          "ga": 1,
           "mp": 3,
           "w": 3,
           "d": 0,
           "l": 0
         },
         {
-          "team": "Egypt",
-          "pts": 4,
-          "gd": 0,
-          "gf": 1,
-          "ga": 1,
+          "team": "Iran",
+          "pts": 3,
+          "gd": -1,
+          "gf": 2,
+          "ga": 3,
           "mp": 3,
           "w": 1,
-          "d": 1,
-          "l": 1
+          "d": 0,
+          "l": 2
         },
         {
-          "team": "Iran",
-          "pts": 2,
+          "team": "Egypt",
+          "pts": 3,
           "gd": -1,
-          "gf": 0,
-          "ga": 1,
+          "gf": 1,
+          "ga": 2,
           "mp": 3,
-          "w": 0,
-          "d": 2,
-          "l": 1
+          "w": 1,
+          "d": 0,
+          "l": 2
         },
         {
           "team": "New Zealand",
-          "pts": 1,
-          "gd": -2,
-          "gf": 0,
+          "pts": 3,
+          "gd": -1,
+          "gf": 1,
           "ga": 2,
           "mp": 3,
-          "w": 0,
-          "d": 1,
+          "w": 1,
+          "d": 0,
           "l": 2
         }
       ]
@@ -835,13 +835,13 @@ export const DETERMINISTIC_DATA = {
         {
           "home_team": "Spain",
           "away_team": "Cape Verde",
-          "home_goals": 1,
+          "home_goals": 3,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.7004,
-          "prob_draw": 0.227,
-          "prob_away": 0.0726
+          "prob_home": 0.8555,
+          "prob_draw": 0.1039,
+          "prob_away": 0.0406
         },
         {
           "home_team": "Saudi Arabia",
@@ -850,20 +850,20 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.152,
-          "prob_draw": 0.3712,
-          "prob_away": 0.4768
+          "prob_home": 0.3273,
+          "prob_draw": 0.2972,
+          "prob_away": 0.3755
         },
         {
           "home_team": "Spain",
           "away_team": "Saudi Arabia",
-          "home_goals": 2,
+          "home_goals": 3,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.7718,
-          "prob_draw": 0.1714,
-          "prob_away": 0.0568
+          "prob_home": 0.8632,
+          "prob_draw": 0.0991,
+          "prob_away": 0.0377
         },
         {
           "home_team": "Uruguay",
@@ -872,20 +872,20 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.6263,
-          "prob_draw": 0.2882,
-          "prob_away": 0.0855
+          "prob_home": 0.6676,
+          "prob_draw": 0.2342,
+          "prob_away": 0.0981
         },
         {
           "home_team": "Cape Verde",
           "away_team": "Saudi Arabia",
-          "home_goals": 0,
+          "home_goals": 1,
           "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.3195,
-          "prob_draw": 0.3585,
-          "prob_away": 0.322
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.4538,
+          "prob_draw": 0.3166,
+          "prob_away": 0.2295
         },
         {
           "home_team": "Uruguay",
@@ -894,17 +894,17 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.1078,
-          "prob_draw": 0.4159,
-          "prob_away": 0.4763
+          "prob_home": 0.2843,
+          "prob_draw": 0.3228,
+          "prob_away": 0.3928
         }
       ],
       "table": [
         {
           "team": "Spain",
           "pts": 9,
-          "gd": 4,
-          "gf": 4,
+          "gd": 7,
+          "gf": 7,
           "ga": 0,
           "mp": 3,
           "w": 3,
@@ -924,25 +924,25 @@ export const DETERMINISTIC_DATA = {
         },
         {
           "team": "Cape Verde",
-          "pts": 1,
-          "gd": -2,
-          "gf": 0,
-          "ga": 2,
+          "pts": 3,
+          "gd": -3,
+          "gf": 1,
+          "ga": 4,
           "mp": 3,
-          "w": 0,
-          "d": 1,
+          "w": 1,
+          "d": 0,
           "l": 2
         },
         {
           "team": "Saudi Arabia",
-          "pts": 1,
-          "gd": -3,
+          "pts": 0,
+          "gd": -5,
           "gf": 0,
-          "ga": 3,
+          "ga": 5,
           "mp": 3,
           "w": 0,
-          "d": 1,
-          "l": 2
+          "d": 0,
+          "l": 3
         }
       ]
     },
@@ -956,9 +956,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5184,
-          "prob_draw": 0.3229,
-          "prob_away": 0.1587
+          "prob_home": 0.6471,
+          "prob_draw": 0.2239,
+          "prob_away": 0.129
         },
         {
           "home_team": "Iraq",
@@ -967,20 +967,20 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.0867,
-          "prob_draw": 0.3087,
-          "prob_away": 0.6047
+          "prob_home": 0.1927,
+          "prob_draw": 0.2619,
+          "prob_away": 0.5454
         },
         {
           "home_team": "France",
           "away_team": "Iraq",
-          "home_goals": 1,
+          "home_goals": 2,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.6713,
-          "prob_draw": 0.2407,
-          "prob_away": 0.088
+          "prob_home": 0.8459,
+          "prob_draw": 0.1091,
+          "prob_away": 0.045
         },
         {
           "home_team": "Norway",
@@ -989,9 +989,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.4221,
-          "prob_draw": 0.3141,
-          "prob_away": 0.2638
+          "prob_home": 0.4483,
+          "prob_draw": 0.2641,
+          "prob_away": 0.2876
         },
         {
           "home_team": "Norway",
@@ -1000,9 +1000,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.1811,
-          "prob_draw": 0.3091,
-          "prob_away": 0.5098
+          "prob_home": 0.1879,
+          "prob_draw": 0.2298,
+          "prob_away": 0.5823
         },
         {
           "home_team": "Senegal",
@@ -1011,17 +1011,17 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5906,
-          "prob_draw": 0.3027,
-          "prob_away": 0.1067
+          "prob_home": 0.5929,
+          "prob_draw": 0.2514,
+          "prob_away": 0.1557
         }
       ],
       "table": [
         {
           "team": "France",
           "pts": 9,
-          "gd": 3,
-          "gf": 3,
+          "gd": 4,
+          "gf": 4,
           "ga": 0,
           "mp": 3,
           "w": 3,
@@ -1053,9 +1053,9 @@ export const DETERMINISTIC_DATA = {
         {
           "team": "Iraq",
           "pts": 0,
-          "gd": -3,
+          "gd": -4,
           "gf": 0,
-          "ga": 3,
+          "ga": 4,
           "mp": 3,
           "w": 0,
           "d": 0,
@@ -1069,13 +1069,13 @@ export const DETERMINISTIC_DATA = {
         {
           "home_team": "Argentina",
           "away_team": "Algeria",
-          "home_goals": 1,
+          "home_goals": 2,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.6409,
-          "prob_draw": 0.2708,
-          "prob_away": 0.0882
+          "prob_home": 0.7543,
+          "prob_draw": 0.1683,
+          "prob_away": 0.0773
         },
         {
           "home_team": "Austria",
@@ -1084,42 +1084,42 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5274,
-          "prob_draw": 0.2767,
-          "prob_away": 0.1959
+          "prob_home": 0.5099,
+          "prob_draw": 0.2642,
+          "prob_away": 0.2259
         },
         {
           "home_team": "Argentina",
+          "away_team": "Austria",
+          "home_goals": 2,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.7079,
+          "prob_draw": 0.1919,
+          "prob_away": 0.1002
+        },
+        {
+          "home_team": "Jordan",
+          "away_team": "Algeria",
+          "home_goals": 1,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.3842,
+          "prob_draw": 0.2895,
+          "prob_away": 0.3262
+        },
+        {
+          "home_team": "Algeria",
           "away_team": "Austria",
           "home_goals": 1,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5407,
-          "prob_draw": 0.3379,
-          "prob_away": 0.1213
-        },
-        {
-          "home_team": "Jordan",
-          "away_team": "Algeria",
-          "home_goals": 0,
-          "away_goals": 1,
-          "home_pts": 0,
-          "away_pts": 3,
-          "prob_home": 0.2169,
-          "prob_draw": 0.3602,
-          "prob_away": 0.4229
-        },
-        {
-          "home_team": "Algeria",
-          "away_team": "Austria",
-          "home_goals": 0,
-          "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.2532,
-          "prob_draw": 0.3761,
-          "prob_away": 0.3706
+          "prob_home": 0.4002,
+          "prob_draw": 0.2823,
+          "prob_away": 0.3175
         },
         {
           "home_team": "Jordan",
@@ -1128,17 +1128,17 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.0699,
-          "prob_draw": 0.2639,
-          "prob_away": 0.6662
+          "prob_home": 0.2002,
+          "prob_draw": 0.2614,
+          "prob_away": 0.5384
         }
       ],
       "table": [
         {
           "team": "Argentina",
           "pts": 9,
-          "gd": 3,
-          "gf": 3,
+          "gd": 5,
+          "gf": 5,
           "ga": 0,
           "mp": 3,
           "w": 3,
@@ -1146,37 +1146,37 @@ export const DETERMINISTIC_DATA = {
           "l": 0
         },
         {
-          "team": "Algeria",
-          "pts": 4,
-          "gd": 0,
+          "team": "Jordan",
+          "pts": 3,
+          "gd": -1,
           "gf": 1,
-          "ga": 1,
+          "ga": 2,
           "mp": 3,
           "w": 1,
-          "d": 1,
-          "l": 1
+          "d": 0,
+          "l": 2
+        },
+        {
+          "team": "Algeria",
+          "pts": 3,
+          "gd": -2,
+          "gf": 1,
+          "ga": 3,
+          "mp": 3,
+          "w": 1,
+          "d": 0,
+          "l": 2
         },
         {
           "team": "Austria",
-          "pts": 4,
-          "gd": 0,
+          "pts": 3,
+          "gd": -2,
           "gf": 1,
-          "ga": 1,
-          "mp": 3,
-          "w": 1,
-          "d": 1,
-          "l": 1
-        },
-        {
-          "team": "Jordan",
-          "pts": 0,
-          "gd": -3,
-          "gf": 0,
           "ga": 3,
           "mp": 3,
-          "w": 0,
+          "w": 1,
           "d": 0,
-          "l": 3
+          "l": 2
         }
       ]
     },
@@ -1190,9 +1190,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5901,
-          "prob_draw": 0.2911,
-          "prob_away": 0.1188
+          "prob_home": 0.6608,
+          "prob_draw": 0.2108,
+          "prob_away": 0.1284
         },
         {
           "home_team": "Uzbekistan",
@@ -1201,9 +1201,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.1557,
-          "prob_draw": 0.3664,
-          "prob_away": 0.478
+          "prob_home": 0.2943,
+          "prob_draw": 0.3432,
+          "prob_away": 0.3625
         },
         {
           "home_team": "Portugal",
@@ -1212,9 +1212,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5992,
-          "prob_draw": 0.2646,
-          "prob_away": 0.1361
+          "prob_home": 0.6146,
+          "prob_draw": 0.2335,
+          "prob_away": 0.1519
         },
         {
           "home_team": "Colombia",
@@ -1223,36 +1223,36 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5749,
-          "prob_draw": 0.3078,
-          "prob_away": 0.1174
+          "prob_home": 0.5667,
+          "prob_draw": 0.2828,
+          "prob_away": 0.1504
         },
         {
           "home_team": "Colombia",
           "away_team": "Portugal",
-          "home_goals": 0,
-          "away_goals": 1,
-          "home_pts": 0,
-          "away_pts": 3,
-          "prob_home": 0.2891,
-          "prob_draw": 0.3297,
-          "prob_away": 0.3812
+          "home_goals": 1,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.4454,
+          "prob_draw": 0.2744,
+          "prob_away": 0.2802
         },
         {
           "home_team": "DR Congo",
           "away_team": "Uzbekistan",
-          "home_goals": 0,
+          "home_goals": 1,
           "away_goals": 0,
-          "home_pts": 1,
-          "away_pts": 1,
-          "prob_home": 0.2417,
-          "prob_draw": 0.417,
-          "prob_away": 0.3413
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.385,
+          "prob_draw": 0.3768,
+          "prob_away": 0.2381
         }
       ],
       "table": [
         {
-          "team": "Portugal",
+          "team": "Colombia",
           "pts": 9,
           "gd": 3,
           "gf": 3,
@@ -1263,7 +1263,7 @@ export const DETERMINISTIC_DATA = {
           "l": 0
         },
         {
-          "team": "Colombia",
+          "team": "Portugal",
           "pts": 6,
           "gd": 1,
           "gf": 2,
@@ -1275,25 +1275,25 @@ export const DETERMINISTIC_DATA = {
         },
         {
           "team": "DR Congo",
-          "pts": 1,
-          "gd": -2,
-          "gf": 0,
+          "pts": 3,
+          "gd": -1,
+          "gf": 1,
           "ga": 2,
           "mp": 3,
-          "w": 0,
-          "d": 1,
+          "w": 1,
+          "d": 0,
           "l": 2
         },
         {
           "team": "Uzbekistan",
-          "pts": 1,
-          "gd": -2,
+          "pts": 0,
+          "gd": -3,
           "gf": 0,
-          "ga": 2,
+          "ga": 3,
           "mp": 3,
           "w": 0,
-          "d": 1,
-          "l": 2
+          "d": 0,
+          "l": 3
         }
       ]
     },
@@ -1307,31 +1307,31 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5193,
-          "prob_draw": 0.3077,
-          "prob_away": 0.173
+          "prob_home": 0.5961,
+          "prob_draw": 0.2493,
+          "prob_away": 0.1546
         },
         {
           "home_team": "Ghana",
           "away_team": "Panama",
-          "home_goals": 0,
-          "away_goals": 1,
-          "home_pts": 0,
-          "away_pts": 3,
-          "prob_home": 0.2414,
-          "prob_draw": 0.3386,
-          "prob_away": 0.42
-        },
-        {
-          "home_team": "England",
-          "away_team": "Ghana",
           "home_goals": 1,
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5683,
-          "prob_draw": 0.3231,
-          "prob_away": 0.1086
+          "prob_home": 0.4473,
+          "prob_draw": 0.2828,
+          "prob_away": 0.2698
+        },
+        {
+          "home_team": "England",
+          "away_team": "Ghana",
+          "home_goals": 2,
+          "away_goals": 0,
+          "home_pts": 3,
+          "away_pts": 0,
+          "prob_home": 0.8518,
+          "prob_draw": 0.1086,
+          "prob_away": 0.0396
         },
         {
           "home_team": "Panama",
@@ -1340,9 +1340,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.1237,
-          "prob_draw": 0.3452,
-          "prob_away": 0.5311
+          "prob_home": 0.2707,
+          "prob_draw": 0.2789,
+          "prob_away": 0.4504
         },
         {
           "home_team": "Panama",
@@ -1351,9 +1351,9 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 1,
           "home_pts": 0,
           "away_pts": 3,
-          "prob_home": 0.0667,
-          "prob_draw": 0.3251,
-          "prob_away": 0.6081
+          "prob_home": 0.1889,
+          "prob_draw": 0.3052,
+          "prob_away": 0.5059
         },
         {
           "home_team": "Croatia",
@@ -1362,17 +1362,17 @@ export const DETERMINISTIC_DATA = {
           "away_goals": 0,
           "home_pts": 3,
           "away_pts": 0,
-          "prob_home": 0.5588,
-          "prob_draw": 0.3198,
-          "prob_away": 0.1214
+          "prob_home": 0.559,
+          "prob_draw": 0.2606,
+          "prob_away": 0.1804
         }
       ],
       "table": [
         {
           "team": "England",
           "pts": 9,
-          "gd": 3,
-          "gf": 3,
+          "gd": 4,
+          "gf": 4,
           "ga": 0,
           "mp": 3,
           "w": 3,
@@ -1391,18 +1391,18 @@ export const DETERMINISTIC_DATA = {
           "l": 1
         },
         {
-          "team": "Panama",
+          "team": "Ghana",
           "pts": 3,
-          "gd": -1,
+          "gd": -2,
           "gf": 1,
-          "ga": 2,
+          "ga": 3,
           "mp": 3,
           "w": 1,
           "d": 0,
           "l": 2
         },
         {
-          "team": "Ghana",
+          "team": "Panama",
           "pts": 0,
           "gd": -3,
           "gf": 0,
@@ -1418,36 +1418,36 @@ export const DETERMINISTIC_DATA = {
   "best_thirds": {
     "A": "Czech Republic",
     "C": "Scotland",
-    "J": "Austria",
-    "B": "Bosnia and Herzegovina",
-    "E": "Ivory Coast",
-    "F": "Sweden",
+    "D": "Paraguay",
+    "G": "Egypt",
     "I": "Senegal",
-    "L": "Panama"
+    "K": "DR Congo",
+    "E": "Curaçao",
+    "J": "Algeria"
   },
   "knockout": {
     "r32": [
       {
         "team1": "South Korea",
-        "team2": "Switzerland",
-        "team1_goals": 0,
-        "team2_goals": 1,
-        "winner": "Switzerland",
+        "team2": "Canada",
+        "team1_goals": 1,
+        "team2_goals": 0,
+        "winner": "South Korea",
         "penalties": false,
-        "prob_team1": 0.1043,
-        "prob_draw": 0.4465,
-        "prob_team2": 0.4492
+        "prob_team1": 0.4472,
+        "prob_draw": 0.3176,
+        "prob_team2": 0.2352
       },
       {
-        "team1": "Germany",
+        "team1": "Ecuador",
         "team2": "Scotland",
         "team1_goals": 1,
         "team2_goals": 0,
-        "winner": "Germany",
+        "winner": "Ecuador",
         "penalties": false,
-        "prob_team1": 0.5544,
-        "prob_draw": 0.2952,
-        "prob_team2": 0.1503
+        "prob_team1": 0.5443,
+        "prob_draw": 0.2969,
+        "prob_team2": 0.1588
       },
       {
         "team1": "Netherlands",
@@ -1456,9 +1456,9 @@ export const DETERMINISTIC_DATA = {
         "team2_goals": 0,
         "winner": "Netherlands",
         "penalties": false,
-        "prob_team1": 0.4585,
-        "prob_draw": 0.3681,
-        "prob_team2": 0.1734
+        "prob_team1": 0.5266,
+        "prob_draw": 0.2663,
+        "prob_team2": 0.207
       },
       {
         "team1": "Brazil",
@@ -1467,64 +1467,64 @@ export const DETERMINISTIC_DATA = {
         "team2_goals": 0,
         "winner": "Brazil",
         "penalties": false,
-        "prob_team1": 0.4295,
-        "prob_draw": 0.3582,
-        "prob_team2": 0.2123
+        "prob_team1": 0.5467,
+        "prob_draw": 0.2575,
+        "prob_team2": 0.1958
       },
       {
         "team1": "France",
-        "team2": "Sweden",
-        "team1_goals": 1,
+        "team2": "Paraguay",
+        "team1_goals": 2,
         "team2_goals": 0,
         "winner": "France",
         "penalties": false,
-        "prob_team1": 0.6232,
-        "prob_draw": 0.2864,
-        "prob_team2": 0.0904
+        "prob_team1": 0.7711,
+        "prob_draw": 0.1639,
+        "prob_team2": 0.0651
       },
       {
-        "team1": "Ecuador",
+        "team1": "Germany",
         "team2": "Norway",
-        "team1_goals": 0,
-        "team2_goals": 0,
-        "winner": "Norway",
-        "penalties": true,
-        "prob_team1": 0.2427,
-        "prob_draw": 0.3896,
-        "prob_team2": 0.3678
+        "team1_goals": 2,
+        "team2_goals": 1,
+        "winner": "Germany",
+        "penalties": false,
+        "prob_team1": 0.543,
+        "prob_draw": 0.2173,
+        "prob_team2": 0.2397
       },
       {
         "team1": "Mexico",
-        "team2": "Ivory Coast",
-        "team1_goals": 0,
+        "team2": "Curaçao",
+        "team1_goals": 1,
         "team2_goals": 0,
         "winner": "Mexico",
-        "penalties": true,
-        "prob_team1": 0.4175,
-        "prob_draw": 0.4419,
-        "prob_team2": 0.1407
+        "penalties": false,
+        "prob_team1": 0.7365,
+        "prob_draw": 0.2078,
+        "prob_team2": 0.0557
       },
       {
         "team1": "England",
-        "team2": "Senegal",
-        "team1_goals": 1,
+        "team2": "DR Congo",
+        "team1_goals": 2,
         "team2_goals": 0,
         "winner": "England",
         "penalties": false,
-        "prob_team1": 0.6621,
-        "prob_draw": 0.2615,
-        "prob_team2": 0.0765
+        "prob_team1": 0.7369,
+        "prob_draw": 0.1757,
+        "prob_team2": 0.0873
       },
       {
-        "team1": "Turkey",
-        "team2": "Bosnia and Herzegovina",
+        "team1": "United States",
+        "team2": "Algeria",
         "team1_goals": 1,
         "team2_goals": 0,
-        "winner": "Turkey",
+        "winner": "United States",
         "penalties": false,
-        "prob_team1": 0.5991,
-        "prob_draw": 0.2954,
-        "prob_team2": 0.1055
+        "prob_team1": 0.4313,
+        "prob_draw": 0.2877,
+        "prob_team2": 0.281
       },
       {
         "team1": "Belgium",
@@ -1533,42 +1533,42 @@ export const DETERMINISTIC_DATA = {
         "team2_goals": 0,
         "winner": "Belgium",
         "penalties": false,
-        "prob_team1": 0.4779,
-        "prob_draw": 0.3089,
-        "prob_team2": 0.2131
+        "prob_team1": 0.5879,
+        "prob_draw": 0.237,
+        "prob_team2": 0.1751
       },
       {
-        "team1": "Colombia",
+        "team1": "Portugal",
         "team2": "Croatia",
-        "team1_goals": 0,
-        "team2_goals": 0,
-        "winner": "Colombia",
-        "penalties": true,
-        "prob_team1": 0.3516,
-        "prob_draw": 0.3592,
-        "prob_team2": 0.2892
+        "team1_goals": 2,
+        "team2_goals": 1,
+        "winner": "Portugal",
+        "penalties": false,
+        "prob_team1": 0.64,
+        "prob_draw": 0.2014,
+        "prob_team2": 0.1585
       },
       {
         "team1": "Spain",
-        "team2": "Algeria",
-        "team1_goals": 1,
+        "team2": "Jordan",
+        "team1_goals": 2,
         "team2_goals": 0,
         "winner": "Spain",
         "penalties": false,
-        "prob_team1": 0.7547,
-        "prob_draw": 0.1831,
-        "prob_team2": 0.0622
+        "prob_team1": 0.8279,
+        "prob_draw": 0.117,
+        "prob_team2": 0.0551
       },
       {
-        "team1": "Canada",
-        "team2": "Austria",
-        "team1_goals": 0,
+        "team1": "Switzerland",
+        "team2": "Egypt",
+        "team1_goals": 1,
         "team2_goals": 0,
-        "winner": "Austria",
-        "penalties": true,
-        "prob_team1": 0.2538,
-        "prob_draw": 0.3915,
-        "prob_team2": 0.3547
+        "winner": "Switzerland",
+        "penalties": false,
+        "prob_team1": 0.5116,
+        "prob_draw": 0.2609,
+        "prob_team2": 0.2274
       },
       {
         "team1": "Argentina",
@@ -1577,66 +1577,66 @@ export const DETERMINISTIC_DATA = {
         "team2_goals": 0,
         "winner": "Argentina",
         "penalties": false,
-        "prob_team1": 0.4577,
-        "prob_draw": 0.4327,
-        "prob_team2": 0.1096
+        "prob_team1": 0.5432,
+        "prob_draw": 0.3162,
+        "prob_team2": 0.1407
       },
       {
-        "team1": "Portugal",
-        "team2": "Panama",
+        "team1": "Colombia",
+        "team2": "Senegal",
         "team1_goals": 1,
         "team2_goals": 0,
-        "winner": "Portugal",
+        "winner": "Colombia",
         "penalties": false,
-        "prob_team1": 0.606,
-        "prob_draw": 0.2739,
-        "prob_team2": 0.1202
+        "prob_team1": 0.5152,
+        "prob_draw": 0.3055,
+        "prob_team2": 0.1793
       },
       {
-        "team1": "Paraguay",
-        "team2": "Egypt",
-        "team1_goals": 0,
+        "team1": "Turkey",
+        "team2": "Iran",
+        "team1_goals": 1,
         "team2_goals": 0,
-        "winner": "Paraguay",
-        "penalties": true,
-        "prob_team1": 0.3789,
-        "prob_draw": 0.4375,
-        "prob_team2": 0.1836
+        "winner": "Turkey",
+        "penalties": false,
+        "prob_team1": 0.4342,
+        "prob_draw": 0.2591,
+        "prob_team2": 0.3067
       }
     ],
     "r16": [
       {
-        "team1": "Germany",
+        "team1": "Ecuador",
         "team2": "France",
         "team1_goals": 0,
         "team2_goals": 1,
         "winner": "France",
         "penalties": false,
-        "prob_team1": 0.2355,
-        "prob_draw": 0.3163,
-        "prob_team2": 0.4482
+        "prob_team1": 0.1724,
+        "prob_draw": 0.299,
+        "prob_team2": 0.5286
       },
       {
-        "team1": "Switzerland",
+        "team1": "South Korea",
         "team2": "Netherlands",
         "team1_goals": 0,
         "team2_goals": 1,
         "winner": "Netherlands",
         "penalties": false,
-        "prob_team1": 0.1621,
-        "prob_draw": 0.3734,
-        "prob_team2": 0.4646
+        "prob_team1": 0.3381,
+        "prob_draw": 0.2865,
+        "prob_team2": 0.3753
       },
       {
         "team1": "Brazil",
-        "team2": "Norway",
-        "team1_goals": 0,
+        "team2": "Germany",
+        "team1_goals": 1,
         "team2_goals": 0,
         "winner": "Brazil",
-        "penalties": true,
-        "prob_team1": 0.2856,
-        "prob_draw": 0.4393,
-        "prob_team2": 0.2751
+        "penalties": false,
+        "prob_team1": 0.5454,
+        "prob_draw": 0.2417,
+        "prob_team2": 0.2129
       },
       {
         "team1": "Mexico",
@@ -1645,136 +1645,136 @@ export const DETERMINISTIC_DATA = {
         "team2_goals": 1,
         "winner": "England",
         "penalties": false,
-        "prob_team1": 0.1232,
-        "prob_draw": 0.3593,
-        "prob_team2": 0.5175
+        "prob_team1": 0.2955,
+        "prob_draw": 0.3452,
+        "prob_team2": 0.3593
       },
       {
-        "team1": "Colombia",
+        "team1": "Portugal",
         "team2": "Spain",
-        "team1_goals": 0,
-        "team2_goals": 1,
+        "team1_goals": 1,
+        "team2_goals": 2,
         "winner": "Spain",
         "penalties": false,
-        "prob_team1": 0.1195,
-        "prob_draw": 0.4085,
-        "prob_team2": 0.472
+        "prob_team1": 0.3131,
+        "prob_draw": 0.2513,
+        "prob_team2": 0.4356
       },
       {
-        "team1": "Turkey",
+        "team1": "United States",
         "team2": "Belgium",
-        "team1_goals": 0,
+        "team1_goals": 1,
         "team2_goals": 0,
-        "winner": "Belgium",
-        "penalties": true,
-        "prob_team1": 0.2987,
-        "prob_draw": 0.3743,
-        "prob_team2": 0.327
+        "winner": "United States",
+        "penalties": false,
+        "prob_team1": 0.365,
+        "prob_draw": 0.2964,
+        "prob_team2": 0.3386
       },
       {
         "team1": "Argentina",
-        "team2": "Paraguay",
-        "team1_goals": 1,
+        "team2": "Turkey",
+        "team1_goals": 2,
         "team2_goals": 0,
         "winner": "Argentina",
         "penalties": false,
-        "prob_team1": 0.4634,
-        "prob_draw": 0.4451,
-        "prob_team2": 0.0916
+        "prob_team1": 0.7023,
+        "prob_draw": 0.1893,
+        "prob_team2": 0.1083
       },
       {
-        "team1": "Austria",
-        "team2": "Portugal",
+        "team1": "Switzerland",
+        "team2": "Colombia",
         "team1_goals": 0,
         "team2_goals": 1,
-        "winner": "Portugal",
+        "winner": "Colombia",
         "penalties": false,
-        "prob_team1": 0.1602,
-        "prob_draw": 0.3249,
-        "prob_team2": 0.5148
+        "prob_team1": 0.3394,
+        "prob_draw": 0.2855,
+        "prob_team2": 0.3752
       }
     ],
     "qf": [
       {
         "team1": "France",
         "team2": "Netherlands",
-        "team1_goals": 1,
-        "team2_goals": 0,
+        "team1_goals": 2,
+        "team2_goals": 1,
         "winner": "France",
         "penalties": false,
-        "prob_team1": 0.4965,
-        "prob_draw": 0.3076,
-        "prob_team2": 0.1959
+        "prob_team1": 0.5736,
+        "prob_draw": 0.2237,
+        "prob_team2": 0.2027
       },
       {
         "team1": "Spain",
-        "team2": "Belgium",
-        "team1_goals": 1,
+        "team2": "United States",
+        "team1_goals": 2,
         "team2_goals": 0,
         "winner": "Spain",
         "penalties": false,
-        "prob_team1": 0.5462,
-        "prob_draw": 0.3186,
-        "prob_team2": 0.1352
+        "prob_team1": 0.759,
+        "prob_draw": 0.163,
+        "prob_team2": 0.078
       },
       {
         "team1": "Brazil",
         "team2": "England",
-        "team1_goals": 0,
+        "team1_goals": 1,
         "team2_goals": 0,
-        "winner": "England",
-        "penalties": true,
-        "prob_team1": 0.2301,
-        "prob_draw": 0.4288,
-        "prob_team2": 0.3412
+        "winner": "Brazil",
+        "penalties": false,
+        "prob_team1": 0.37,
+        "prob_draw": 0.3365,
+        "prob_team2": 0.2935
       },
       {
         "team1": "Argentina",
-        "team2": "Portugal",
+        "team2": "Colombia",
         "team1_goals": 1,
         "team2_goals": 0,
         "winner": "Argentina",
         "penalties": false,
-        "prob_team1": 0.458,
-        "prob_draw": 0.3563,
-        "prob_team2": 0.1857
+        "prob_team1": 0.5119,
+        "prob_draw": 0.3076,
+        "prob_team2": 0.1805
       }
     ],
     "sf": [
       {
         "team1": "France",
         "team2": "Spain",
-        "team1_goals": 0,
-        "team2_goals": 1,
-        "winner": "Spain",
+        "team1_goals": 1,
+        "team2_goals": 0,
+        "winner": "France",
         "penalties": false,
-        "prob_team1": 0.2639,
-        "prob_draw": 0.3398,
-        "prob_team2": 0.3962
+        "prob_team1": 0.4153,
+        "prob_draw": 0.2739,
+        "prob_team2": 0.3108
       },
       {
-        "team1": "England",
+        "team1": "Brazil",
         "team2": "Argentina",
         "team1_goals": 0,
-        "team2_goals": 0,
+        "team2_goals": 1,
         "winner": "Argentina",
-        "penalties": true,
-        "prob_team1": 0.3049,
-        "prob_draw": 0.3588,
-        "prob_team2": 0.3363
+        "penalties": false,
+        "prob_team1": 0.2062,
+        "prob_draw": 0.327,
+        "prob_team2": 0.4668
       }
     ],
     "final": [
       {
-        "team1": "Spain",
+        "team1": "France",
         "team2": "Argentina",
         "team1_goals": 1,
         "team2_goals": 0,
-        "winner": "Spain",
+        "winner": "France",
         "penalties": false,
-        "prob_team1": 0.373,
-        "prob_draw": 0.3622,
-        "prob_team2": 0.2648
+        "prob_team1": 0.4254,
+        "prob_draw": 0.2796,
+        "prob_team2": 0.2951
       }
     ]
   }

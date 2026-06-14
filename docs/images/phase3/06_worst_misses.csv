@@ -1,0 +1,21 @@
+date,home_team,away_team,home_score,away_score,outcome,pred_outcome,pred_prob,prob_actual,elo_diff,tournament_category
+2025-10-14,Hong Kong,Bangladesh,1,1,draw,home_win,0.985,0.008,347,qualifier
+2025-11-15,Denmark,Belarus,2,2,draw,home_win,0.985,0.009,495,qualifier
+2025-11-14,Finland,Malta,0,1,away_win,home_win,0.751,0.021,260,qualifier
+2026-03-27,New Zealand,Finland,0,2,away_win,home_win,0.853,0.042,238,other_competitive
+2026-03-26,Tanzania,Liechtenstein,0,1,away_win,home_win,0.823,0.048,444,other_competitive
+2025-08-14,Marshall Islands,United States Virgin Islands,0,4,away_win,home_win,0.832,0.054,616,other_competitive
+2025-12-01,Tunisia,Syria,0,1,away_win,home_win,0.684,0.058,194,other_competitive
+2026-03-29,South Sudan,Djibouti,0,1,away_win,home_win,0.77,0.059,279,qualifier
+2025-09-04,Tajikistan,Iran,2,2,draw,away_win,0.912,0.065,-547,other_competitive
+2025-09-09,Bolivia,Brazil,1,0,home_win,away_win,0.752,0.068,-360,qualifier
+2025-10-12,Faroe Islands,Czech Republic,2,1,home_win,away_win,0.823,0.072,-421,qualifier
+2026-03-26,Liechtenstein,Tanzania,1,0,home_win,away_win,0.829,0.073,-501,other_competitive
+2025-11-12,Cayman Islands,British Virgin Islands,1,2,away_win,home_win,0.623,0.075,194,other_competitive
+2025-11-13,Northern Ireland,Portugal,2,0,home_win,away_win,0.607,0.082,-415,qualifier
+2025-06-16,Jamaica,Guatemala,0,1,away_win,home_win,0.68,0.09,25,continental_final
+2025-07-15,Jersey,Shetland,2,2,draw,home_win,0.864,0.092,331,other_competitive
+2025-10-13,Sao Tome and Principe,Malawi,1,0,home_win,away_win,0.649,0.092,-354,qualifier
+2025-11-18,Hong Kong,Singapore,1,2,away_win,home_win,0.646,0.103,131,qualifier
+2025-11-18,Trinidad and Tobago,Bermuda,2,2,draw,home_win,0.845,0.107,302,qualifier
+2025-10-09,Sri Lanka,Turkmenistan,1,0,home_win,away_win,0.697,0.114,-497,qualifier
