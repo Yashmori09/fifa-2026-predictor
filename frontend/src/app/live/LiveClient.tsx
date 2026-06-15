@@ -12,28 +12,35 @@ function teamCode(name: string | null): string {
   return TEAMS.find((t) => t.name === name)?.code ?? "xx";
 }
 
+// All times on the live page are rendered in IST (UTC+5:30, the project's home tz)
+// regardless of the viewer's browser locale, so the day groupings line up.
+const TZ = "Asia/Kolkata";
+
 function formatKickoff(iso: string): { date: string; time: string } {
   const d = new Date(iso);
-  const date = d.toLocaleDateString("en-US", { month: "short", day: "numeric" }).toUpperCase();
-  const time = d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "UTC" });
+  const date = d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: TZ }).toUpperCase();
+  // hourCycle: "h23" gives 00-23 reliably across environments (hour12:false can yield 24:00 in some Node/Intl impls)
+  const time = d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: TZ });
   return { date, time };
 }
 
 function dayKey(iso: string): string {
-  return new Date(iso).toISOString().slice(0, 10);
+  // en-CA gives YYYY-MM-DD, sortable + comparable
+  return new Date(iso).toLocaleDateString("en-CA", { timeZone: TZ });
 }
 
 function dayLabel(iso: string): string {
-  const d = new Date(iso);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const matchDay = new Date(d);
-  matchDay.setHours(0, 0, 0, 0);
-  const diff = Math.round((matchDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-  if (diff === 0) return "TODAY";
-  if (diff === 1) return "TOMORROW";
-  if (diff === -1) return "YESTERDAY";
-  return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }).toUpperCase();
+  const matchKey = dayKey(iso);
+  const now = new Date();
+  const todayKey = now.toLocaleDateString("en-CA", { timeZone: TZ });
+  const tomorrowKey = new Date(now.getTime() + 86_400_000).toLocaleDateString("en-CA", { timeZone: TZ });
+  const yesterdayKey = new Date(now.getTime() - 86_400_000).toLocaleDateString("en-CA", { timeZone: TZ });
+  if (matchKey === todayKey) return "TODAY";
+  if (matchKey === tomorrowKey) return "TOMORROW";
+  if (matchKey === yesterdayKey) return "YESTERDAY";
+  return new Date(iso)
+    .toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: TZ })
+    .toUpperCase();
 }
 
 function pct(n: number | undefined): string {
@@ -46,7 +53,7 @@ function formatLastUpdated(iso: string): string {
   const diffMin = Math.floor((now.getTime() - d.getTime()) / 60000);
   if (diffMin < 1) return "just now";
   if (diffMin < 60) return `${diffMin} min ago`;
-  return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" }) + " UTC";
+  return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: TZ }) + " IST";
 }
 
 /* ──────────────── components ──────────────── */
@@ -85,7 +92,7 @@ function MatchRow({
       </div>
     );
   } else {
-    statusIcon = <span className="text-secondary text-[10px] font-mono">UTC</span>;
+    statusIcon = <span className="text-secondary text-[10px] font-mono">IST</span>;
   }
 
   const homeScore = match.actual?.score.home ?? (isLive ? 0 : null);
@@ -104,7 +111,7 @@ function MatchRow({
           {time}
         </span>
         <span className="text-[9px] font-mono font-semibold tracking-wider">
-          {isFinished ? <span className="text-green-500">FT</span> : isLive ? <span className="text-pink">●</span> : <span className="text-secondary">UTC</span>}
+          {isFinished ? <span className="text-green-500">FT</span> : isLive ? <span className="text-pink">●</span> : <span className="text-secondary">IST</span>}
         </span>
       </div>
       <div className="flex-1 flex flex-col gap-0.5 min-w-0">
@@ -194,7 +201,7 @@ function MatchDetail({ match }: { match: Match | null }) {
           </span>
         </div>
         <span className="text-[11px] font-mono font-semibold tracking-[1.2px] text-secondary">
-          {date} · {time} UTC
+          {date} · {time} IST
         </span>
       </div>
 
@@ -329,7 +336,7 @@ function ResultCard({ match }: { match: Match }) {
       {/* Top bar */}
       <div className="flex items-center justify-between gap-2 bg-[#0D0D0D] border-b border-border px-5 py-2.5 flex-wrap">
         <div className="flex items-center gap-3 flex-wrap">
-          <span className="text-[11px] font-mono font-semibold tracking-[1.2px] text-secondary">{date} · {time} UTC</span>
+          <span className="text-[11px] font-mono font-semibold tracking-[1.2px] text-secondary">{date} · {time} IST</span>
           <span className="text-[11px] font-mono font-semibold tracking-[1.2px] text-secondary">
             {match.stage === "group" ? `GROUP ${match.group}` : match.stage.toUpperCase()}
           </span>
