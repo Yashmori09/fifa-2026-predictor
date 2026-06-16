@@ -269,10 +269,15 @@ export async function getLiveData(): Promise<LiveData> {
         actual.exact_score = p.score.home === ft.home && p.score.away === ft.away;
         actual.within_1_goal =
           Math.abs(p.score.home - ft.home) <= 1 && Math.abs(p.score.away - ft.away) <= 1;
+        // Upset = the model gave one side >=70% chance to win, and that side did NOT win.
+        // Both outright losses AND draws count — a heavy favorite dropping points is
+        // surprising enough to flag (e.g. Spain 85.6% held to 0-0 by Cape Verde).
+        // 70% threshold is the "this team should win" line; below that, draws are
+        // close enough to be expected.
         const favProb = Math.max(p.prob_home, p.prob_away);
-        if (favProb >= 0.6) {
+        if (favProb >= 0.70) {
           const favOutcome = p.prob_home >= p.prob_away ? "home" : "away";
-          actual.is_upset = favOutcome !== outcome && outcome !== "draw";
+          actual.is_upset = favOutcome !== outcome;
         } else {
           actual.is_upset = false;
         }

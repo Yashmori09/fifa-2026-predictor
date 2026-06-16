@@ -66,7 +66,7 @@ const TERMS: Record<string, string> = {
   "Confidence Score": "How well our probabilities matched reality, on average. Derived from the Brier score — when the model says 70% and it actually happens 70% of the time, this rises. 100 = perfect, 50 = no better than random.",
   "Match Score": "How much probability we gave to what actually happened in this match. We said the outcome had X% chance — the score reflects that. High score = confident and right; low score = confident and wrong; ~50 = honestly uncertain.",
   "Goal-Diff Error": "How far off our predicted scoreline was — average absolute difference between predicted goal-difference and actual. Lower is better. 0 = perfect, 1.5 = we're off by 1-2 goals on average.",
-  "Upset": "A finished match where the model gave the favorite at least a 60% chance to win, but the underdog won anyway (draws don't count).",
+  "Upset": "A finished match where the model gave one team at least a 70% chance to win, but that team failed to win, whether they lost outright or were held to a draw.",
   "outcome accuracy": "How often the model picked the winner correctly — looks only at the most likely outcome, ignoring confidence levels.",
   "Brier score": "A proper scoring rule that grades the entire probability distribution, not just the top pick. Lower is better. Industry standard for evaluating probabilistic forecasts.",
 };
