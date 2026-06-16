@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -22,24 +23,14 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-background border-b border-border">
       <div className="flex items-center justify-between px-4 md:px-12 h-14 md:h-16">
         <Link href="/" className="flex items-center gap-[10px]">
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-yellow-400"
-          >
-            <path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978" />
-            <path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978" />
-            <path d="M18 9h1.5a1 1 0 0 0 0-5H18" />
-            <path d="M4 22h16" />
-            <path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" />
-            <path d="M6 9H4.5a1 1 0 0 1 0-5H6" />
-          </svg>
+          <Image
+            src="/wc2026-logo.jpeg"
+            alt="FIFA World Cup 2026"
+            width={22}
+            height={34}
+            className="h-8 w-auto"
+            priority
+          />
           <span className="text-[18px] md:text-[20px] font-[family-name:var(--font-anton)] tracking-[1px]">
             FIFA 2026
           </span>
