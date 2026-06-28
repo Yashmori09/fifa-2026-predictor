@@ -165,6 +165,38 @@ function stageLabel(stage: string, group: string | null): { stage: string; group
   return { stage: m[stage] ?? stage.toLowerCase(), group: null };
 }
 
+/* ──── accuracy-badge computation (used in both the initial map and the post-pass live-predictions step) ──── */
+
+function applyAccuracyBadges(
+  actual: Actual,
+  p: Prediction,
+  outcome: "home" | "draw" | "away",
+  ftHome: number,
+  ftAway: number,
+): void {
+  actual.outcome_correct = p.predicted_outcome === outcome;
+  actual.exact_score = p.score.home === ftHome && p.score.away === ftAway;
+  actual.within_1_goal =
+    Math.abs(p.score.home - ftHome) <= 1 && Math.abs(p.score.away - ftAway) <= 1;
+  // Upset = the model gave one side >=70% chance to win, and that side did NOT win.
+  // Both outright losses AND draws count — a heavy favorite dropping points is
+  // surprising enough to flag.
+  const favProb = Math.max(p.prob_home, p.prob_away);
+  if (favProb >= 0.70) {
+    const favOutcome = p.prob_home >= p.prob_away ? "home" : "away";
+    actual.is_upset = favOutcome !== outcome;
+  } else {
+    actual.is_upset = false;
+  }
+  const aH = outcome === "home" ? 1 : 0;
+  const aD = outcome === "draw" ? 1 : 0;
+  const aA = outcome === "away" ? 1 : 0;
+  const brier =
+    (p.prob_home - aH) ** 2 + (p.prob_draw - aD) ** 2 + (p.prob_away - aA) ** 2;
+  actual.match_score = Math.round(Math.max(0, (1 - brier / 2) * 100));
+  actual.goal_diff_error = Math.abs((p.score.home - p.score.away) - (ftHome - ftAway));
+}
+
 /* ──── football-data.org types (only what we touch) ──── */
 
 interface FDMatch {
@@ -264,41 +296,66 @@ export async function getLiveData(): Promise<LiveData> {
 
       // Only compute accuracy badges for matches that are actually over.
       if (isFinal && record.prediction) {
-        const p = record.prediction;
-        actual.outcome_correct = p.predicted_outcome === outcome;
-        actual.exact_score = p.score.home === ft.home && p.score.away === ft.away;
-        actual.within_1_goal =
-          Math.abs(p.score.home - ft.home) <= 1 && Math.abs(p.score.away - ft.away) <= 1;
-        // Upset = the model gave one side >=70% chance to win, and that side did NOT win.
-        // Both outright losses AND draws count — a heavy favorite dropping points is
-        // surprising enough to flag (e.g. Spain 85.6% held to 0-0 by Cape Verde).
-        // 70% threshold is the "this team should win" line; below that, draws are
-        // close enough to be expected.
-        const favProb = Math.max(p.prob_home, p.prob_away);
-        if (favProb >= 0.70) {
-          const favOutcome = p.prob_home >= p.prob_away ? "home" : "away";
-          actual.is_upset = favOutcome !== outcome;
-        } else {
-          actual.is_upset = false;
-        }
-        // Per-match Brier-derived score (0-100; higher is better)
-        // brier = sum( (p_i - actual_i)^2 ), range 0-2 for 3-class. score = (1 - brier/2) * 100
-        const aH = outcome === "home" ? 1 : 0;
-        const aD = outcome === "draw" ? 1 : 0;
-        const aA = outcome === "away" ? 1 : 0;
-        const brier =
-          (p.prob_home - aH) ** 2 + (p.prob_draw - aD) ** 2 + (p.prob_away - aA) ** 2;
-        actual.match_score = Math.round(Math.max(0, (1 - brier / 2) * 100));
-        // Goal-diff error
-        const predDiff = p.score.home - p.score.away;
-        const actDiff = ft.home - ft.away;
-        actual.goal_diff_error = Math.abs(predDiff - actDiff);
+        applyAccuracyBadges(actual, record.prediction, outcome, ft.home, ft.away);
       }
       record.actual = actual;
     }
 
     return record;
   });
+
+  // ──────────────────────────────────────────────────────────────────────
+  // Post-pass: fill in predictions for knockout fixtures the pre-WC
+  // deterministic bracket missed. R32+ matchups depend on actual group
+  // stage results, so our pre-tournament bracket diverges from reality
+  // whenever group standings surprise us. Call the live model API for
+  // any knockout match with known teams but no prediction attached.
+  // ──────────────────────────────────────────────────────────────────────
+  const needsLivePred = matches.filter((m) =>
+    m.stage !== "group" &&
+    !m.prediction &&
+    m.home.name && m.away.name &&
+    m.home.name !== "TBD" && m.away.name !== "TBD"
+  );
+
+  if (needsLivePred.length > 0) {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "https://yashm09-fifa-2026-predictor-api.hf.space";
+    await Promise.all(needsLivePred.map(async (m) => {
+      try {
+        const r = await fetch(`${apiBase}/predict/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ home_team: m.home.name, away_team: m.away.name }),
+          next: { revalidate: 60 },
+        });
+        if (!r.ok) return;
+        const p = (await r.json()) as {
+          home_win: number; draw: number; away_win: number;
+          predicted_outcome: string;
+          home_goals: number; away_goals: number;
+        };
+        const outcome: "home" | "draw" | "away" =
+          p.predicted_outcome === "home_win" ? "home" :
+          p.predicted_outcome === "away_win" ? "away" : "draw";
+        m.prediction = {
+          prob_home: p.home_win,
+          prob_draw: p.draw,
+          prob_away: p.away_win,
+          score: { home: p.home_goals, away: p.away_goals },
+          predicted_outcome: outcome,
+          source: `live_model_phase3_${m.stage}`,
+        };
+        // If this knockout match is already finished, retroactively compute
+        // accuracy badges from the now-attached prediction.
+        if (m.status === "FINISHED" && m.actual && !m.actual.is_live) {
+          const aOutcome = m.actual.outcome;
+          applyAccuracyBadges(m.actual, m.prediction, aOutcome, m.actual.score.home, m.actual.score.away);
+        }
+      } catch {
+        // silent — leave prediction null if backend is unreachable
+      }
+    }));
+  }
 
   matches.sort((a, b) => a.kickoff_utc.localeCompare(b.kickoff_utc));
 
