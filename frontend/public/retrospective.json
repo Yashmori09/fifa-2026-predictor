@@ -1,0 +1,1638 @@
+{
+  "generated_at": "2026-07-21T10:26:15.936Z",
+  "overall": {
+    "n_teams": 48,
+    "champion": "Spain",
+    "runner_up": "Argentina",
+    "stats": {
+      "n_played": 104,
+      "outcome_accuracy": 0.6538461538461539,
+      "avg_confidence_score": 74,
+      "n_upsets": 3
+    }
+  },
+  "teams": {
+    "Algeria": {
+      "team": "Algeria",
+      "flag": "dz",
+      "predicted": {
+        "p_r16": 0.2203,
+        "p_qf": 0.1008,
+        "p_sf": 0.0407,
+        "p_final": 0.0158,
+        "p_win": 0.0046,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 1,
+        "losses": 2,
+        "gf": 5,
+        "ga": 9
+      },
+      "elimination": {
+        "opponent": "Switzerland",
+        "opponent_flag": "ch",
+        "score": "0-2",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.2091,
+        "opp_win_prob": 0.5373,
+        "draw_prob": 0.2536,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Argentina": {
+      "team": "Argentina",
+      "flag": "ar",
+      "predicted": {
+        "p_r16": 0.5432,
+        "p_qf": 0.363,
+        "p_sf": 0.2636,
+        "p_final": 0.16,
+        "p_win": 0.1028,
+        "expected_finish": "Round of 16"
+      },
+      "actual": {
+        "finish_stage": "final",
+        "finish_label": "Final (runner-up)",
+        "matches_played": 8,
+        "wins": 7,
+        "draws": 0,
+        "losses": 1,
+        "gf": 19,
+        "ga": 8
+      },
+      "elimination": {
+        "opponent": "Spain",
+        "opponent_flag": "es",
+        "score": "0-1",
+        "stage": "final",
+        "stage_label": "Final (runner-up)",
+        "our_win_prob": 0.2579,
+        "opp_win_prob": 0.4981,
+        "draw_prob": 0.244,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Australia": {
+      "team": "Australia",
+      "flag": "au",
+      "predicted": {
+        "p_r16": 0.3191,
+        "p_qf": 0.16,
+        "p_sf": 0.0684,
+        "p_final": 0.0277,
+        "p_win": 0.0122,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 1,
+        "losses": 2,
+        "gf": 5,
+        "ga": 7
+      },
+      "elimination": {
+        "opponent": "Egypt",
+        "opponent_flag": "eg",
+        "score": "3-5",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.5255,
+        "opp_win_prob": 0.1882,
+        "draw_prob": 0.2863,
+        "our_pick": "win"
+      },
+      "verdict": "overachieved"
+    },
+    "Austria": {
+      "team": "Austria",
+      "flag": "at",
+      "predicted": {
+        "p_r16": 0.2325,
+        "p_qf": 0.1069,
+        "p_sf": 0.0461,
+        "p_final": 0.0181,
+        "p_win": 0.0056,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 1,
+        "losses": 2,
+        "gf": 6,
+        "ga": 9
+      },
+      "elimination": {
+        "opponent": "Spain",
+        "opponent_flag": "es",
+        "score": "0-3",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.0946,
+        "opp_win_prob": 0.744,
+        "draw_prob": 0.1615,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Belgium": {
+      "team": "Belgium",
+      "flag": "be",
+      "predicted": {
+        "p_r16": 0.3884,
+        "p_qf": 0.1868,
+        "p_sf": 0.0926,
+        "p_final": 0.0437,
+        "p_win": 0.0168,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "qf",
+        "finish_label": "Quarterfinal",
+        "matches_played": 6,
+        "wins": 3,
+        "draws": 2,
+        "losses": 1,
+        "gf": 14,
+        "ga": 7
+      },
+      "elimination": {
+        "opponent": "Spain",
+        "opponent_flag": "es",
+        "score": "1-2",
+        "stage": "qf",
+        "stage_label": "Quarterfinal",
+        "our_win_prob": 0.0756,
+        "opp_win_prob": 0.7823,
+        "draw_prob": 0.1421,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Bosnia and Herzegovina": {
+      "team": "Bosnia and Herzegovina",
+      "flag": "ba",
+      "predicted": {
+        "p_r16": 0.0607,
+        "p_qf": 0.0134,
+        "p_sf": 0.002,
+        "p_final": 0.0003,
+        "p_win": 0.0,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 1,
+        "losses": 2,
+        "gf": 5,
+        "ga": 8
+      },
+      "elimination": {
+        "opponent": "United States",
+        "opponent_flag": "us",
+        "score": "0-2",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.0773,
+        "opp_win_prob": 0.7594,
+        "draw_prob": 0.1632,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Brazil": {
+      "team": "Brazil",
+      "flag": "br",
+      "predicted": {
+        "p_r16": 0.6349,
+        "p_qf": 0.3643,
+        "p_sf": 0.1917,
+        "p_final": 0.0963,
+        "p_win": 0.0541,
+        "expected_finish": "Round of 16"
+      },
+      "actual": {
+        "finish_stage": "r16",
+        "finish_label": "Round of 16",
+        "matches_played": 5,
+        "wins": 3,
+        "draws": 1,
+        "losses": 1,
+        "gf": 10,
+        "ga": 4
+      },
+      "elimination": {
+        "opponent": "Norway",
+        "opponent_flag": "no",
+        "score": "1-2",
+        "stage": "r16",
+        "stage_label": "Round of 16",
+        "our_win_prob": 0.4881,
+        "opp_win_prob": 0.2602,
+        "draw_prob": 0.2518,
+        "our_pick": "win"
+      },
+      "verdict": "matched"
+    },
+    "Canada": {
+      "team": "Canada",
+      "flag": "ca",
+      "predicted": {
+        "p_r16": 0.4407,
+        "p_qf": 0.2359,
+        "p_sf": 0.0886,
+        "p_final": 0.0356,
+        "p_win": 0.0165,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r16",
+        "finish_label": "Round of 16",
+        "matches_played": 5,
+        "wins": 2,
+        "draws": 1,
+        "losses": 2,
+        "gf": 9,
+        "ga": 6
+      },
+      "elimination": {
+        "opponent": "Morocco",
+        "opponent_flag": "ma",
+        "score": "0-3",
+        "stage": "r16",
+        "stage_label": "Round of 16",
+        "our_win_prob": 0.3239,
+        "opp_win_prob": 0.3679,
+        "draw_prob": 0.3083,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Cape Verde": {
+      "team": "Cape Verde",
+      "flag": "cv",
+      "predicted": {
+        "p_r16": 0.117,
+        "p_qf": 0.0354,
+        "p_sf": 0.0114,
+        "p_final": 0.0028,
+        "p_win": 0.0005,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 0,
+        "draws": 3,
+        "losses": 1,
+        "gf": 4,
+        "ga": 5
+      },
+      "elimination": {
+        "opponent": "Argentina",
+        "opponent_flag": "ar",
+        "score": "2-3",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.0597,
+        "opp_win_prob": 0.7708,
+        "draw_prob": 0.1695,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Colombia": {
+      "team": "Colombia",
+      "flag": "co",
+      "predicted": {
+        "p_r16": 0.492,
+        "p_qf": 0.2386,
+        "p_sf": 0.1399,
+        "p_final": 0.0754,
+        "p_win": 0.0357,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r16",
+        "finish_label": "Round of 16",
+        "matches_played": 5,
+        "wins": 3,
+        "draws": 1,
+        "losses": 1,
+        "gf": 8,
+        "ga": 5
+      },
+      "elimination": {
+        "opponent": "Switzerland",
+        "opponent_flag": "ch",
+        "score": "3-4",
+        "stage": "r16",
+        "stage_label": "Round of 16",
+        "our_win_prob": 0.3752,
+        "opp_win_prob": 0.3394,
+        "draw_prob": 0.2855,
+        "our_pick": "win"
+      },
+      "verdict": "overachieved"
+    },
+    "Croatia": {
+      "team": "Croatia",
+      "flag": "hr",
+      "predicted": {
+        "p_r16": 0.3558,
+        "p_qf": 0.1673,
+        "p_sf": 0.0908,
+        "p_final": 0.0452,
+        "p_win": 0.0182,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 2,
+        "draws": 0,
+        "losses": 2,
+        "gf": 6,
+        "ga": 7
+      },
+      "elimination": {
+        "opponent": "Portugal",
+        "opponent_flag": "pt",
+        "score": "1-2",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.1585,
+        "opp_win_prob": 0.64,
+        "draw_prob": 0.2014,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Curaçao": {
+      "team": "Curaçao",
+      "flag": "cw",
+      "predicted": {
+        "p_r16": 0.1214,
+        "p_qf": 0.0416,
+        "p_sf": 0.0126,
+        "p_final": 0.0037,
+        "p_win": 0.0005,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 1,
+        "losses": 2,
+        "gf": 1,
+        "ga": 9
+      },
+      "elimination": {
+        "opponent": "Ivory Coast",
+        "opponent_flag": "ci",
+        "score": "0-2",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.3438,
+        "opp_win_prob": 0.3329,
+        "draw_prob": 0.3233,
+        "our_pick": "win"
+      },
+      "verdict": "matched"
+    },
+    "Czech Republic": {
+      "team": "Czech Republic",
+      "flag": "cz",
+      "predicted": {
+        "p_r16": 0.3045,
+        "p_qf": 0.1277,
+        "p_sf": 0.0333,
+        "p_final": 0.0084,
+        "p_win": 0.0026,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 1,
+        "losses": 2,
+        "gf": 2,
+        "ga": 6
+      },
+      "elimination": {
+        "opponent": "Mexico",
+        "opponent_flag": "mx",
+        "score": "0-3",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.2984,
+        "opp_win_prob": 0.4314,
+        "draw_prob": 0.2702,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "DR Congo": {
+      "team": "DR Congo",
+      "flag": "cd",
+      "predicted": {
+        "p_r16": 0.2112,
+        "p_qf": 0.0765,
+        "p_sf": 0.0306,
+        "p_final": 0.0105,
+        "p_win": 0.0026,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 1,
+        "losses": 2,
+        "gf": 5,
+        "ga": 5
+      },
+      "elimination": {
+        "opponent": "England",
+        "opponent_flag": "gb-eng",
+        "score": "1-2",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.0873,
+        "opp_win_prob": 0.7369,
+        "draw_prob": 0.1757,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Ecuador": {
+      "team": "Ecuador",
+      "flag": "ec",
+      "predicted": {
+        "p_r16": 0.4875,
+        "p_qf": 0.2703,
+        "p_sf": 0.1322,
+        "p_final": 0.0664,
+        "p_win": 0.0266,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 1,
+        "losses": 2,
+        "gf": 2,
+        "ga": 4
+      },
+      "elimination": {
+        "opponent": "Mexico",
+        "opponent_flag": "mx",
+        "score": "0-2",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.2159,
+        "opp_win_prob": 0.3836,
+        "draw_prob": 0.4005,
+        "our_pick": "draw"
+      },
+      "verdict": "overachieved"
+    },
+    "Egypt": {
+      "team": "Egypt",
+      "flag": "eg",
+      "predicted": {
+        "p_r16": 0.295,
+        "p_qf": 0.1182,
+        "p_sf": 0.0524,
+        "p_final": 0.0217,
+        "p_win": 0.0064,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r16",
+        "finish_label": "Round of 16",
+        "matches_played": 5,
+        "wins": 2,
+        "draws": 2,
+        "losses": 1,
+        "gf": 12,
+        "ga": 9
+      },
+      "elimination": {
+        "opponent": "Argentina",
+        "opponent_flag": "ar",
+        "score": "2-3",
+        "stage": "r16",
+        "stage_label": "Round of 16",
+        "our_win_prob": 0.0959,
+        "opp_win_prob": 0.6902,
+        "draw_prob": 0.2139,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "England": {
+      "team": "England",
+      "flag": "gb-eng",
+      "predicted": {
+        "p_r16": 0.5164,
+        "p_qf": 0.2611,
+        "p_sf": 0.1788,
+        "p_final": 0.1016,
+        "p_win": 0.0566,
+        "expected_finish": "Round of 16"
+      },
+      "actual": {
+        "finish_stage": "tp",
+        "finish_label": "3rd place",
+        "matches_played": 8,
+        "wins": 6,
+        "draws": 1,
+        "losses": 1,
+        "gf": 20,
+        "ga": 12
+      },
+      "elimination": {
+        "opponent": "Argentina",
+        "opponent_flag": "ar",
+        "score": "1-2",
+        "stage": "sf",
+        "stage_label": "Semifinal (4th place)",
+        "our_win_prob": 0.355,
+        "opp_win_prob": 0.3499,
+        "draw_prob": 0.2951,
+        "our_pick": "win"
+      },
+      "verdict": "overachieved"
+    },
+    "France": {
+      "team": "France",
+      "flag": "fr",
+      "predicted": {
+        "p_r16": 0.6487,
+        "p_qf": 0.4651,
+        "p_sf": 0.3395,
+        "p_final": 0.2091,
+        "p_win": 0.1362,
+        "expected_finish": "Round of 16"
+      },
+      "actual": {
+        "finish_stage": "sf",
+        "finish_label": "Semifinal (4th place)",
+        "matches_played": 8,
+        "wins": 6,
+        "draws": 0,
+        "losses": 2,
+        "gf": 20,
+        "ga": 10
+      },
+      "elimination": {
+        "opponent": "Spain",
+        "opponent_flag": "es",
+        "score": "0-2",
+        "stage": "sf",
+        "stage_label": "Semifinal (4th place)",
+        "our_win_prob": 0.4153,
+        "opp_win_prob": 0.3108,
+        "draw_prob": 0.2739,
+        "our_pick": "win"
+      },
+      "verdict": "overachieved"
+    },
+    "Germany": {
+      "team": "Germany",
+      "flag": "de",
+      "predicted": {
+        "p_r16": 0.5127,
+        "p_qf": 0.2684,
+        "p_sf": 0.1348,
+        "p_final": 0.066,
+        "p_win": 0.0283,
+        "expected_finish": "Round of 16"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 2,
+        "draws": 0,
+        "losses": 2,
+        "gf": 14,
+        "ga": 9
+      },
+      "elimination": {
+        "opponent": "Paraguay",
+        "opponent_flag": "py",
+        "score": "4-5",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.6212,
+        "opp_win_prob": 0.1459,
+        "draw_prob": 0.2328,
+        "our_pick": "win"
+      },
+      "verdict": "underperformed"
+    },
+    "Ghana": {
+      "team": "Ghana",
+      "flag": "gh",
+      "predicted": {
+        "p_r16": 0.1213,
+        "p_qf": 0.0379,
+        "p_sf": 0.0113,
+        "p_final": 0.0029,
+        "p_win": 0.0005,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 1,
+        "losses": 2,
+        "gf": 2,
+        "ga": 3
+      },
+      "elimination": {
+        "opponent": "Colombia",
+        "opponent_flag": "co",
+        "score": "0-1",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.1442,
+        "opp_win_prob": 0.6142,
+        "draw_prob": 0.2416,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Haiti": {
+      "team": "Haiti",
+      "flag": "ht",
+      "predicted": {
+        "p_r16": 0.0992,
+        "p_qf": 0.0258,
+        "p_sf": 0.0057,
+        "p_final": 0.001,
+        "p_win": 0.0001,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 0,
+        "losses": 3,
+        "gf": 2,
+        "ga": 8
+      },
+      "elimination": {
+        "opponent": "Morocco",
+        "opponent_flag": "ma",
+        "score": "2-4",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.0428,
+        "opp_win_prob": 0.8226,
+        "draw_prob": 0.1345,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Iran": {
+      "team": "Iran",
+      "flag": "ir",
+      "predicted": {
+        "p_r16": 0.3071,
+        "p_qf": 0.1315,
+        "p_sf": 0.0597,
+        "p_final": 0.0246,
+        "p_win": 0.0081,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 3,
+        "losses": 0,
+        "gf": 3,
+        "ga": 3
+      },
+      "elimination": {
+        "opponent": "Egypt",
+        "opponent_flag": "eg",
+        "score": "1-1",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.3035,
+        "opp_win_prob": 0.4087,
+        "draw_prob": 0.2878,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Iraq": {
+      "team": "Iraq",
+      "flag": "iq",
+      "predicted": {
+        "p_r16": 0.1048,
+        "p_qf": 0.034,
+        "p_sf": 0.0097,
+        "p_final": 0.0025,
+        "p_win": 0.0004,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 0,
+        "losses": 3,
+        "gf": 1,
+        "ga": 12
+      },
+      "elimination": {
+        "opponent": "Senegal",
+        "opponent_flag": "sn",
+        "score": "0-5",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.1557,
+        "opp_win_prob": 0.5929,
+        "draw_prob": 0.2514,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Ivory Coast": {
+      "team": "Ivory Coast",
+      "flag": "ci",
+      "predicted": {
+        "p_r16": 0.2752,
+        "p_qf": 0.1241,
+        "p_sf": 0.0508,
+        "p_final": 0.0207,
+        "p_win": 0.0058,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 2,
+        "draws": 0,
+        "losses": 2,
+        "gf": 5,
+        "ga": 4
+      },
+      "elimination": {
+        "opponent": "Norway",
+        "opponent_flag": "no",
+        "score": "1-2",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.2787,
+        "opp_win_prob": 0.4334,
+        "draw_prob": 0.2879,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Japan": {
+      "team": "Japan",
+      "flag": "jp",
+      "predicted": {
+        "p_r16": 0.4721,
+        "p_qf": 0.2776,
+        "p_sf": 0.153,
+        "p_final": 0.0829,
+        "p_win": 0.0394,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 2,
+        "losses": 1,
+        "gf": 8,
+        "ga": 5
+      },
+      "elimination": {
+        "opponent": "Brazil",
+        "opponent_flag": "br",
+        "score": "1-2",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.1958,
+        "opp_win_prob": 0.5467,
+        "draw_prob": 0.2575,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Jordan": {
+      "team": "Jordan",
+      "flag": "jo",
+      "predicted": {
+        "p_r16": 0.1965,
+        "p_qf": 0.0815,
+        "p_sf": 0.0297,
+        "p_final": 0.0097,
+        "p_win": 0.0022,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 0,
+        "losses": 3,
+        "gf": 3,
+        "ga": 8
+      },
+      "elimination": {
+        "opponent": "Argentina",
+        "opponent_flag": "ar",
+        "score": "1-3",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.2002,
+        "opp_win_prob": 0.5384,
+        "draw_prob": 0.2614,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Mexico": {
+      "team": "Mexico",
+      "flag": "mx",
+      "predicted": {
+        "p_r16": 0.5296,
+        "p_qf": 0.2849,
+        "p_sf": 0.1214,
+        "p_final": 0.0522,
+        "p_win": 0.0257,
+        "expected_finish": "Round of 16"
+      },
+      "actual": {
+        "finish_stage": "r16",
+        "finish_label": "Round of 16",
+        "matches_played": 5,
+        "wins": 4,
+        "draws": 0,
+        "losses": 1,
+        "gf": 10,
+        "ga": 3
+      },
+      "elimination": {
+        "opponent": "England",
+        "opponent_flag": "gb-eng",
+        "score": "2-3",
+        "stage": "r16",
+        "stage_label": "Round of 16",
+        "our_win_prob": 0.2955,
+        "opp_win_prob": 0.3593,
+        "draw_prob": 0.3452,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Morocco": {
+      "team": "Morocco",
+      "flag": "ma",
+      "predicted": {
+        "p_r16": 0.6102,
+        "p_qf": 0.3311,
+        "p_sf": 0.1516,
+        "p_final": 0.0719,
+        "p_win": 0.0381,
+        "expected_finish": "Round of 16"
+      },
+      "actual": {
+        "finish_stage": "qf",
+        "finish_label": "Quarterfinal",
+        "matches_played": 6,
+        "wins": 4,
+        "draws": 1,
+        "losses": 1,
+        "gf": 13,
+        "ga": 8
+      },
+      "elimination": {
+        "opponent": "France",
+        "opponent_flag": "fr",
+        "score": "0-2",
+        "stage": "qf",
+        "stage_label": "Quarterfinal",
+        "our_win_prob": 0.1181,
+        "opp_win_prob": 0.653,
+        "draw_prob": 0.2289,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Netherlands": {
+      "team": "Netherlands",
+      "flag": "nl",
+      "predicted": {
+        "p_r16": 0.4483,
+        "p_qf": 0.2685,
+        "p_sf": 0.1478,
+        "p_final": 0.0787,
+        "p_win": 0.0359,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 2,
+        "draws": 1,
+        "losses": 1,
+        "gf": 13,
+        "ga": 8
+      },
+      "elimination": {
+        "opponent": "Morocco",
+        "opponent_flag": "ma",
+        "score": "3-4",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.5266,
+        "opp_win_prob": 0.207,
+        "draw_prob": 0.2663,
+        "our_pick": "win"
+      },
+      "verdict": "overachieved"
+    },
+    "New Zealand": {
+      "team": "New Zealand",
+      "flag": "nz",
+      "predicted": {
+        "p_r16": 0.2724,
+        "p_qf": 0.0896,
+        "p_sf": 0.0355,
+        "p_final": 0.0127,
+        "p_win": 0.0031,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 1,
+        "losses": 2,
+        "gf": 4,
+        "ga": 10
+      },
+      "elimination": {
+        "opponent": "Belgium",
+        "opponent_flag": "be",
+        "score": "1-5",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.3279,
+        "opp_win_prob": 0.3822,
+        "draw_prob": 0.2899,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Norway": {
+      "team": "Norway",
+      "flag": "no",
+      "predicted": {
+        "p_r16": 0.3581,
+        "p_qf": 0.1779,
+        "p_sf": 0.0875,
+        "p_final": 0.0401,
+        "p_win": 0.0152,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "qf",
+        "finish_label": "Quarterfinal",
+        "matches_played": 6,
+        "wins": 4,
+        "draws": 0,
+        "losses": 2,
+        "gf": 13,
+        "ga": 11
+      },
+      "elimination": {
+        "opponent": "England",
+        "opponent_flag": "gb-eng",
+        "score": "1-2",
+        "stage": "qf",
+        "stage_label": "Quarterfinal",
+        "our_win_prob": 0.2696,
+        "opp_win_prob": 0.4332,
+        "draw_prob": 0.2971,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Panama": {
+      "team": "Panama",
+      "flag": "pa",
+      "predicted": {
+        "p_r16": 0.1764,
+        "p_qf": 0.058,
+        "p_sf": 0.02,
+        "p_final": 0.0056,
+        "p_win": 0.0012,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 0,
+        "losses": 3,
+        "gf": 0,
+        "ga": 4
+      },
+      "elimination": {
+        "opponent": "England",
+        "opponent_flag": "gb-eng",
+        "score": "0-2",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.1889,
+        "opp_win_prob": 0.5059,
+        "draw_prob": 0.3052,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Paraguay": {
+      "team": "Paraguay",
+      "flag": "py",
+      "predicted": {
+        "p_r16": 0.1924,
+        "p_qf": 0.0777,
+        "p_sf": 0.0276,
+        "p_final": 0.0083,
+        "p_win": 0.0026,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r16",
+        "finish_label": "Round of 16",
+        "matches_played": 5,
+        "wins": 2,
+        "draws": 1,
+        "losses": 2,
+        "gf": 7,
+        "ga": 9
+      },
+      "elimination": {
+        "opponent": "France",
+        "opponent_flag": "fr",
+        "score": "0-1",
+        "stage": "r16",
+        "stage_label": "Round of 16",
+        "our_win_prob": 0.1653,
+        "opp_win_prob": 0.5364,
+        "draw_prob": 0.2982,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Portugal": {
+      "team": "Portugal",
+      "flag": "pt",
+      "predicted": {
+        "p_r16": 0.5784,
+        "p_qf": 0.272,
+        "p_sf": 0.1706,
+        "p_final": 0.0923,
+        "p_win": 0.0474,
+        "expected_finish": "Round of 16"
+      },
+      "actual": {
+        "finish_stage": "r16",
+        "finish_label": "Round of 16",
+        "matches_played": 5,
+        "wins": 2,
+        "draws": 2,
+        "losses": 1,
+        "gf": 8,
+        "ga": 3
+      },
+      "elimination": {
+        "opponent": "Spain",
+        "opponent_flag": "es",
+        "score": "0-1",
+        "stage": "r16",
+        "stage_label": "Round of 16",
+        "our_win_prob": 0.3131,
+        "opp_win_prob": 0.4356,
+        "draw_prob": 0.2513,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Qatar": {
+      "team": "Qatar",
+      "flag": "qa",
+      "predicted": {
+        "p_r16": 0.1505,
+        "p_qf": 0.0505,
+        "p_sf": 0.0106,
+        "p_final": 0.002,
+        "p_win": 0.0004,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 1,
+        "losses": 2,
+        "gf": 2,
+        "ga": 10
+      },
+      "elimination": {
+        "opponent": "Bosnia and Herzegovina",
+        "opponent_flag": "ba",
+        "score": "1-3",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.3509,
+        "opp_win_prob": 0.3675,
+        "draw_prob": 0.2815,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Saudi Arabia": {
+      "team": "Saudi Arabia",
+      "flag": "sa",
+      "predicted": {
+        "p_r16": 0.1297,
+        "p_qf": 0.0397,
+        "p_sf": 0.0142,
+        "p_final": 0.0042,
+        "p_win": 0.0006,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 2,
+        "losses": 1,
+        "gf": 1,
+        "ga": 5
+      },
+      "elimination": {
+        "opponent": "Cape Verde",
+        "opponent_flag": "cv",
+        "score": "0-0",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.2295,
+        "opp_win_prob": 0.4538,
+        "draw_prob": 0.3166,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Scotland": {
+      "team": "Scotland",
+      "flag": "gb-sct",
+      "predicted": {
+        "p_r16": 0.2129,
+        "p_qf": 0.0791,
+        "p_sf": 0.024,
+        "p_final": 0.0059,
+        "p_win": 0.0018,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 1,
+        "draws": 0,
+        "losses": 2,
+        "gf": 1,
+        "ga": 4
+      },
+      "elimination": {
+        "opponent": "Brazil",
+        "opponent_flag": "br",
+        "score": "0-3",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.1977,
+        "opp_win_prob": 0.5507,
+        "draw_prob": 0.2516,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Senegal": {
+      "team": "Senegal",
+      "flag": "sn",
+      "predicted": {
+        "p_r16": 0.3862,
+        "p_qf": 0.2037,
+        "p_sf": 0.1015,
+        "p_final": 0.0474,
+        "p_win": 0.0167,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 0,
+        "losses": 3,
+        "gf": 10,
+        "ga": 9
+      },
+      "elimination": {
+        "opponent": "Belgium",
+        "opponent_flag": "be",
+        "score": "2-3",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.2564,
+        "opp_win_prob": 0.4446,
+        "draw_prob": 0.299,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "South Africa": {
+      "team": "South Africa",
+      "flag": "za",
+      "predicted": {
+        "p_r16": 0.1741,
+        "p_qf": 0.0657,
+        "p_sf": 0.0154,
+        "p_final": 0.0041,
+        "p_win": 0.0012,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 1,
+        "losses": 2,
+        "gf": 2,
+        "ga": 4
+      },
+      "elimination": {
+        "opponent": "Canada",
+        "opponent_flag": "ca",
+        "score": "0-1",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.3078,
+        "opp_win_prob": 0.3674,
+        "draw_prob": 0.3248,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "South Korea": {
+      "team": "South Korea",
+      "flag": "kr",
+      "predicted": {
+        "p_r16": 0.4264,
+        "p_qf": 0.2159,
+        "p_sf": 0.0745,
+        "p_final": 0.0284,
+        "p_win": 0.0115,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 1,
+        "draws": 0,
+        "losses": 2,
+        "gf": 2,
+        "ga": 3
+      },
+      "elimination": {
+        "opponent": "South Africa",
+        "opponent_flag": "za",
+        "score": "0-1",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.4144,
+        "opp_win_prob": 0.268,
+        "draw_prob": 0.3177,
+        "our_pick": "win"
+      },
+      "verdict": "matched"
+    },
+    "Spain": {
+      "team": "Spain",
+      "flag": "es",
+      "predicted": {
+        "p_r16": 0.667,
+        "p_qf": 0.4168,
+        "p_sf": 0.2709,
+        "p_final": 0.197,
+        "p_win": 0.1373,
+        "expected_finish": "Round of 16"
+      },
+      "actual": {
+        "finish_stage": "champion",
+        "finish_label": "Champion",
+        "matches_played": 8,
+        "wins": 7,
+        "draws": 1,
+        "losses": 0,
+        "gf": 14,
+        "ga": 1
+      },
+      "elimination": null,
+      "verdict": "overachieved"
+    },
+    "Sweden": {
+      "team": "Sweden",
+      "flag": "se",
+      "predicted": {
+        "p_r16": 0.1824,
+        "p_qf": 0.0794,
+        "p_sf": 0.0326,
+        "p_final": 0.0118,
+        "p_win": 0.0033,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r32",
+        "finish_label": "Round of 32",
+        "matches_played": 4,
+        "wins": 1,
+        "draws": 1,
+        "losses": 2,
+        "gf": 7,
+        "ga": 10
+      },
+      "elimination": {
+        "opponent": "France",
+        "opponent_flag": "fr",
+        "score": "0-3",
+        "stage": "r32",
+        "stage_label": "Round of 32",
+        "our_win_prob": 0.0972,
+        "opp_win_prob": 0.7346,
+        "draw_prob": 0.1683,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Switzerland": {
+      "team": "Switzerland",
+      "flag": "ch",
+      "predicted": {
+        "p_r16": 0.4805,
+        "p_qf": 0.2614,
+        "p_sf": 0.111,
+        "p_final": 0.0489,
+        "p_win": 0.0247,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "qf",
+        "finish_label": "Quarterfinal",
+        "matches_played": 6,
+        "wins": 4,
+        "draws": 1,
+        "losses": 1,
+        "gf": 14,
+        "ga": 9
+      },
+      "elimination": {
+        "opponent": "Argentina",
+        "opponent_flag": "ar",
+        "score": "1-3",
+        "stage": "qf",
+        "stage_label": "Quarterfinal",
+        "our_win_prob": 0.1129,
+        "opp_win_prob": 0.673,
+        "draw_prob": 0.2141,
+        "our_pick": "loss"
+      },
+      "verdict": "overachieved"
+    },
+    "Tunisia": {
+      "team": "Tunisia",
+      "flag": "tn",
+      "predicted": {
+        "p_r16": 0.2257,
+        "p_qf": 0.1019,
+        "p_sf": 0.0403,
+        "p_final": 0.0155,
+        "p_win": 0.0041,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 0,
+        "losses": 3,
+        "gf": 2,
+        "ga": 12
+      },
+      "elimination": {
+        "opponent": "Netherlands",
+        "opponent_flag": "nl",
+        "score": "1-3",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.263,
+        "opp_win_prob": 0.4235,
+        "draw_prob": 0.3135,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Turkey": {
+      "team": "Turkey",
+      "flag": "tr",
+      "predicted": {
+        "p_r16": 0.332,
+        "p_qf": 0.1638,
+        "p_sf": 0.066,
+        "p_final": 0.0248,
+        "p_win": 0.0098,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 1,
+        "draws": 0,
+        "losses": 2,
+        "gf": 3,
+        "ga": 5
+      },
+      "elimination": {
+        "opponent": "United States",
+        "opponent_flag": "us",
+        "score": "3-2",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.4731,
+        "opp_win_prob": 0.2746,
+        "draw_prob": 0.2523,
+        "our_pick": "win"
+      },
+      "verdict": "matched"
+    },
+    "United States": {
+      "team": "United States",
+      "flag": "us",
+      "predicted": {
+        "p_r16": 0.28,
+        "p_qf": 0.1206,
+        "p_sf": 0.0448,
+        "p_final": 0.0157,
+        "p_win": 0.0059,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "r16",
+        "finish_label": "Round of 16",
+        "matches_played": 5,
+        "wins": 3,
+        "draws": 0,
+        "losses": 2,
+        "gf": 11,
+        "ga": 8
+      },
+      "elimination": {
+        "opponent": "Belgium",
+        "opponent_flag": "be",
+        "score": "1-4",
+        "stage": "r16",
+        "stage_label": "Round of 16",
+        "our_win_prob": 0.365,
+        "opp_win_prob": 0.3386,
+        "draw_prob": 0.2964,
+        "our_pick": "win"
+      },
+      "verdict": "overachieved"
+    },
+    "Uruguay": {
+      "team": "Uruguay",
+      "flag": "uy",
+      "predicted": {
+        "p_r16": 0.4535,
+        "p_qf": 0.232,
+        "p_sf": 0.1204,
+        "p_final": 0.0649,
+        "p_win": 0.0258,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 2,
+        "losses": 1,
+        "gf": 3,
+        "ga": 4
+      },
+      "elimination": {
+        "opponent": "Spain",
+        "opponent_flag": "es",
+        "score": "0-1",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.2843,
+        "opp_win_prob": 0.3928,
+        "draw_prob": 0.3228,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    },
+    "Uzbekistan": {
+      "team": "Uzbekistan",
+      "flag": "uz",
+      "predicted": {
+        "p_r16": 0.2551,
+        "p_qf": 0.0965,
+        "p_sf": 0.0415,
+        "p_final": 0.0152,
+        "p_win": 0.0044,
+        "expected_finish": "Group stage"
+      },
+      "actual": {
+        "finish_stage": "group",
+        "finish_label": "Group stage",
+        "matches_played": 3,
+        "wins": 0,
+        "draws": 0,
+        "losses": 3,
+        "gf": 2,
+        "ga": 11
+      },
+      "elimination": {
+        "opponent": "DR Congo",
+        "opponent_flag": "cd",
+        "score": "1-3",
+        "stage": "group",
+        "stage_label": "Group stage",
+        "our_win_prob": 0.2381,
+        "opp_win_prob": 0.385,
+        "draw_prob": 0.3768,
+        "our_pick": "loss"
+      },
+      "verdict": "matched"
+    }
+  }
+}

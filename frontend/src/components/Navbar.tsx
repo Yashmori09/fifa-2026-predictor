@@ -9,6 +9,8 @@ const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/live", label: "Live", indicator: true },
   { href: "/tournament", label: "Tournament" },
+  { href: "/retrospective", label: "Retrospective" },
+  { href: "/what-if", label: "What If" },
   { href: "/predict", label: "Match Predictor" },
   { href: "/squads", label: "Squads" },
   { href: "/methodology", label: "Methodology" },
