@@ -2,16 +2,32 @@
 Generate the "The Prediction" deterministic bracket and write it as
 frontend/src/lib/deterministic-data.ts.
 
-For every match:
-  - Outcome = argmax(p_home, p_draw, p_away) — no randomness
-  - Scoreline = most likely (hg, ag) under Poisson(lam_h)/Poisson(lam_a)
-    consistent with the chosen outcome
-  - KO draws → winner is the higher-prob side (h vs a, ignoring draw)
+Group stage: argmax-per-match (empirically best for group standings — see
+exp_marginal_map_full.py results, argmax got 11/12 group winners vs 9/12 for
+marginal MAP).
+
+Knockouts: MARGINAL MAP with champion-first construction.
+  - Champion = argmax(p_win) over all R32 teams (from 100K Monte Carlo sim)
+  - For each slot on champion's path (R32, R16, QF, SF, F): force champion
+  - For other slots: cascade — winner = argmax marginal probability among the
+    2 already-committed winners feeding into that slot
+  - Scoreline: expected score (round(λ_h)-round(λ_a)) nudged to match the
+    chosen outcome
+
+Rationale for the argmax→marginal-MAP switch on knockouts:
+  Argmax-per-match locally picks per-pair winners without aggregating over the
+  full tournament distribution. Under uncertainty, that can pick a champion
+  who isn't the aggregate #1 (see: our old bracket picked France while home-
+  page aggregate said Spain, matching reality). Marginal MAP picks the team
+  most likely to occupy each slot — the standard method used by FiveThirtyEight
+  SPI, Groll et al. WC papers, and the Kaplan-Garstka (2001) family. On WC
+  2026, marginal MAP scored 69 pool points vs argmax's 39.
 """
 
 import json
 import sys
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -86,23 +102,38 @@ def det_group_match(home: str, away: str) -> dict:
     }
 
 
-def det_ko_match(t1: str, t2: str) -> dict:
+def det_ko_match(t1: str, t2: str, forced_winner: Optional[str] = None) -> dict:
+    """Knockout match.
+
+    If forced_winner is None: use argmax(p_home, p_draw, p_away) as before.
+    If forced_winner is set (marginal MAP): use that team as winner and pick a
+    consistent scoreline. Penalties=True only if the model's own argmax outcome
+    would have been a draw (signals a very close match) — this matches how the
+    UI treats penalties.
+    """
     ph, pd_, pa = predict_match_cached(t1, t2, neutral=True)
     lam_h, lam_a = get_lambdas_cached(t1, t2)
 
     outs = {"home": ph, "draw": pd_, "away": pa}
-    outcome = max(outs, key=outs.get)
-    hg, ag = most_likely_score(lam_h, lam_a, outcome)
-    penalties = False
+    argmax_outcome = max(outs, key=outs.get)
 
-    if outcome == "home":
-        winner = t1
-    elif outcome == "away":
-        winner = t2
+    if forced_winner is None:
+        outcome = argmax_outcome
+        if outcome == "home":
+            winner = t1; penalties = False
+        elif outcome == "away":
+            winner = t2; penalties = False
+        else:
+            winner = t1 if ph >= pa else t2
+            outcome = "home" if winner == t1 else "away"
+            penalties = True
     else:
-        # Draw → deterministic penalty: higher-prob side
-        winner = t1 if ph >= pa else t2
-        penalties = True
+        winner = forced_winner
+        outcome = "home" if winner == t1 else "away"
+        # Preserve penalties=True if the model's own top outcome was a draw
+        penalties = (argmax_outcome == "draw")
+
+    hg, ag = most_likely_score(lam_h, lam_a, outcome)
 
     return {
         "team1": t1, "team2": t2,
@@ -160,45 +191,95 @@ def main():
     print(f"  Winners: {winners}")
     print(f"  Best thirds: {best_thirds}")
 
-    # ── R32 bracket ──
-    print("\nKnockouts...")
+    # ── Knockouts (marginal MAP, champion-first) ──
+    print("\nKnockouts (marginal MAP)...")
+
+    sim_csv = ROOT / "data/processed/wc2026_simulation_phase3.csv"
+    sim = pd.read_csv(sim_csv)
+    marg = {r["team"]: {k: float(r[k]) for k in ["p_r16", "p_qf", "p_sf", "p_final", "p_win"]}
+             for _, r in sim.iterrows()}
+
+    def m_get(team, key):
+        return marg.get(team, {}).get(key, 0.0)
+
     r32_bracket = build_r32_bracket(winners, runners_up, best_thirds)
+    r32_match_ids = sorted(r32_bracket.keys())
+
+    # R32_PAIRINGS uses match numbers (e.g. 73-88) as keys — keep as dict
+    r32_pool_by_matchid = {mid: list(r32_bracket[mid]) for mid in r32_match_ids}
+    # R16/QF/SF pools indexed by slot number (0-based)
+    r16_pools = [list(set(r32_bracket[a]) | set(r32_bracket[b])) for a, b in R16_PAIRINGS]
+    qf_pools = [list(set(r16_pools[a]) | set(r16_pools[b])) for a, b in QF_PAIRINGS]
+    sf_pools = [list(set(qf_pools[a]) | set(qf_pools[b])) for a, b in SF_PAIRINGS]
+
+    all_teams = list({t for pair in r32_pool_by_matchid.values() for t in pair})
+    champion = max(all_teams, key=lambda t: m_get(t, "p_win"))
+    print(f"  Champion (marginal MAP): {champion}  p_win={m_get(champion,'p_win'):.4f}")
+
+    def slot_of_list(team, pools_list):
+        return next(i for i, pool in enumerate(pools_list) if team in pool)
+
+    def slot_of_dict(team, pool_dict):
+        return next(mid for mid, pool in pool_dict.items() if team in pool)
+
+    champ_slots = {
+        "r32": slot_of_dict(champion, r32_pool_by_matchid),  # match ID
+        "r16": slot_of_list(champion, r16_pools),
+        "qf":  slot_of_list(champion, qf_pools),
+        "sf":  slot_of_list(champion, sf_pools),
+    }
+    print(f"  Champion path: R32 match #{champ_slots['r32']} → R16 #{champ_slots['r16']} → QF #{champ_slots['qf']} → SF #{champ_slots['sf']} → Final")
+
+    def pick_winner(t1, t2, marg_key, slot_i, champ_slot):
+        """Cascade pick: champion is forced at their slot, else argmax marginal
+        over the 2 committed feeder winners."""
+        if slot_i == champ_slot:
+            return champion
+        return t1 if m_get(t1, marg_key) >= m_get(t2, marg_key) else t2
+
+    # R32: for each pair, force champion if their pair, else argmax(p_r16)
     r32_matches = []
     r32_winners = {}
-    for mn in sorted(r32_bracket.keys()):
+    for mn in r32_match_ids:
         t1, t2 = r32_bracket[mn]
-        m = det_ko_match(t1, t2)
+        winner = pick_winner(t1, t2, "p_r16", mn, champ_slots["r32"])
+        m = det_ko_match(t1, t2, forced_winner=winner)
         r32_matches.append(m)
-        r32_winners[mn] = m["winner"]
+        r32_winners[mn] = winner
 
-    # ── R16 ──
+    # R16: pair R32 winners per R16_PAIRINGS, pick winner via cascade
     r16_matches = []
     r16_winners = []
-    for ma, mb in R16_PAIRINGS:
-        m = det_ko_match(r32_winners[ma], r32_winners[mb])
+    for slot_i, (ma, mb) in enumerate(R16_PAIRINGS):
+        t1, t2 = r32_winners[ma], r32_winners[mb]
+        winner = pick_winner(t1, t2, "p_qf", slot_i, champ_slots["r16"])
+        m = det_ko_match(t1, t2, forced_winner=winner)
         r16_matches.append(m)
-        r16_winners.append(m["winner"])
+        r16_winners.append(winner)
 
-    # ── QF ──
+    # QF
     qf_matches = []
     qf_winners = []
-    for ia, ib in QF_PAIRINGS:
-        m = det_ko_match(r16_winners[ia], r16_winners[ib])
+    for slot_i, (ia, ib) in enumerate(QF_PAIRINGS):
+        t1, t2 = r16_winners[ia], r16_winners[ib]
+        winner = pick_winner(t1, t2, "p_sf", slot_i, champ_slots["qf"])
+        m = det_ko_match(t1, t2, forced_winner=winner)
         qf_matches.append(m)
-        qf_winners.append(m["winner"])
+        qf_winners.append(winner)
 
-    # ── SF ──
+    # SF
     sf_matches = []
     sf_winners = []
-    for ia, ib in SF_PAIRINGS:
-        m = det_ko_match(qf_winners[ia], qf_winners[ib])
+    for slot_i, (ia, ib) in enumerate(SF_PAIRINGS):
+        t1, t2 = qf_winners[ia], qf_winners[ib]
+        winner = pick_winner(t1, t2, "p_final", slot_i, champ_slots["sf"])
+        m = det_ko_match(t1, t2, forced_winner=winner)
         sf_matches.append(m)
-        sf_winners.append(m["winner"])
+        sf_winners.append(winner)
 
-    # ── Final ──
-    final = det_ko_match(sf_winners[0], sf_winners[1])
-    champion = final["winner"]
-    print(f"  Champion: {champion}")
+    # Final: champion by construction
+    final = det_ko_match(sf_winners[0], sf_winners[1], forced_winner=champion)
+    print(f"  Final: {sf_winners[0]} vs {sf_winners[1]} → {champion}")
 
     # ── Assemble ──
     result = {

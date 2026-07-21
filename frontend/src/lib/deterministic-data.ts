@@ -8,7 +8,7 @@
  */
 
 export const DETERMINISTIC_DATA = {
-  "champion": "France",
+  "champion": "Spain",
   "groups": [
     {
       "group": "A",
@@ -1430,9 +1430,9 @@ export const DETERMINISTIC_DATA = {
       {
         "team1": "South Korea",
         "team2": "Canada",
-        "team1_goals": 2,
-        "team2_goals": 1,
-        "winner": "South Korea",
+        "team1_goals": 1,
+        "team2_goals": 2,
+        "winner": "Canada",
         "penalties": false,
         "prob_team1": 0.4472,
         "prob_draw": 0.3176,
@@ -1453,8 +1453,8 @@ export const DETERMINISTIC_DATA = {
         "team1": "Netherlands",
         "team2": "Morocco",
         "team1_goals": 2,
-        "team2_goals": 1,
-        "winner": "Netherlands",
+        "team2_goals": 3,
+        "winner": "Morocco",
         "penalties": false,
         "prob_team1": 0.5266,
         "prob_draw": 0.2663,
@@ -1617,15 +1617,15 @@ export const DETERMINISTIC_DATA = {
         "prob_team2": 0.5286
       },
       {
-        "team1": "South Korea",
-        "team2": "Netherlands",
+        "team1": "Canada",
+        "team2": "Morocco",
         "team1_goals": 1,
         "team2_goals": 2,
-        "winner": "Netherlands",
+        "winner": "Morocco",
         "penalties": false,
-        "prob_team1": 0.3381,
-        "prob_draw": 0.2865,
-        "prob_team2": 0.3753
+        "prob_team1": 0.3239,
+        "prob_draw": 0.3083,
+        "prob_team2": 0.3679
       },
       {
         "team1": "Brazil",
@@ -1641,9 +1641,9 @@ export const DETERMINISTIC_DATA = {
       {
         "team1": "Mexico",
         "team2": "England",
-        "team1_goals": 1,
-        "team2_goals": 2,
-        "winner": "England",
+        "team1_goals": 2,
+        "team2_goals": 1,
+        "winner": "Mexico",
         "penalties": false,
         "prob_team1": 0.2955,
         "prob_draw": 0.3452,
@@ -1663,9 +1663,9 @@ export const DETERMINISTIC_DATA = {
       {
         "team1": "United States",
         "team2": "Belgium",
-        "team1_goals": 2,
-        "team2_goals": 1,
-        "winner": "United States",
+        "team1_goals": 1,
+        "team2_goals": 2,
+        "winner": "Belgium",
         "penalties": false,
         "prob_team1": 0.365,
         "prob_draw": 0.2964,
@@ -1685,9 +1685,9 @@ export const DETERMINISTIC_DATA = {
       {
         "team1": "Switzerland",
         "team2": "Colombia",
-        "team1_goals": 1,
-        "team2_goals": 2,
-        "winner": "Colombia",
+        "team1_goals": 2,
+        "team2_goals": 1,
+        "winner": "Switzerland",
         "penalties": false,
         "prob_team1": 0.3394,
         "prob_draw": 0.2855,
@@ -1697,56 +1697,56 @@ export const DETERMINISTIC_DATA = {
     "qf": [
       {
         "team1": "France",
-        "team2": "Netherlands",
+        "team2": "Morocco",
         "team1_goals": 2,
         "team2_goals": 1,
         "winner": "France",
         "penalties": false,
-        "prob_team1": 0.5736,
-        "prob_draw": 0.2237,
-        "prob_team2": 0.2027
+        "prob_team1": 0.653,
+        "prob_draw": 0.2289,
+        "prob_team2": 0.1181
       },
       {
         "team1": "Spain",
-        "team2": "United States",
-        "team1_goals": 2,
+        "team2": "Belgium",
+        "team1_goals": 3,
         "team2_goals": 1,
         "winner": "Spain",
         "penalties": false,
-        "prob_team1": 0.759,
-        "prob_draw": 0.163,
-        "prob_team2": 0.078
+        "prob_team1": 0.7823,
+        "prob_draw": 0.1421,
+        "prob_team2": 0.0756
       },
       {
         "team1": "Brazil",
-        "team2": "England",
+        "team2": "Mexico",
         "team1_goals": 2,
         "team2_goals": 1,
         "winner": "Brazil",
         "penalties": false,
-        "prob_team1": 0.37,
-        "prob_draw": 0.3365,
-        "prob_team2": 0.2935
+        "prob_team1": 0.5668,
+        "prob_draw": 0.2639,
+        "prob_team2": 0.1693
       },
       {
         "team1": "Argentina",
-        "team2": "Colombia",
+        "team2": "Switzerland",
         "team1_goals": 2,
         "team2_goals": 1,
         "winner": "Argentina",
         "penalties": false,
-        "prob_team1": 0.5119,
-        "prob_draw": 0.3076,
-        "prob_team2": 0.1805
+        "prob_team1": 0.673,
+        "prob_draw": 0.2141,
+        "prob_team2": 0.1129
       }
     ],
     "sf": [
       {
         "team1": "France",
         "team2": "Spain",
-        "team1_goals": 2,
-        "team2_goals": 1,
-        "winner": "France",
+        "team1_goals": 1,
+        "team2_goals": 2,
+        "winner": "Spain",
         "penalties": false,
         "prob_team1": 0.4153,
         "prob_draw": 0.2739,
@@ -1766,15 +1766,15 @@ export const DETERMINISTIC_DATA = {
     ],
     "final": [
       {
-        "team1": "France",
+        "team1": "Spain",
         "team2": "Argentina",
         "team1_goals": 2,
         "team2_goals": 1,
-        "winner": "France",
+        "winner": "Spain",
         "penalties": false,
-        "prob_team1": 0.4254,
-        "prob_draw": 0.2796,
-        "prob_team2": 0.2951
+        "prob_team1": 0.4981,
+        "prob_draw": 0.244,
+        "prob_team2": 0.2579
       }
     ]
   }
