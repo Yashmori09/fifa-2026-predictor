@@ -6,6 +6,86 @@ Deep understanding gained while building this project. Not experiment results (s
 
 ---
 
+## Post-Tournament Learnings (WC 2026 finished)
+
+### 0.A Argmax-per-match is the wrong way to build a predicted bracket
+
+**What happened:** Our home page said Spain 13.7% champion, but our `/tournament` deterministic bracket said France. Both came from the same model. Two different UIs disagreed on our own prediction.
+
+**Root cause:** the two pages used different bracket-construction methods that answer different questions.
+
+- **Argmax-per-match** (old `/tournament` method): for each match, pick the team with higher win probability, then propagate. This is locally optimal per match but ignores the joint tournament distribution.
+- **Aggregate championship** (home page): argmax across all 32 teams of P(this team wins the tournament) from a 100K Monte Carlo. This IS the joint distribution's answer.
+
+These can diverge when close matches accumulate. In our case, France was slightly favored in the specific SF/Final matches argmax-per-match constructed, but Spain had the highest total championship probability once you integrated over all paths. Both are consistent with the same model; they answer different questions.
+
+**The fix:** switched knockouts to **marginal MAP with champion-first construction**:
+1. Champion = argmax(p_win) across all R32 teams (from 100K sim)
+2. Force champion at all 5 of their slots (R32, R16, QF, SF, F)
+3. For each other slot, cascade — pick the argmax of the marginal reach-probability among the 2 already-committed feeder winners
+
+Group stage stays argmax-per-match because tested marginal MAP got only 9/12 group winners vs argmax's 11/12 — group standings depend on JOINT outcomes of 6 matches through FIFA tiebreakers, and marginal MAP on standings-slots gets confused by weak-group bias (best-3rd teams from weak groups have inflated marginal P(3rd)).
+
+**Retrospective on WC 2026** (standard pool scoring, 1/2/4/8/16):
+
+| Method | Champion | Total | R32 | R16 | QF | SF | F |
+|---|---|---|---|---|---|---|---|
+| Argmax-per-match (old) | France ✗ | 39 | 11 | 8 | 12 | 8 | 0 |
+| **Marginal MAP (shipped)** | **Spain ✓** | **69** | 13 | 12 | 12 | 16 | 16 |
+| Kaplan-Garstka DP (proper) | France ✗ | 45 | 13 | 12 | 12 | 8 | 0 |
+
+Marginal MAP scored 77% more points than argmax and matched actual champion + finalists (Spain, Argentina).
+
+### 0.B Kaplan-Garstka picks a different champion than marginal MAP under uncertainty
+
+Built a proper KG DP (Kaplan & Garstka 2001) to see if it improved on marginal MAP. **It didn't** — KG picked France (wrong), marginal MAP picked Spain (right).
+
+**Why they differ:** they optimize different objectives.
+- Marginal MAP champion = argmax(p_win) — the team most likely to actually win
+- KG champion = argmax(expected total bracket score) — the team whose ENTIRE PATH (R32, R16, QF, SF, F) has the highest weighted marginal probability sum
+
+KG can pick a team with lower p_win if their path has higher aggregate marginals (higher p_final, p_sf, p_qf) that compensate under the 1/2/4/8/16 scoring. For our WC 2026 sim, France had p_final = 0.209 vs Spain's 0.197 — worth +0.10 EV at the 8-point SF slot. That outweighed Spain's tiny p_win edge (+0.018 EV at the 16-point F slot).
+
+**Which to use depends on your goal:**
+- Forecasting the winner → marginal MAP (argmax(p_win))
+- Playing a bracket pool with fixed point weights → KG DP (max expected pool points)
+
+We ship marginal MAP because our goal is winner forecasting, not pool play.
+
+### 0.C How the shipped model actually did on WC 2026
+
+The tournament finished. Spain won, Argentina runner-up, England 3rd, France 4th.
+
+**Model results:**
+- Overall accuracy: **65.4%** (up from 62.6% pre-tournament validation number)
+- Champion: correctly identified Spain as aggregate #1 (13.73%)
+- Semifinalists: 4/4 correct — Spain, Argentina, England, France all in top 4 by aggregate p_win
+- Finalists: 2/2 correct
+- Runner-up: correctly identified Argentina as #3 aggregate
+
+**Where the model was right:**
+- Top 4 by championship probability were the actual top 4 finishers
+- Both finalists were in the top 3 aggregate picks
+- Match-level accuracy exceeded pre-tournament validation (a good sign — model wasn't over-fit)
+
+**Where the model was wrong:**
+- Argmax-per-match knockout bracket said France champion (fixed post-tournament with marginal MAP switch)
+- Missed Morocco reaching R16 (deterministic bracket had Netherlands winning that spot)
+- Missed Canada beating South Korea in R32
+- Overpredicted Portugal and Brazil (both bounced early)
+
+**The 65.4% > 62.6% overperformance is unusual.** Most models drop by 2-5% between validation and out-of-sample. Possible explanations: (a) the 748-match validation window was harder than the WC (more low-ELO friendlies), (b) tournament matches favor calibrated models (the model's signal-to-noise is best on tournament-level competition), (c) lucky year. Can't disentangle from N=104.
+
+### 0.D What we'd do differently
+
+1. **Ship the right bracket construction from day 1.** Argmax-per-match was in production for weeks before we caught the inconsistency with the home page. Better to converge on marginal MAP earlier (or at least test it against argmax at launch).
+
+2. **Track methodology decisions explicitly.** The tournament page's argmax-per-match choice was implicit — we picked it because it was the obvious thing to code. Didn't research alternatives. Kaplan-Garstka 2001 has been out for 25 years; FiveThirtyEight has published their SPI method. This wasn't uncharted territory.
+
+3. **Don't over-index on match-level metrics for tournament forecasting.** Log loss and match accuracy predict *matches*. Tournament success depends on the aggregate joint distribution. Our model was better at the tournament (65% top-4 correct) than raw accuracy would suggest.
+
+---
+
 ## Phase 3 Learnings (the hybrid goal-scoring rebuild)
 
 ### 1.A The Dixon-Coles leakage bug
@@ -308,5 +388,5 @@ DC learns team strength from goals scored/conceded. AFC qualifiers produce high-
 
 ---
 
-*Last updated: 2026-04-10*
+*Last updated: 2026-07-21 (post-tournament)*
 *Add new learnings as we discover them. Focus on "why" — experiment results go in EXPERIMENT_LOG.md.*

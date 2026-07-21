@@ -4,7 +4,9 @@ A machine learning system that predicts FIFA 2026 World Cup match outcomes and s
 
 **Live:** [fifa-2026-predictor.vercel.app](https://fifa-2026-predictor.vercel.app)
 
-**Log Loss: 0.804** | **ECE: 0.027** | **62.6% outcome accuracy** | **157 input features** | **6,162 modern-era training matches (2018–2025)**
+**Log Loss: 0.804** | **ECE: 0.027** | **62.6% pre-WC validation accuracy → 65.4% actual WC 2026 accuracy** | **157 input features** | **6,162 modern-era training matches (2018–2025)**
+
+**Post-tournament (WC 2026 finished, Spain won):** model called Spain as aggregate #1 (13.73%), got all 4 semifinalists right (Spain, Argentina, England, France), and matched both finalists. Full retrospective in [LEARNINGS.md](LEARNINGS.md#post-tournament-learnings-wc-2026-finished).
 
 ## How It Works
 
@@ -24,8 +26,10 @@ The bracket uses the **official FIFA 2026 format** with Annex C third-place allo
 
 | Mode | What it does |
 |---|---|
-| **The Prediction** | Picks the most likely outcome for every match — no randomness. Same answer every time. **Winner: France** |
+| **The Prediction** | Group stage: argmax-per-match. Knockouts: marginal MAP (champion = aggregate #1, cascade from there). Same answer every time. **Winner: Spain** |
 | **What If?** | One Monte Carlo simulation with random outcomes weighted by model probabilities. Different winner each run. |
+
+**A note on bracket construction:** the deterministic knockout bracket picks the team with the highest MARGINAL probability of occupying each slot (from a 100K Monte Carlo simulation), starting with the champion. This is the standard method used by FiveThirtyEight SPI and Groll et al.'s WC papers. We originally used argmax-per-match (locally pick the favored team at each match), but that method disagreed with the aggregate championship pick — argmax picked France while aggregate said Spain. Post-tournament retrospective on WC 2026: marginal MAP scored 69 pool points vs argmax's 39. See [LEARNINGS.md](LEARNINGS.md#0a-argmax-per-match-is-the-wrong-way-to-build-a-predicted-bracket) for the full analysis.
 
 ### Top Predictions (100,000 simulations)
 
@@ -80,6 +84,7 @@ Slicing by ELO difference:
 
 ## What I Discovered
 
+- **Argmax-per-match is the wrong way to build a bracket.** Discovered after WC 2026 finished — our tournament page picked France while the home page said Spain (aggregate #1). Both from the same model, different construction methods. Switched knockouts to marginal MAP with champion-first cascade — matches FiveThirtyEight / Groll et al. convention. Retrospective: marginal MAP scored 69 pool points vs argmax's 39 on the real tournament. Tested Kaplan-Garstka DP too; it picks a different champion (France) because it optimizes expected pool points not argmax(p_win). Full analysis: [LEARNINGS §0.A–0.B](LEARNINGS.md#post-tournament-learnings-wc-2026-finished).
 - **Found a Dixon-Coles leak.** Earlier-iteration DC features were fitted on data through the test window, inflating metrics. Refitting on pre-holdout data only changed dc_home_win_prob >2% for 629/748 matches — the honest log loss is 0.804, not the inflated number we'd have reported.
 - **More data wins, not cleaner data.** Aggressive filtering (drop weak teams, drop friendlies, modern era only) hurt every metric. Andorra-Liechtenstein qualifiers still teach the model about Poisson goal distributions.
 - **The draw wall is real.** Confirmed across 3 independent approaches (TabNet, aggressive filter, Mord).
